@@ -8,9 +8,16 @@
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <script type="text/jsx">
-      // Select the div element with 'app' id
       const app = document.getElementById('app');
-      ReactDOM.render(<h3><i>Develop. Preview. Ship. 🚀</i></h3>, app);
+
+      function MyHeader()
+      {
+        return <h3><i>Develop. Preview. Ship. 🚀</i></h3>;
+      }
+      
+      ReactDOM.render(<MyHeader/>, app);
+
+      
     </script>
   </body>
 </html>

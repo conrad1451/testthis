@@ -10,7 +10,7 @@
     <script type="text/jsx">
       const app = document.getElementById('app');
 
-      function MyHeader()
+      function MyHeader1()
       {
         return <h1><i>Develop. Preview. Ship. 🚀</i></h1>;
       }
@@ -19,8 +19,12 @@
       {
         return <h3><i>All inside a component. 😎</i></h3>;
       }
+
+      function MyParentComponent()
+        {
+          return <> <MyHeader1/><MyHeader2/></>;
       
-      ReactDOM.render(<MyHeader/>, app);
+      ReactDOM.render(<MyParentComponent/>, app);
 
       
     </script>

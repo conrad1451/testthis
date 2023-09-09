@@ -10,22 +10,27 @@
     <script type="text/jsx">
       const app = document.getElementById('app');
 
-      function MyHeader1()
+      function Header({title})
       {
-        return <h1><i>Develop. Preview. Ship. 🚀</i></h1>;
-      }
-      
-      function MyHeader2()
-      {
-        return <h3><i>All inside a component. 😎</i></h3>;
+        return <h1>{title? title: 'Default title is being used here. Input a Title!'}</h1>;
       }
 
-      function MyParentComponent()
-      {
-          return (<> <MyHeader1/><MyHeader2/></>);
+      function HomePage()
+      { 
+        const names = ['Ada Lovelace', 'Grace Hopper', 'Margaret Hamilton'];
+
+        return (
+        <div>
+          <Header title= "Develop. Preview. Ship. 🚀"/>
+                    <Header title= "New Title 😎"/>
+
+        </div>
+        );
       }
-      
-      ReactDOM.render(<MyParentComponent/>, app);
+
+
+       
+      ReactDOM.render(<HomePage/>, app);
 
       
     </script>

@@ -1,0 +1,33 @@
+#grid {
+    display: grid;
+    height: 100px;
+    grid-template-columns: repeat(6, 1fr);
+  /*     grid-template-columns: repeat(5, 1fr); */
+  /*     grid-template-columns: repeat(4, 1fr); */
+  /*     grid-template-columns: repeat(3, 1fr); */
+  /*   the first element of repeat shows how many colums total that we will have */
+    grid-template-rows: 100px;
+  }
+  
+  #item1 {
+    background-color: lime;
+  }
+  
+  #item2 {
+    background-color: yellow;
+  /*   grid-column: 2 / 3;  */
+      grid-column: 2 / 4; 
+  /*     grid-column: 2 / 5;  */
+  /*   grid-column does beginPos/endPos, where the element spans from the beginning column to one before the end column */
+  }
+  
+  #item3 {
+    background-color: blue;
+    grid-column: span 1 / 7;
+  /*   Contributes a grid span to the grid item's placement such that the corresponding edge of the grid item's grid area is n lines from the opposite edge. */
+  
+  /*   grid-column: span n / m; */
+  /*    start line is n units away from end line for this element. aka the element is n units wide*/
+  /*   the 7 is position one after the actual position of the lement. so the end position is m-1 */
+  }
+  

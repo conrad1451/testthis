@@ -184,6 +184,663 @@
 
       // var username = "SkythekidRS"; 
 
+      /************************************************************
+       * Conrad's notes (created Mar 22 2020):
+       * 
+      V - means it was carried over to original program
+      
+      following label means what it says: "// Conrad: work on this next time"
+      
+      
+      ____________________________________________________________
+      
+      2023 updates
+      
+      Sep 30 2023 - Oct 3
+      
+      
+      Sep 30
+      created drawBlockCase16
+      
+       
+      created 
+      
+      Oct 1-2
+      - drawMossStoneIcon
+      - drawBlockCase34
+      - drawFurnaceIcon
+      - drawBlockCase31
+      - drawLadderIcon
+      - drawCoalIcon
+      - drawIronIngotIcon
+       
+       
+      - drawBlockCase11
+      - drawBlockCase13
+      - drawBlockCase23
+      - drawBlockCase24
+      - drawLapisLazuliIcon
+      - drawDiamondOreIcon
+      - drawCraftingTableIcon
+      - drawWoodenDoorIcon
+      - drawBlockCase300
+      - drawBlockCase39
+      - drawGoldBlockIcon
+      - drawIronBlockIcon
+      - drawMonsterSpawnerIcon
+      
+      
+      oct 3
+      - drawBlockCase20
+      - drawBlockCase21
+      - drawDiamondzIcon
+      - drawBlockCase303
+      - drawBlockCase304
+      - drawLeatherIcon
+      - drawNetherrackIcon
+      - drawFlintIcon
+      
+      - drawBlock307Icon
+      - drawBlock308Icon
+      - drawBlock309Icon
+      - drawBlock310Icon
+      - drawObsidianIcon
+      - drawBlock9Icon
+      - drawDiamondzPickaxeIcon
+      - drawBronzeSwordIcon
+      
+      Oct 9
+      - drawStoneSwordIcon
+      - drawIronSwordIcon
+      - drawGoldSwordIcon
+      - drawDiamondzSwordIcon
+      - drawRawPorkChopIcon
+      - drawGunpowderIcon
+      - drawCookedPorkChopIcon
+      
+      
+      ____________________________________________________________
+      
+      2021 Updates
+      
+      made 
+      - loadRecipies
+      - openinventory
+      
+      
+      Mar 25 2021
+      
+      Functions Made:
+      1. breakAndTakeBlock
+      
+      
+      2020 is below, 2021 is above
+      
+      Aug 13 2020
+      
+      Functions Made:
+      randomItemGenerator
+      dungeonGenerator
+      setToBlockType
+      
+      July 19
+      
+      1. drawGoldHelmetIcon
+      2. drawGoldShieldIcon
+      3. drawGoldPantsIcon
+      4. drawGoldShoesIcon
+      5. drawIronHelmetIcon
+      6. drawIronShieldIcon
+      7. drawIronPantsIcon
+      8. drawIronShoesIcon
+      
+      
+      July 18
+      
+      1. putInMatchingBarSlot
+      2. putInEmptyBarSlot
+      3. putInMatchingInvSlot
+      4. putInEmptyInvSlot
+      5. drawLeatherHelmetIcon
+      6. drawLeatherShieldIcon
+      7. drawLeatherPantsIcon
+      8. drawLeatherShoesIcon
+      9. drawDiamondzHelmetIcon
+      10. drawDiamondzShieldIcon
+      11. drawDiamondzPantsIcon
+      12. drawDiamondzShoesIcon
+      
+      July 17
+      1. defaultBlock
+      2. drawChestSubFunction
+      3. drawDoor
+      4. drawUpperDoor
+      5. drawFurnaceHelper
+      6. drawGravel
+      7. drawNetherPortal
+      8. obsidianTransformation
+      9. interactWithFurnace
+      10. furnaceSmeltedItemCollection
+      11. furnaceFuelArea
+      12. furnaceTopAreaFunctioning
+      
+      
+       July 16 made:
+      
+      1. drawFlintAndSteelIcon
+      2. drawFullMilkBucket
+      
+      July 16
+      Made swordSelected spit out free hame only when gameHacks is true
+      
+      July 14
+      Functions made:
+      
+      1. takeFromQuickSelectBar
+      2. handQuickSelectBarItemSwap
+      3. takeFromChest
+      4. takeItemsOffCraftingTable
+      5. interactWithCraftingPlatform
+      6. grabCraftedItemsSmallPlatform
+      7. fullInventoryPlatform
+      8. interactWithQuickSelectBar
+      9. takeFromInventory
+      10. handInventoryItemSwap
+      
+       
+      
+      
+      July 13
+      
+      Functions made:
+      1. autoGrab
+      2. manualGrab
+      3. wearingArmor
+      takeOffArmor
+      putOnArmorPiece
+      placeItemsOnCraftingTable
+      
+      Variables made:
+      
+      1. blockIsArmor
+      2. Remade data from being assigned to holdingBlock and a loop that drives it down to a value between 0 and 3, just doing data = holdinBlock % 4 
+       
+       
+      July 1
+      1. interactWithInventoryItems
+      2. grabCraftedItemsLargePlatform
+      
+      There is a bug in the Chest where clicking on an item will get the item to the left of it - an issue with the a selection perhaps
+      
+      Sometime in June
+      1. drawLeather
+      
+      
+      May or June
+      1. drawEmptyMilkBucket
+      
+      Sometime early June
+      1. furnaceBurning
+      
+      June 29
+      1. reduceQtyAndSpecs
+      
+      June 27
+      Functions:
+      1. showUsername
+      2. killCharacter
+      3. killMobs
+      4. executeCommands
+      5. drawCharacterHead
+      6. drawItemHeld
+      7. characterDirection
+      8. rightClickActions
+      9. blockDestructionProgression
+      10. generateOres
+      11. generateTrees
+      12. generateWater
+      13. generateCactus
+      14. breakBlocks
+      15. harvestBlock
+      16. largeCraftingPlatform
+      
+      
+      June 26
+      Functions:
+      1. loadSavedWorld
+      2. charInput
+      
+      June 25
+      Functions:
+      1. mobFunction
+      2. characterDrowning
+       
+      June 24
+      Functions:
+      1. inRectangularBounds
+      2. shouldDoItNow
+      3. showCharacter
+      
+      
+      June 23
+      
+      Edited loadOrNewGame
+      Made chestFunctioning
+      
+      June 15 
+      
+      Made functions 
+      1. printWorld
+      2. loadOrNewGame
+      
+        
+      
+      June 14 edits
+      
+      Made functions
+      
+      1. drawStoneBlockIcon
+      2. drawGrassBlockIcon
+      3. drawDirtBlockIcon
+      
+      
+      June 13 edits
+      
+      Made functions 
+      1. openCloseDoor
+      2. openCloseUpperDoor
+      
+       
+      June 12 edits
+      
+      Made functions
+      createNewFurnace
+      createNewChest
+      normalMode
+      specialMode
+      specialModeTimeAndFrameRate
+      characterGamePlay
+      
+      June 10 edits
+      
+      Made functions
+      1. displayChatHistory
+      2. chatTextInput
+      3. displaySentMessage
+      4. drawCobbleStoneBlockIcon
+      5. drawWoodenPlankBlockIcon
+      6. drawBrickBlockIcon
+      7. drawLogBlockIcon
+      
+      
+      June 9 edits
+      
+      Made functions
+      1. drawChatArea
+      2. teleport
+      3. shouldSprintLeft
+      4. sprintLeft
+      5. shouldSprintRight
+      6. sprintRight
+      
+      And many variables
+      
+      
+      
+      June 8 edits
+      
+      Made functions:
+      1. degradeByAmount
+      2. furnaceInteraction
+      3. chestInteraction
+      4. changeDurability
+      
+        
+      June 6 edits
+      
+      Made functions:
+      1. openCrafting
+      2. drawDebugMenu
+      3. saveWorld
+      4. giveTheItems
+      5. timeCaseInFunction
+      6. helpMessages
+      
+      7. clearAllTheItems
+      
+      
+      June 5 edits
+      
+      Made functions:
+      1. drawTheTableLayout
+      2. generateCraftedItem
+      
+      To do (follow the comments that are in your code)
+      V Conrad: put in function called openCrafting
+      V Conrad: put in function called drawDebugMenu
+      V Conrad: put in function called saveWorld
+      
+      
+      
+      June 4 edits
+      
+      Made functions:
+      1. drawSmallCraftingInterface 
+      2. drawArmorInterface 
+      3. drawInventoryItemProducedSlot
+      4. drawCraftingInterface
+      
+      
+      June 3 edits
+      
+      Made functions:
+      1. drawInventoryInterface
+      2. drawChestInterface
+      3. drawChestItems
+      4. drawItemTagVersion1
+      5. drawItemTagVersion2
+      6. openChest
+      
+      
+      June 2 edits
+      
+      Made variables:
+      1. selectedWater
+      2. selectedLava
+      
+      Notes:
+      Found that the code that triggers the milk buckets is in the if statement where these two variables are
+      
+      
+      June 1 edits
+      
+      Made variables:
+      1. blockNotAir 
+      2. ofCertainBlocks
+      3. isAir
+      4. isStandingWater
+      5. isFlowingWater
+      6. isStandingLava
+      7. isFlowingLava
+      
+      Made functions
+      1. welcomeMessage
+      
+      Made sometime in may
+      1. armorStrength
+      2. updateHealthAnimation
+      3. progressTime
+      4. drawDaySky
+      5. drawNightSky
+       
+      
+      May 31 edits
+      1. New function: fallAmount
+      2. New function: personBurning
+      3. New function: drawBurningFire
+      4. New function: drawQuickSelectBar
+      
+      Todo:
+      1. Break into functions anywhere that has "Conrad: really large if statement, break into functions" (About 4 places so far)
+      
+      
+      May 30 edits
+      1. New variable MAX_HEALTH
+      2. New function: eatPorkChop
+      
+      Todo:
+      1. Make function for the for loop spawning mobs
+      Starts with “for(var s = 0; s < mobs.length; s++)”
+      
+      2. Put the if else if statements right under this massive loop that begins with “if(inWater)” in a function called fallAmount which returns the fall amount with parameters of inWater and inLava 
+      
+      
+      May 28 edits
+      1. created some more functions to draw blocks
+      2. removed needless spacing that contributed to massive number of lines of code
+      
+      Todo:
+      1. create functions for drawStoneIcon (and all other blocks)
+      2. create functions for craftingStone (and all other blocks)
+      
+      May 26 edits
+      Fixed the bug that did not allow new items to be stored in inventory (due to failing to assign the itemID to that of the slot in the inventory
+      
+      May 25 edits
+      Made functions for drawing day, drawing night, and progressing time
+      
+      May 24 edits 
+      1. Created function for inclusive bounds ( (), (], [), [])
+      2. Created more boolean variables in the drawing of fire in drawWorld
+      
+      May 23 edits
+      
+      1. Made helper functions for the drawings on the restart screen
+      2. Removed the animations from the start screen
+      3. Added variables to part of drawWorld which changes blocks that are next to the block being drawn (ie. Water under a lava block must change to stone, and flowing water under change to cobblestone
+      4. Created Helper functions for drawing tree (drawTree) and determining if area was clear for drawing tree (areaClearedForTree)
+      
+      
+      May 20 edits
+      // some variables in getItem
+      
+      Notes:
+      Since I made the following change, everything in the game seems to run fast (it seems the original creator used higher manual speeds to compensate for his code taking a long time to run, hence a RAM consumming code I could not run for much time on an older computer with 2G RAM
+      
+      Changes
+      1. Removed unecessary loop in getItem
+      removed the unecessary loop in getItem that would add an item placed inside the inventory or quickSelectBar INCREMENTALLY for 'amount' times. Replaced by direct calculation of the the amount change, and incrementing the item in inventory by the amount change.
+      
+      Bugs
+      1. Now when I acquire an item from the world and it goes directly into quickSelectBar, a duplicate of the item goes into inventory
+      - suggested fix: add a third parameter to getItem to indicate the destination of the item. if 0, send to quickselectBar. if 1, send to inventory. else, do nothing in getItem
+      
+      
+      May 19 edits
+      
+      todo:
+      (Done May 28) move cloud code into a function called drawClouds
+      
+      
+      May 16 edits
+      undoing may 15 (introduced a bug then)
+      
+      
+      May 15 edits
+      (will revert if isues)
+      
+      In for loop:
+      “for(var i = 0; i < recipes.length; i++)” and “for(var i = 0; i < recipes.length; i++)”
+      
+      Changed comparison from cell by cell to the entire of the two arrays (one is a theoretical board, the other is the actual board)
+      
+      Seems to be no bugs
+      
+      
+      May 13 edits
+      
+      made variable multipleOfItem
+                  
+                  
+      May 2 edits
+      
+      Changed code to increment and decrement counts of objects when placing and removing them from the inventory from linear time (implemented via while loop) to constant time (implemented via if statement)
+      
+      
+      
+      // (Bug fixed) There is a bug that won't allow one to add one item to another in inventory (ie cannot add a ham of qty 5 to a ham of qty 50. 
+      
+      April 30 edits
+      
+      1. Fixed some bug where: 
+      a)  quickSelectBar[h] === itemID was accidentally typed as  quickSelectBarQty[h] === itemID 
+      
+      b) quickSelectBar[h]!==0 was accidentally put as !(quickSelectBarQty[h] === 0)
+      
+      
+      2. renamed variables to emptySlot and slotHoldsTargetItem
+      
+      
+      3. Made variables bestArmorHack and uniformArmorLevel to control what type of armor the player is given in their inventory if the flag bestArmorHack is set to true
+      
+      
+      
+      
+      April 28 edits
+      1. Finished the labeling of the recipes for tableLayout
+      2. Made variables in getItem to represent when an item is depleted, fully stocked, and partially depleted
+      3. Changed initial qty of the armor to 2
+      4. made new function to display mouse coordinates in inventory
+      
+      April 25 edits
+      
+      1. Changed recipeAmounts[] to craftedItemQty[]
+      2. defined tableLayout as recipies[i][j] 
+      
+      Notes:
+      I realized recipies[i][j] was just the table layout, and that for every item to craft, it created a separate table for each possible crafting table configuration that would result in the object being created. I don't know how, but feel that boolean expressions (Storing boolean expressions in its own matrix) will eliminate the need for a separate table for each possible way an object can be created
+      
+      
+      April 23 edits
+      
+      // areaOverAir (Renamed to airUnderBlock)
+      
+      added a boolean value to activate inventory hacks only when the flag is set to true
+      
+      // conrad: this is a block that is TNT conducting an explosion                       and turning into a block of air
+                  
+      edited an if statement controlling growing trees to be more readable
+      
+      
+      April 21 edits
+      
+      // conrad: top seems to be where smelted items are collected, middle area where the fuel goes, and bottom area where the items to be smetled goes
+      
+      
+      A note to player
+      - you can place blocks in the world by putting them in the quickselectbar and holding them while holding down shift and the left key
+      
+      
+      * Edits I made on April 15, 2020
+      // added more comments throughout file 
+      
+      * Edits I made on April 10, 2020
+      
+      V created helper functions to draw several blocks
+      
+      added comments to exactly what the recipes made in the for loop containing the following: "this creates an array for each"
+      
+      * Edits I made on April 9, 2020
+      * 
+      * added these notes:
+      * // conrad: it seems that "round(random(0,100))" spawns mobs at random times, the type depending on if it is day or night
+      
+      // conrad: the way these if statements are set up, at random points a type 0 or type 3 mob will be spawned, only at night will a type 1 mob be spawned
+      
+      
+      
+      // conrad: changed this from 0 to 1 to see what happens...
+      
+      // conrad: right click can be achieved by trackpad click + SHIFT (for Mac users)
+      
+      mobs.state[s] = 0
+      
+      V Renamed hotbar to quickSelectBar
+      V Renamed quickSelectBarStacks to quickSelectBarQty
+      V Renamed quickSelectBarSpecs to quickSelectBarDurability
+      
+      V created var rightClick = (mouseButton===RIGHT || (mouseButton===LEFT && keys[SHIFT]) )
+      
+      // conrad: edited if statement for eating porkchops to function when porkchop is selected and health is less than 20
+      
+      To do:
+      V Rename holdingStacks to holdingQty
+      V remove the hack for U opening the crafting table
+      
+      
+      I found where health is controlled
+      //to prevent infinity health hax
+      
+      // 12 and 14 are flowing water and fire. I may replace for something more useful until I figure out how to make weapons from inventory
+      
+      
+      * 
+      * Edits I made on April 6, 2020
+      1. changed text of inventory cnt from pink to black
+      V 2. renamed invStacks to invContentQty
+      
+       * Edits I made on April 4-5, 2020
+      
+      1. V Added comments clarifying function of drawBlocks 
+      2. V Moved drawing of crafting table into its own helper function
+      3. V changed ladder durability from 15 to 30
+      4. V changed crafting table durability from 40 to 14000
+       
+       
+      Next time: 
+      
+      1) investigate itemCrafted, canCraft, and craftedStacks
+      2) investigating the function of armorSlots, and writing some clarifying comments as to their purpose and function
+      
+      
+       
+      * Edits I made on April 3, 2020
+      * 
+      * 1. V renamed onInputBox (which didn't give me information on what it should control) to chatOpened (clearly named, i know it controls the chat being opened)
+      * 
+      * 2. V added notes to the if-else statement controlling drowning (And plan to move this into a helper function called isDrowning
+      * 
+      * 3. Let the crafting table be controlled by key U (since i can't right click and so cant access it any other way)
+      * 
+      * 4. V also added more comments to the text box for clarity
+      * 
+      * 
+      * Edits I made on April 1, 2020
+      * 
+      * changed some of the functionality goverened by time of day in the game to be run by a variable called halfDayLength, which is equal to 10000. I plan to split the day into 500 increments (20000 / 500 = 40, so there will be 40 parts in the day) or I could just do 4 parts in the day. I should really index these to run on hours
+      * 
+       
+        
+       * Edits I made (sometime between high school and freshman year college summer after it):
+      
+      
+      1. these are differences between this and the OG Conrad spinoff
+      
+          keys (http://www.javascriptkeycode.com/)
+          
+          48 = 0 
+          57 = 9 
+          69 = E
+          84 = T
+          85 - U
+          112 = f1
+          113 = f2
+          114 = f3
+          115 = f4
+          
+          Doubled keyTimer from 50 to 100
+          Increased health from 200 to 300
+          Changed some blocks in netherworld from 19 to 0
+          
+          IN mobs:
+          
+          Type: changed from [2] to [1]
+          Health: changed from [10000] to [8]
+          inWater changed from false to true
+          inLava changed from false to true
+          
+          did some boolean zen around isDead, bennimusStudios
+      
+      2. Here are some changes I plan to make
+      
+          - change formatting of if and for statements, etc. for good formatting
+          - revisit the strength of villans to reduce life of player
+          - create functions to change the background
+          - split new screen drawings into their own functions
+      
+       * 
+       * /************************************************************/
+
 
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();

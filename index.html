@@ -1062,6 +1062,398 @@
       // Conrad: seems to be an array where each element corresponds to an item and the element's value is set to one
       var maxStacks = [];
 
+      for (var i = 0; i < items; i++) {
+        switch (i) {
+          case 11:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 13:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 17:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 307:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 308:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 309:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 310:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 311:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 312:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 313:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 314:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 315:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 316:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 320:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 321:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 322:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 323:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 324:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 325:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 326:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 327:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 328:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 329:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 330:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 331:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 332:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 333:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 334:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          case 335:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          // Conrad: milk bucket
+          case 337:
+
+            maxStacks[i] = 16;
+
+            break;
+
+          case 338:
+
+            maxStacks[i] = 1;
+
+            break;
+
+          default:
+            // Conrad: all other blocks set to 64, but this would be SO much better as a dictionary rather than this confusing and uncommented switch statement 
+            maxStacks[i] = 64;
+        }
+      }
+
+      var tileNames = [
+
+        "",
+
+        "Stone",
+
+        "Grass",
+
+        "Dirt",
+
+        "Cobblestone",
+
+        "Wooden Planks",
+
+        "Bricks",
+
+        "Wood",
+
+        "Obsidian",
+
+        "Leaves",
+
+        "Bedrock",
+
+        "Water bucket",
+
+        "",
+
+        "Lava bucket",
+
+        "",
+
+        "TNT",
+
+        "Sapling",
+
+        "Flint and Steel",
+
+        "",
+
+        "Netherrack",
+
+        "Sand",
+
+        "Gravel",
+
+        "Coal ore",
+
+        "Iron ore",
+
+        "Gold ore",
+
+        "Lapis lazuli ore",
+
+        "Diamond ore",
+
+        "Crafting table",
+
+        "Wooden Door",
+
+        "",
+
+        "Ladder",
+
+        "Cactus",
+
+        "Ice",
+
+        "Furnace",
+
+        "Chest",
+
+        "Moss stone",
+
+        "Monster spawner",
+
+        "Block of Iron",
+
+        "Block of Gold",
+
+        "Block of Diamond"
+
+      ];
+
+      var itemNames = [
+
+        "Stick",
+
+        "Coal",
+
+        "Iron ingot",
+
+        "Gold ingot",
+
+        "Lapis lazuli",
+
+        "DiamondZ",
+
+        "Flint",
+
+        "Wooden pickaxe",
+
+        "Stone pickaxe",
+
+        "Iron pickaxe",
+
+        "Golden pickaxe",
+
+        "Diamond pickaxe",
+
+        "Wooden sword",
+
+        "Stone sword",
+
+        "Iron sword",
+
+        "Golden sword",
+
+        "Diamond sword",
+
+        "Raw porkchop",
+
+        "Gunpowder",
+
+        "Cooked porkchop",
+
+        "Iron helmet",
+
+        "Iron chestplate",
+
+        "Iron leggings",
+
+        "Iron boots",
+
+        "Golden helmet",
+
+        "Golden chestplate",
+
+        "Golden leggings",
+
+        "Golden boots",
+
+        "Diamond helmet",
+
+        "Diamond chestplate",
+
+        "Diamond leggings",
+
+        "Diamond boots",
+
+        "Leather cap",
+
+        "Leather tunic",
+
+        "Leather trousers",
+
+        "Leather boots",
+
+        "Leather",
+
+        "Bucket",
+
+        "Milk bucket"
+
+      ];
+
+      if (username === "SkythekidRS") {
+        tileNames[24] = "Budder ore";
+
+        tileNames[38] = "Block of Budder";
+
+        itemNames[303] = "Budder ingot";
+
+        itemNames[310] = "Budder pickaxe";
+
+        itemNames[315] = "Budder sword";
+
+        itemNames[324] = "Budder helmet";
+
+        itemNames[325] = "Budder chestplate";
+
+        itemNames[326] = "Budder leggings";
+
+        itemNames[327] = "Budder boots";
+      }
+
+      var direction = RIGHT;
+
+      var armPos = 0;
+      var armTimer = 0;
+      var legPos = 0;
+
+      var NBTtag = null;
+
+
+      
+
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();
         stroke(148, 113, 61);

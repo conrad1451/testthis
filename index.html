@@ -1451,8 +1451,911 @@
 
       var NBTtag = null;
 
+      var setTag = function (itemId) {
+        if (itemId === 0 || NBTtag === "") {
+          NBTtag = null;
+        }
+        else {
+          var isPlayerItem = itemId >= 300;
+          if (isPlayerItem) {
+            NBTtag = itemNames[itemId - 300];
+          }
+          else // is tile item for placing
+          {
+            NBTtag = tileNames[itemId];
+          }
+        }
+      };
 
-      
+      var displayMouseCoords = function () {
+        var xCord = mouseX.toString();
+        var yCord = mouseY.toString();
+        var cords = "x: " + xCord + "    y: " + yCord;
+        NBTtag = cords;
+      };
+
+
+      var cloudX = 0;
+
+      var itemDurabilities = [];
+
+      for (var i = 0; i <= items; i++) {
+        switch (i) {
+
+          case 17:
+
+            itemDurabilities[i] = 65;
+
+            break;
+
+          case 307:
+
+            itemDurabilities[i] = 60;
+
+            break;
+
+          case 308:
+
+            itemDurabilities[i] = 132;
+
+            break;
+
+          case 309:
+
+            itemDurabilities[i] = 251;
+
+            break;
+
+          case 310:
+
+            itemDurabilities[i] = 33;
+
+            break;
+
+          case 311:
+
+            itemDurabilities[i] = 1562;
+
+            break;
+
+          case 312:
+
+            itemDurabilities[i] = 60;
+
+            break;
+
+          case 313:
+
+            itemDurabilities[i] = 132;
+
+            break;
+
+          case 314:
+
+            itemDurabilities[i] = 251;
+
+            break;
+
+          case 315:
+
+            itemDurabilities[i] = 33;
+
+            break;
+
+          case 316:
+
+            itemDurabilities[i] = 1562;
+
+            break;
+
+          case 320:
+
+            itemDurabilities[i] = 166;
+
+            break;
+
+          case 321:
+
+            itemDurabilities[i] = 241;
+
+            break;
+
+          case 322:
+
+            itemDurabilities[i] = 226;
+
+            break;
+
+          case 323:
+
+            itemDurabilities[i] = 196;
+
+            break;
+
+          case 324:
+
+            itemDurabilities[i] = 78;
+
+            break;
+
+          case 325:
+
+            itemDurabilities[i] = 113;
+
+            break;
+
+          case 326:
+
+            itemDurabilities[i] = 106;
+
+            break;
+
+          case 327:
+
+            itemDurabilities[i] = 92;
+
+            break;
+
+          case 328:
+
+            itemDurabilities[i] = 364;
+
+            break;
+
+          case 329:
+
+            itemDurabilities[i] = 529;
+
+            break;
+
+          case 330:
+
+            itemDurabilities[i] = 496;
+
+            break;
+
+          case 331:
+
+            itemDurabilities[i] = 430;
+
+            break;
+
+          case 332:
+
+            itemDurabilities[i] = 56;
+
+            break;
+
+          case 333:
+
+            itemDurabilities[i] = 81;
+
+            break;
+
+          case 334:
+
+            itemDurabilities[i] = 76;
+
+            break;
+
+          case 335:
+
+            itemDurabilities[i] = 66;
+
+            break;
+
+          default:
+
+            itemDurabilities[i] = null;
+
+        }
+
+      }
+
+      var onTitleScreen = false;
+      var loadingWorld = false;
+      var makingNewWorld = false;
+
+      var curBiome = 0;
+
+      var biomes = [];
+
+      for (var i = 0; i < 20; i++) { biomes[i] = curBiome; }
+
+      var furnaceRecipes = [];
+      var burnValues = [];
+
+      // conrad: storing a value in the index of furnaceRecipes for the corresponding block, but what is this furnaceRecipe value? 
+      for (var i = 0; i < items; i++) {
+        switch (i) {
+          case 4: // Conrad: Cobblestone?
+
+            furnaceRecipes[i] = 1;
+
+            break;
+
+          case 5: // Conrad: wooden planks?
+
+            burnValues[i] = 1.5;
+
+            break;
+
+          case 7: // Conrad: log ?
+
+            furnaceRecipes[i] = 301;
+
+            break;
+
+          case 13: // Conrad: lava ?
+
+            burnValues[i] = 2000;
+
+            break;
+
+          case 16: // Conrad: sapling?
+
+            burnValues[i] = 0.5;
+
+            break;
+
+          case 23: // Conrad: iron ore?
+
+            furnaceRecipes[i] = 302;
+
+            break;
+
+          case 24: // Conrad: gold ore?
+
+            furnaceRecipes[i] = 303;
+
+            break;
+
+          case 27: // Conrad: crafting table?
+
+            burnValues[i] = 1;
+
+            break;
+
+          case 300: // stick?
+
+            burnValues[i] = 0.5;
+
+            break;
+
+          case 301: // coal?
+
+            burnValues[i] = 8;
+
+            break;
+
+          case 307: // pick?
+
+            burnValues[i] = 1;
+
+            break;
+
+          case 312: // sword?
+
+            burnValues[i] = 1;
+
+            break;
+
+          case 317: // raw pork chop?
+
+            furnaceRecipes[i] = 319;
+
+            break;
+
+          default:
+
+            burnValues[i] = null;
+
+            furnaceRecipes[i] = null;
+        }
+      }
+
+      var chatOpened = false;
+
+      var input = "";
+      var theMultiplier = 5;
+      var inputTimer = theMultiplier * 5;
+
+      var messages = [];
+
+      var msgTimers = [];
+
+      var broadcast = function (msg) {
+        append(messages, msg);
+        append(msgTimers, 150);
+      };
+
+      var bennimusStudios = true;
+
+      var craftingGrid = [305, 305, 305, 305, 305, 305, 305, 305, 305];
+
+
+
+      /**
+       * Conrad: Start of the recipies crafting section 
+       * 
+      */
+
+      var recipes = [];
+
+      var craftedItemQty = [];
+
+
+      var woodenPlankRecipe = function (i) {
+        recipes[i][0] = [7, 0, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][1] = [0, 7, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][2] = [0, 0, 7, 0, 0, 0, 0, 0, 0];
+        recipes[i][3] = [0, 0, 0, 7, 0, 0, 0, 0, 0];
+        recipes[i][4] = [0, 0, 0, 0, 7, 0, 0, 0, 0];
+        recipes[i][5] = [0, 0, 0, 0, 0, 7, 0, 0, 0];
+        recipes[i][6] = [0, 0, 0, 0, 0, 0, 7, 0, 0];
+        recipes[i][7] = [0, 0, 0, 0, 0, 0, 0, 7, 0];
+        recipes[i][8] = [0, 0, 0, 0, 0, 0, 0, 0, 7];
+      };
+
+      var fireRecipe = function (i) {
+        recipes[i][0] = [302, 0, 0, 0, 302, 0, 0, 0, 0];
+        recipes[i][1] = [0, 302, 0, 0, 0, 302, 0, 0, 0];
+        recipes[i][2] = [0, 0, 302, 0, 0, 0, 302, 0, 0];
+        recipes[i][3] = [0, 0, 0, 302, 0, 0, 0, 302, 0];
+      };
+
+      var craftingTableRecipe = function (i) {
+        recipes[i][0] = [5, 5, 0, 5, 5, 0, 0, 0, 0];
+        recipes[i][1] = [0, 5, 5, 0, 5, 5, 0, 0, 0];
+        recipes[i][2] = [0, 0, 0, 5, 5, 0, 5, 5, 0];
+        recipes[i][3] = [0, 0, 0, 0, 5, 5, 0, 5, 5];
+      };
+
+      var doorRecipe = function (i) {
+        recipes[i][0] = [5, 5, 0, 5, 5, 0, 5, 5, 0];
+        recipes[i][1] = [0, 5, 5, 0, 5, 5, 0, 5, 5];
+      };
+
+      var stickRecipe = function (i) {
+        recipes[i][0] = [5, 0, 0, 5, 0, 0, 0, 0, 0];
+        recipes[i][1] = [0, 5, 0, 0, 5, 0, 0, 0, 0];
+        recipes[i][2] = [0, 0, 5, 0, 0, 5, 0, 0, 0];
+        recipes[i][3] = [0, 0, 0, 5, 0, 0, 5, 0, 0];
+        recipes[i][4] = [0, 0, 0, 0, 5, 0, 0, 5, 0];
+        recipes[i][5] = [0, 0, 0, 0, 0, 5, 0, 0, 5];
+      };
+
+      var ironIngotRecipe = function (i) {
+        recipes[i][0] = [37, 0, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][1] = [0, 37, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][2] = [0, 0, 37, 0, 0, 0, 0, 0, 0];
+        recipes[i][3] = [0, 0, 0, 37, 0, 0, 0, 0, 0];
+        recipes[i][4] = [0, 0, 0, 0, 37, 0, 0, 0, 0];
+        recipes[i][5] = [0, 0, 0, 0, 0, 37, 0, 0, 0];
+        recipes[i][6] = [0, 0, 0, 0, 0, 0, 37, 0, 0];
+        recipes[i][7] = [0, 0, 0, 0, 0, 0, 0, 37, 0];
+        recipes[i][8] = [0, 0, 0, 0, 0, 0, 0, 0, 37];
+      };
+
+      var goldIngotRecipe = function (i) {
+        recipes[i][0] = [38, 0, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][1] = [0, 38, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][2] = [0, 0, 38, 0, 0, 0, 0, 0, 0];
+        recipes[i][3] = [0, 0, 0, 38, 0, 0, 0, 0, 0];
+        recipes[i][4] = [0, 0, 0, 0, 38, 0, 0, 0, 0];
+        recipes[i][5] = [0, 0, 0, 0, 0, 38, 0, 0, 0];
+        recipes[i][6] = [0, 0, 0, 0, 0, 0, 38, 0, 0];
+        recipes[i][7] = [0, 0, 0, 0, 0, 0, 0, 38, 0];
+        recipes[i][8] = [0, 0, 0, 0, 0, 0, 0, 0, 38];
+      };
+
+      var diamondzRecipe = function (i) {
+        recipes[i][0] = [39, 0, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][1] = [0, 39, 0, 0, 0, 0, 0, 0, 0];
+        recipes[i][2] = [0, 0, 39, 0, 0, 0, 0, 0, 0];
+        recipes[i][3] = [0, 0, 0, 39, 0, 0, 0, 0, 0];
+        recipes[i][4] = [0, 0, 0, 0, 39, 0, 0, 0, 0];
+        recipes[i][5] = [0, 0, 0, 0, 0, 39, 0, 0, 0];
+        recipes[i][6] = [0, 0, 0, 0, 0, 0, 39, 0, 0];
+        recipes[i][7] = [0, 0, 0, 0, 0, 0, 0, 39, 0];
+        recipes[i][8] = [0, 0, 0, 0, 0, 0, 0, 0, 39];
+      };
+
+
+
+
+      var loadRecipies = function () {
+        // Conrad: each iteration, jumps to loading the corresponding 
+        //         recipe for the item. Therefore, loadRecipies is 
+        //         equivalent to a massive function simply doing the actions 
+        //         without the loop and switch statement 
+        for (var i = 0; i < items; i++) {
+          // conrad: this creates an array for each element 
+          // of the array 'recipes' - turning it into a matrix
+          recipes[i] = [];
+
+          recipes[i][0] = [];
+
+          switch (i) {
+            case 5: // conrad: wooden plank recipe
+
+              woodenPlankRecipe(i);
+
+              craftedItemQty[5] = 4;
+
+              break;
+
+            case 15: // conrad: TNT recipe
+
+              recipes[i][0] = [318, 20, 318, 20, 318, 20, 318, 20, 318];
+
+              break;
+
+            case 17: // conrad: fire recipe
+
+              fireRecipe(i);
+
+              craftedItemQty[17] = 1;
+
+              break;
+
+            case 27: // conrad: crafting table
+
+              craftingTableRecipe(i);
+
+              craftedItemQty[27] = 1;
+
+              break;
+
+            case 28: // conrad: door
+
+              doorRecipe(i);
+
+              craftedItemQty[28] = 1;
+
+              break;
+
+            case 30: // conrad: ladder
+
+              recipes[i][0] = [300, 0, 300, 300, 300, 300, 300, 0, 300];
+
+              craftedItemQty[30] = 3;
+
+              break;
+
+            case 33: // conrad: furnace
+
+              recipes[i][0] = [4, 4, 4, 4, 0, 4, 4, 4, 4];
+
+              break;
+
+            case 34: // conrad: chest
+
+              recipes[i][0] = [5, 5, 5, 5, 0, 5, 5, 5, 5];
+
+              break;
+
+            case 37: // conrad: block of iron
+
+              recipes[i][0] = [302, 302, 302, 302, 302, 302, 302, 302, 302];
+
+              break;
+
+            case 38: // conrad: block of gold
+
+              recipes[i][0] = [303, 303, 303, 303, 303, 303, 303, 303, 303];
+
+              break;
+
+            case 39: // conrad: block of diamond
+
+              recipes[i][0] = [305, 305, 305, 305, 305, 305, 305, 305, 305];
+
+              break;
+
+            case 300: // conrad: stick
+
+              stickRecipe(i);
+
+              craftedItemQty[300] = 4;
+
+              break;
+
+            case 302: // conrad: iron ingot
+
+              ironIngotRecipe(i);
+
+              craftedItemQty[i] = 9;
+
+              break;
+
+            case 303: // conrad: gold ingot
+
+              goldIngotRecipe(i);
+
+              craftedItemQty[i] = 9;
+
+              break;
+
+            case 305: // conrad: DIAMONDZ
+
+              diamondzRecipe(i);
+
+              craftedItemQty[i] = 9;
+
+              break;
+
+            case 307: // conrad: pick1
+
+              recipes[i][0] = [5, 5, 5, 0, 300, 0, 0, 300, 0];
+
+              craftedItemQty[307] = 1;
+
+              break;
+
+            case 308: // conrad: pick2
+
+              recipes[i][0] = [4, 4, 4, 0, 300, 0, 0, 300, 0];
+
+              craftedItemQty[308] = 1;
+
+              break;
+
+            case 309: // conrad: pick3
+
+              recipes[i][0] = [302, 302, 302, 0, 300, 0, 0, 300, 0];
+
+              craftedItemQty[309] = 1;
+
+              break;
+
+            case 310: // conrad: pick4
+
+              recipes[i][0] = [303, 303, 303, 0, 300, 0, 0, 300, 0];
+
+              craftedItemQty[310] = 1;
+
+              break;
+
+            case 311: // conrad: pick5
+
+              recipes[i][0] = [305, 305, 305, 0, 300, 0, 0, 300, 0];
+
+              craftedItemQty[311] = 1;
+
+              break;
+
+            case 312: // conrad: sword1 (wooden sword)
+
+              recipes[i][0] = [5, 0, 0, 5, 0, 0, 300, 0, 0];
+              recipes[i][1] = [0, 5, 0, 0, 5, 0, 0, 300, 0];
+              recipes[i][2] = [0, 0, 5, 0, 0, 5, 0, 0, 300];
+
+              craftedItemQty[312] = 1;
+
+              break;
+
+            case 313: // conrad: sword2 (cobblestone sword)
+              recipes[i][0] = [4, 0, 0, 4, 0, 0, 300, 0, 0];
+              recipes[i][1] = [0, 4, 0, 0, 4, 0, 0, 300, 0];
+              recipes[i][2] = [0, 0, 4, 0, 0, 4, 0, 0, 300];
+
+              craftedItemQty[313] = 1;
+
+              break;
+
+            case 314: // conrad: sword3 (iron sword)
+
+              recipes[i][0] = [302, 0, 0, 302, 0, 0, 300, 0, 0];
+              recipes[i][1] = [0, 302, 0, 0, 302, 0, 0, 300, 0];
+              recipes[i][2] = [0, 0, 302, 0, 0, 302, 0, 0, 300];
+
+              craftedItemQty[314] = 1;
+
+              break;
+
+            case 315: // conrad: sword4 (golden sword)
+
+              recipes[i][0] = [303, 0, 0, 303, 0, 0, 300, 0, 0];
+              recipes[i][1] = [0, 303, 0, 0, 303, 0, 0, 300, 0];
+              recipes[i][2] = [0, 0, 303, 0, 0, 303, 0, 0, 300];
+
+              craftedItemQty[315] = 1;
+
+              break;
+
+            case 316: // conrad: sword5 (iron sword)
+
+              recipes[i][0] = [305, 0, 0, 305, 0, 0, 300, 0, 0];
+              recipes[i][1] = [0, 305, 0, 0, 305, 0, 0, 300, 0];
+              recipes[i][2] = [0, 0, 305, 0, 0, 305, 0, 0, 300];
+
+              craftedItemQty[316] = 1;
+
+              break;
+
+            //   320-335: Leather-Diamond Armor
+            case 320:
+
+              recipes[i][0] = [302, 302, 302, 302, 0, 302, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 302, 302, 302, 302, 0, 302];
+
+              break;
+
+            case 321:
+
+              recipes[i][0] = [302, 0, 302, 302, 302, 302, 302, 302, 302];
+
+              break;
+
+            case 322:
+
+              recipes[i][0] = [302, 302, 302, 302, 0, 302, 302, 0, 302];
+
+              break;
+
+            case 323:
+
+              recipes[i][0] = [302, 0, 302, 302, 0, 302, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 302, 0, 302, 302, 0, 302];
+
+              break;
+
+            case 324:
+
+              recipes[i][0] = [303, 303, 303, 303, 0, 303, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 303, 303, 303, 303, 0, 303];
+
+              break;
+
+            case 325:
+
+              recipes[i][0] = [303, 0, 303, 303, 303, 303, 303, 303, 303];
+
+              break;
+
+            case 326:
+
+              recipes[i][0] = [303, 303, 303, 303, 0, 303, 303, 0, 303];
+
+              break;
+
+            case 327:
+
+              recipes[i][0] = [303, 0, 303, 303, 0, 303, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 303, 0, 303, 303, 0, 303];
+
+              break;
+
+            case 328:
+
+              recipes[i][0] = [305, 305, 305, 305, 0, 305, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 305, 305, 305, 305, 0, 305];
+
+              break;
+
+            case 329:
+
+              recipes[i][0] = [305, 0, 305, 305, 305, 305, 305, 305, 305];
+
+              break;
+
+            case 330:
+
+              recipes[i][0] = [305, 305, 305, 305, 0, 305, 305, 0, 305];
+
+              break;
+
+            case 331:
+
+              recipes[i][0] = [305, 0, 305, 305, 0, 305, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 305, 0, 305, 305, 0, 305];
+
+              break;
+
+            case 332:
+
+              recipes[i][0] = [336, 336, 336, 336, 0, 336, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 336, 336, 336, 336, 0, 336];
+
+              break;
+
+            case 333:
+
+              recipes[i][0] = [336, 0, 336, 336, 336, 336, 336, 336, 336];
+
+              break;
+
+            case 334:
+
+              recipes[i][0] = [336, 336, 336, 336, 0, 336, 336, 0, 336];
+
+              break;
+
+            case 335:
+
+              recipes[i][0] = [336, 0, 336, 336, 0, 336, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 336, 0, 336, 336, 0, 336];
+
+              break;
+
+            case 337:// Conrad: Empty milk bucket recipe
+
+              recipes[i][0] = [302, 0, 302, 0, 302, 0, 0, 0, 0];
+              recipes[i][1] = [0, 0, 0, 302, 0, 302, 0, 302, 0];
+
+              break;
+          }
+
+          if (craftedItemQty[i] === undefined) {
+            craftedItemQty[i] = 1;
+          }
+        }
+      };
+
+
+      /**
+       * Conrad: End of the recipies crafting section 
+       * 
+      */
+
+
+      loadRecipies();
+
+      var holdingBlock = 0;
+      var holdingQty = 0;
+      var holdingSpecs = 0;
+
+      var logoTix = 0;
+
+      var time = 0;
+
+      var night = 0;
+
+      var posX = -40;
+      var posY = -340;
+      var posA = 10;
+      var posB = 10;
+      var posA2;
+      var posB2;
+
+      //                  V V CHANGE YOUR SKIN V V
+
+      var skin = getImage("cute/CharacterBoy");
+
+      var blocksFallen = 0;
+      var fallTix = 0;
+
+      var scrollX = posX;
+      var scrollY = posY;
+
+      var playerSpeed = 8;
+
+      var isSitting = true;
+
+      var fireTix = 0;
+
+      var onFire = false;
+      var inLava = false;
+      var inWater = false;
+      var isDrowning = false;
+
+      var armorSlots = [0, 0, 0, 0];
+      var armorSpecs = [0, 0, 0, 0];
+
+      var keyTimer = 100;
+
+      var isSprinting = false;
+
+      var MAX_HEALTH = 20;//200;
+      var health = 20;//200;
+
+      var heart = getImage("cute/Heart");
+      var heartsShowing = false;
+
+      var shake = 2;
+      var shaken = false;
+
+      var armor = 0;
+
+      var oldHealth = health;
+
+      var drownCount = 0;
+      var oxygen = 10;
+
+      var shield = getImage("cute/RampSouth");
+      var shieldsShowing = false;
+      var shieldsShowingCount = 1000;
+      var isDead = false;
+
+      var jumpHeight = 0;
+
+      var barSlot = 0;
+
+      var craftedItem = 0;
+      var craftedStacks = 4;
+
+      var entity = {
+
+        x: [],
+
+        y: [],
+
+        type: [],
+
+        type2: [],
+
+        length: 0
+
+      };
+
+      var hide = false;
+      var e2open = true;
+
+      var nether = false;
+
+      var debugMenu = false;
+
+      var mobs;
+
+      var inventory = false;
+      var showMyNum = round(random(0, 1000));
+      if (showMyNum) {
+        mobs = {
+          type: [],
+          x: [],
+          y: [],
+
+          health: [],
+          inWater: [],
+          inLava: [],
+          onFire: [],
+          fireTix: [],
+
+          legPos: [],
+          headPos: [],
+
+          length: 0,
+
+          state: [],
+          direction: []
+        };
+      }
+      else {
+        mobs = {
+
+          type: [1],
+          x: [30],
+          y: [30],
+
+          health: [8],
+
+          inWater: [true],
+          inLava: [true],
+          onFire: [false],
+
+          fireTix: [0],
+
+          length: 1,
+
+          legPos: [0],
+          headPos: [0],
+
+          state: [0],
+
+          direction: [LEFT]
+        };
+      }
+
+      var version = "1.7.2";
+
+      var NEWS = "This is the equivalent of creative mode. You are given stuff to stay alive more, but the real fun is in the code. Go to the newWorld variable and use the data values to create the best world. This is a contest!";
+
+      var news = false;
+
+      var MainArticle = "World contest!";
+
+
 
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();

@@ -29,9 +29,29 @@
     with (processingInstance) {
       size(400, 400);
       frameRate(30);
-        
-   
-  
+
+      //source: studio.sketchpad.cc/sp/pad/view/VfC92Mrf5o/rev.119
+
+      /* @pjs preload="/static/uploaded_resources/p.8706/Flower-Ice-icon.png"; */
+      /* @pjs preload="/static/uploaded_resources/p.8706/bee.png"; */
+      void setup() {  // this is run once.   
+
+PImage img;
+PImage bee;
+        // set the background color
+        background(255);
+
+        // canvas size (Variable aren't evaluated. Integers only, please.)
+        size(256, 256);
+
+        img = loadImage("/static/uploaded_resources/p.8706/Flower-Ice-icon.png");
+        bee = loadImage("/static/uploaded_resources/p.8706/bee.png");
+        image(img, 0, 0);
+      }
+      void draw() {  // this is run repeatedly.  
+        image(bee, mouseX, mouseY);
+      }
+
 
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();

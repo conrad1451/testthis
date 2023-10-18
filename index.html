@@ -842,6 +842,226 @@
        * /************************************************************/
 
 
+      var splitTheComments = true;
+
+      /************************************************************
+      
+      
+        *I know this is not a puzzle game, but still, it's
+      
+        *MINECRAFT, SO UPVOTE FOR THE SAKE OF MOJANG :)
+      
+        *
+      
+        *HOW TO PLAY:
+      
+        *A to move left, D to move right, Space to jump.
+      
+        *Left click a block to destroy it.
+      
+        *Right click to place a block.
+      
+        *Use the numbers to pick which block you have selected.
+      
+        *Numbers follow according to the quickSelectBar at the bottom of
+      
+        *the screen.
+      
+        *Press E to open your inventory. Once open, aim your cursor
+      
+        *over the block you want to select, then press the number
+      
+        *according to the slot on the quickSelectBar you want to place it
+      
+        *in.
+      
+        *Give me your feedback :)
+      
+        *Report bugs in Tips & Feedback
+      
+        *Press F2 to save your world.
+      
+        * 
+      
+        *Version 1.8
+      
+        * +Steve is now steve, and all the other mobs, too
+      
+        * +Cows
+        
+        * +Birds
+        
+        * +Buckets
+      
+        * +Leather armor
+      
+        * +Beef
+      
+        * +Iron, gold, and diamond blocks
+      
+        * 
+      
+        *Bennimus Studios
+      
+        * 
+      
+        * DATA VALUES:
+      
+        * (those marked with * are unobtainable except through
+      
+        * inventory hacking)
+      
+        * (those marked with ** are generated in the map but
+      
+        * otherwise unobtainable)
+      
+        * 0:Air
+      
+        * 1:Stone
+      
+        * 2:Grass
+      
+        * 3:Dirt
+      
+        * 4:Cobblestone
+      
+        * 5:Wooden Planks
+      
+        * 6:Bricks
+      
+        * 7:Log
+      
+        * 8:Obsidian
+      
+        * 9:Leaves
+      
+        * 10:Bedrock*
+      
+        * 11:Water
+      
+        * 12:Flowing Water*
+      
+        * 13:Lava
+      
+        * 14:Flowing Lava*
+      
+        * 15:TNT
+      
+        * 16:Sapling
+      
+        * 17:Fire
+      
+        * 18:Nether Portal*
+      
+        * 19:Netherrack
+      
+        * 20:Sand
+      
+        * 21:Gravel
+      
+        * 22:Coal ore*
+      
+        * 23:Iron ore
+      
+        * 24:Gold ore
+      
+        * 25:Lapis ore*
+      
+        * 26:DIAMOND ORE*
+      
+        * 27:Crafting table
+      
+        * 28:Door
+      
+        * 29:Upper door
+      
+        * 30:Ladder
+      
+        * 31:Cactus
+      
+        * 32:Ice
+      
+        * 33:Furnace
+      
+        * 34:Chest
+      
+        * 35:Mossy Cobblestone
+      
+        * 36:Monster spawner
+      
+        * 37:Block of Iron
+      
+        * 38:Block of Gold
+      
+        * 39:Block of Diamond
+      
+        * 300:Stick
+      
+        * 301:Coal
+      
+        * 302:Iron ingot
+      
+        * 303:Gold ingot
+      
+        * 304:Lapis Lazuli
+      
+        * 305:DIAMONDZ
+      
+        * 306:Flint
+      
+        * 307-311:Picks
+      
+        * 312-316:Swords
+      
+        * 317:Raw Porkchop
+      
+        * 318:Gunpowder
+      
+        * 319:Cooked Porkchop
+      
+        * 320-335: Leather-Diamond Armor
+        * 
+        * Conrad:
+        * 
+        * 324 - diamondz helmet
+        * 325 - diamondz shield
+        * 326 - diamondz pants
+        * 327 - diamondz shoes
+        * 
+        * 328 - diamondz helmet
+        * 329 - diamondz shield
+        * 330 - diamondz pants
+        * 331 - diamondz shoes
+        * 
+        * 332 - leather helmet
+        * 333 - leather shield
+        * 334 - leather pants
+        * 335 - leather shoes
+        * 
+        * 336 - leather
+        * 337 - Empty Milk bucket
+        * 338 - Full Milk bucket
+      
+      ************************************************************/
+
+      var blocks = 39;//Number of blocks
+
+      var items = 338;//Number of items + 299
+
+      //All inventory objects with values >= 300 are
+      //considered ITEMS. Things that cannot be placed
+
+      items++;
+      blocks++;
+
+      //Variable declaration
+
+      var damageTimer = 0;
+
+
+      // Conrad: seems to be an array where each element corresponds to an item and the element's value is set to one
+      var maxStacks = [];
+
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();
         stroke(148, 113, 61);

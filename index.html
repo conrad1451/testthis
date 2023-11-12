@@ -3528,6 +3528,676 @@ var spawnEntity = function(x, y, t, t2)
 };
 
 
+// ----------------Conrad: SECTION 1: VARIABLES -----------------//
+
+
+var drawTNTIcon = function(g, h){
+    fill(255, 0, 0);
+    rect(g, h, 20, 20);
+
+    fill(255, 255, 255);
+    rect(g, h+5, 20, 10);
+};
+
+var drawBlockCase13 = function(g, h){
+    fill(120, 120, 120);
+    ellipse(g+10, h+19, 15, 8);
+    rect(g+2, h+4, 16, 15);
+    ellipse(g+10, h+3, 15, 8);
+    
+    fill(255, 149, 0);
+    ellipse(g+10, h+3, 12, 6);
+};
+
+var drawBlockCase11 = function(g, h){
+    fill(219, 64, 219);
+    ellipse(g+10, h+19, 15, 8);
+    rect(g+2, h+4, 16, 15);
+    ellipse(g+10, h+3, 15, 8);
+
+    fill(0, 104, 250);
+    ellipse(g+10, h+3, 12, 6);
+};
+
+var drawBlockCase22 = function(g, h){
+    fill(122, 122, 122);
+    rect(g, h, 20, 20);
+
+    fill(0, 0, 0);
+    ellipse(g+5, h+5, 4, 4);
+    ellipse(g+14, h+6, 5, 5);
+    ellipse(g+10, h+9, 3, 3);
+    ellipse(g+5, h+12, 6, 4);
+    ellipse(g+14, h+15, 9, 7);
+};
+
+var drawBlockCase23 = function(g, h){
+    fill(122, 122, 122);
+    rect(g, h, 20, 20);
+    fill(191, 155, 82);
+    ellipse(g+5, h+5, 4, 4);
+    ellipse(g+14, h+6, 5, 5);
+    ellipse(g+10, h+9, 3, 3);
+    ellipse(g+5, h+12, 6, 4);
+    ellipse(g+14, h+15, 9, 7);
+};
+
+var drawNetherrackIcon = function(g, h){
+    fill(99, 21, 2);
+    rect(g, h, 20, 20);
+};
+
+var drawBlockCase20 = function(g,h){
+    fill(255, 230, 166);
+    rect(g, h, 20, 20);
+};
+
+var drawBlockCase21 = function(g,h){
+    fill(136, 127, 140);
+    rect(g, h, 20, 20);
+};
+
+var drawBlockCase16 = function(g, h){
+    fill(107, 50, 0);
+    rect(g+9, h+12, 2, 8);
+
+    fill(8, 168, 0);
+    rect(g+5, h+7, 10, 5);
+    rect(g+7, h+5, 5, 10);
+};
+
+var drawBlockCase24 = function(g, h){
+    fill(122, 122, 122);
+    rect(g, h, 20, 20);
+    fill(255, 234, 0);
+    ellipse(g+5, h+5, 4, 4);
+    ellipse(g+14, h+6, 5, 5);
+    ellipse(g+10, h+9, 3, 3);
+    ellipse(g+5, h+12, 6, 4);
+    ellipse(g+14, h+15, 9, 7);
+};
+
+var drawLapisLazuliIcon = function(g, h){
+    fill(122, 122, 122);
+    rect(g, h, 20, 20);
+    fill(0, 21, 255);
+    ellipse(g+5, h+5, 4, 4);
+    ellipse(g+14, h+6, 5, 5);
+    ellipse(g+10, h+9, 3, 3);
+    ellipse(g+5, h+12, 6, 4);
+    ellipse(g+14, h+15, 9, 7);
+};
+
+var drawDiamondOreIcon = function(g, h){
+    fill(122, 122, 122);
+    rect(g, h, 20, 20);
+    fill(0, 238, 255);
+    ellipse(g+5, h+5, 4, 4);
+    ellipse(g+14, h+6, 5, 5);
+    ellipse(g+10, h+9, 3, 3);
+    ellipse(g+5, h+12, 6, 4);
+    ellipse(g+14, h+15, 9, 7);
+};
+
+var drawCraftingTableIcon = function(g, h){
+    fill(201, 153, 80);
+    rect(g, h, 20, 20);
+    stroke(120, 83, 44);
+    strokeWeight(2);
+    line(g, h, g+20, h);
+    line(g, h+5, g+20, h+5);
+    line(g, h+10, g+20, h+10);
+    line(g, h+15, g+20, h+15);
+    line(g, h, g, h+20);
+    line(g+20, h, g+20, h+20);
+    fill(255, 230, 199);
+    triangle(g+1, h, g+10, h+8, g+19, h);
+    stroke(122, 122, 122);
+    line(g+5, h+10, g+5, h+17);
+    line(g+15, h+8, g+15, h+15);
+    noStroke();
+};
+
+var drawWoodenDoorIcon = function(g, h){
+    fill(201, 153, 80);
+    stroke(120, 83, 44);
+    rect(g+3, h, 13, 20);
+    line(g+3, h+10, g+15, h+10);
+    fill(66, 66, 66);
+    stroke(66, 66, 66);
+    strokeWeight(3);
+    line(g+15, h+12, g+13, h+12);
+    strokeWeight(2);
+};
+
+var drawLadderIcon = function(g, h){
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h, g, h+20);
+    line(g+20, h, g+20, h+20);
+    line(g, h+5, g+20, h+5);
+    line(g, h+11, g+20, h+11);
+    line(g, h+17, g+20, h+17);
+    strokeWeight(2);
+};
+
+var drawBlockCase31 = function(g, h){
+    stroke(0, 0, 0);
+    line(g+1, h+2, g+18, h+2);
+    line(g+1, h+6, g+18, h+6);
+    line(g+1, h+10, g+18, h+10);
+    line(g+1, h+14, g+18, h+14);
+    line(g+1, h+18, g+18, h+18);
+    fill(0, 130, 0);noStroke();
+    rect(g+2, h, 16, 20);
+};
+
+var drawFurnaceIcon = function(g, h){
+    strokeWeight(2);
+    stroke(71, 71, 71);
+    fill(168, 168, 168);
+    rect(g, h, 20, 10);
+    fill(0);
+    ellipse(g+10, h+10, 13, 11);
+    fill(122, 122, 122);
+    rect(g, h+10, 20, 10);
+    fill(0);
+
+    var d = [], e = [];
+
+    for(var i = 0; i < 4; i++)
+    {
+        d[i] = sin(i*60+90)*6.5+g+10;
+    
+        e[i] = cos(i*60+90)*6.5+h+20;
+    }
+    bezier(d[0],e[0],d[1],e[1],d[2],e[2],d[3],e[3]);
+    noStroke();
+};
+
+var drawBlockCase34 = function(g, h){
+    fill(184, 133, 57);
+    stroke(120, 83, 44);
+    rect(g+1, h, 18, 19);
+    line(g+1, h+5, g+18, h+5);
+    line(g+1, h+10, g+18, h+10);
+    line(g+1, h+15, g+18, h+15);
+    strokeWeight(1);
+    fill(225);
+    stroke(200);
+    rect(g+8, h+3, 3, 6);
+};
+
+var drawMossStoneIcon = function(g, h){
+    fill(122, 122, 122);
+    strokeWeight(2);
+    stroke(45, 87, 11);
+    rect(g, h, 10, 10);
+    rect(g+10, h, 10, 10);
+    rect(g, h+10, 10, 10);
+    rect(g+10, h+10, 10, 10);
+    noStroke();
+    fill(166, 194, 134);
+    triangle(g+2, h, g+6, h, g+4, h+5);
+    triangle(g+13, h, g+17, h, g+15, h+10);
+    triangle(g+8, h+11, g+13, h+11, g+11, h+18);
+    triangle(g+2, h+13, g+7, h+13, g+4, h+19);
+};
+
+var drawMonsterSpawnerIcon = function(g, h){
+    stroke(4, 68, 77);
+    noFill();
+    rect(g, h, 20, 20);
+    line(g+5, h, g+5, h+18);
+    line(g+15, h, g+15, h+18);
+    line(g, h+5, g+18, h+5);
+    line(g, h+15, g+18, h+15);
+};
+
+var drawIronBlockIcon = function(g, h){
+    fill(230);
+    stroke(140);
+    rect(g, h, 20, 20);
+};
+
+var drawGoldBlockIcon = function(g, h){
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+    rect(g, h, 20, 20);
+};
+
+var drawBlockCase39 = function(g, h){
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    rect(g, h, 20, 20);
+};
+
+var drawBlockCase300 = function(g, h){
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+19, h+1);
+};
+
+var drawCoalIcon = function(g, h){
+    stroke(0, 0, 0);
+    fill(59, 54, 59);
+    ellipse(g+10, h+10, 15, 17);
+};
+
+var drawIronIngotIcon = function(g, h){
+    stroke(163, 163, 163);
+    fill(209, 209, 209);
+    rect(g, h+10, 20, 10);
+    quad(g, h+9, g+5, h+6, g+15, h+6, g+19, h+9);
+};
+ 
+var drawBlockCase303 = function(g, h){
+    stroke(189, 151, 0);
+    fill(255, 200, 0);
+    rect(g, h+10, 20, 10);
+    quad(g, h+9, g+5, h+6, g+15, h+6, g+19, h+9);   
+};
+
+var drawBlockCase304 = function(g, h){
+    stroke(0, 0, 117);
+
+    fill(0, 21, 255);
+
+    ellipse(g+10, h+10, 15, 17);
+};
+
+var drawFlintIcon = function(g,h){
+    fill(89, 89, 89);
+    triangle(g+1, h+20, g+20, h+1, g+20, h+20);
+};
+
+var drawBlock307Icon = function(g,h){
+    fill(207, 147, 44);
+    stroke(120, 83, 44);
+    ellipse(g+10, h+10, 20, 20);
+    noStroke();
+    fill(this.get(g, h));
+    ellipse(g+7, h+13, 22, 22);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+15, h+5);
+    strokeWeight(2);
+};
+
+var drawBlock308Icon = function(g,h){
+    fill(150);
+    stroke(120);
+    ellipse(g+10, h+10, 20, 20);
+    noStroke();
+    fill(this.get(g, h));
+    ellipse(g+7, h+13, 22, 22);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+15, h+5);
+    strokeWeight(2);
+};
+
+var drawBlock309Icon = function(g,h){
+    fill(230);
+    stroke(140);
+    ellipse(g+10, h+10, 20, 20);
+    noStroke();
+    fill(this.get(g, h));
+    ellipse(g+7, h+13, 22, 22);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+15, h+5);
+    strokeWeight(2);
+};
+
+var drawBlock310Icon = function(g,h){
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+    ellipse(g+10, h+10, 20, 20);
+    noStroke();
+    fill(this.get(g, h));
+    ellipse(g+7, h+13, 22, 22);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+15, h+5);
+    strokeWeight(2);
+};
+
+var drawDiamondzPickaxeIcon = function(g,h){
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    ellipse(g+10, h+10, 20, 20);
+    noStroke();
+    fill(this.get(g, h));
+    ellipse(g+7, h+13, 22, 22);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g+1, h+19, g+15, h+5);
+    strokeWeight(2);
+};
+
+var drawBronzeSwordIcon = function(g,h){
+    fill(207, 147, 44);
+    stroke(120, 83, 44);
+    quad(g+3, h+13, g+7, h+17, g+20, h+5, g+15, h);
+    triangle(g+20, h+4, g+20, h, g+16, h);
+    noStroke();
+    quad(g+5, h+15, g+5, h+15, g+19, h+4, g+16, h+1);
+    triangle(g+16, h+1, g+19, h+4, g+19, h+1);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h+20, g+5, h+15);
+    line(g+1, h+11, g+9, h+19);
+    strokeWeight(2);
+};
+
+var drawStoneSwordIcon = function(g,h){
+    fill(150);
+    stroke(120);
+    quad(g+3, h+13, g+7, h+17, g+20, h+5, g+15, h);
+    triangle(g+20, h+4, g+20, h, g+16, h);
+    noStroke();
+    quad(g+5, h+15, g+5, h+15, g+19, h+4, g+16, h+1);
+    triangle(g+16, h+1, g+19, h+4, g+19, h+1);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h+20, g+5, h+15);
+    line(g+1, h+11, g+9, h+19);
+    strokeWeight(2);
+};
+
+var drawIronSwordIcon = function(g,h){
+    fill(230);
+    stroke(140);
+    quad(g+3, h+13, g+7, h+17, g+20, h+5, g+15, h);
+    triangle(g+20, h+4, g+20, h, g+16, h);
+    noStroke();
+    quad(g+5, h+15, g+5, h+15, g+19, h+4, g+16, h+1);
+    triangle(g+16, h+1, g+19, h+4, g+19, h+1);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h+20, g+5, h+15);
+    line(g+1, h+11, g+9, h+19);
+    strokeWeight(2);
+};
+
+var drawGoldSwordIcon = function(g,h){
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+    quad(g+3, h+13, g+7, h+17, g+20, h+5, g+15, h);
+    triangle(g+20, h+4, g+20, h, g+16, h);
+    noStroke();
+    quad(g+5, h+15, g+5, h+15, g+19, h+4, g+16, h+1);
+    triangle(g+16, h+1, g+19, h+4, g+19, h+1);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h+20, g+5, h+15);
+    line(g+1, h+11, g+9, h+19);
+    strokeWeight(2);
+};
+
+var drawDiamondzSwordIcon = function(g, h){
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    quad(g+3, h+13, g+7, h+17, g+20, h+5, g+15, h);
+    triangle(g+20, h+4, g+20, h, g+16, h);
+    noStroke();
+    quad(g+5, h+15, g+5, h+15, g+19, h+4, g+16, h+1);
+    triangle(g+16, h+1, g+19, h+4, g+19, h+1);
+    stroke(120, 83, 44);
+    strokeWeight(3);
+    line(g, h+20, g+5, h+15);
+    line(g+1, h+11, g+9, h+19);
+    strokeWeight(2);
+};
+
+var drawRawPorkChopIcon = function(g, h){
+    noFill();
+    stroke(191, 103, 103);
+    strokeWeight(14);
+    bezier(g+3, h+15, g+8, h+13, g+13, h+8, g+15, h+3);
+    stroke(255, 171, 171);
+    strokeWeight(10);
+    bezier(g+3, h+15, g+8, h+13, g+13, h+8, g+15, h+3);
+};
+
+var drawGunpowderIcon = function(g, h){
+    stroke(100);
+    fill(150);
+    triangle(g+10, h+5, g+20, h+15, g, h+15);
+};
+
+var drawCookedPorkChopIcon = function(g, h){
+    noFill();
+    stroke(148, 113, 61);
+    strokeWeight(14);
+    bezier(g+3, h+15, g+8, h+13, g+13, h+8, g+15, h+3);
+    stroke(207, 175, 95);
+    strokeWeight(10);
+    bezier(g+3, h+15, g+8, h+13, g+13, h+8, g+15, h+3);
+};
+
+var drawBlock9Icon = function(g,h){
+    fill(255, 191, 0);
+    rect(g, h, 5, 5);
+    rect(g+10, h, 5, 5);
+    rect(g+5, h+5, 5, 5);
+    rect(g+15, h+5, 5, 5);
+    rect(g, h+10, 5, 5);
+    rect(g+10, h+10, 5, 5);
+    rect(g+5, h+15, 5, 5);
+    rect(g+15, h+15, 5, 5);
+};
+
+var drawObsidianIcon = function(g,h){
+    fill(57, 0, 122);
+    rect(g, h, 20, 20);
+};
+
+var drawDiamondzIcon = function(g, h){
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    quad(g+10, h, g+20, h+10, g+10, h+20, g, h+10);
+    rect(g+5, h+5, 10, 10);
+};
+
+
+var drawBlockCaseA = function(g, h){
+    
+};
+var drawBlockCaseB = function(g, h){
+    
+};
+
+
+
+var drawLeatherIcon = function(x, g, h)
+{
+        fill(125, 75, 0);
+
+        ellipse(g+10, h+10, 15, 20);
+
+        triangle(g, h+1, g+10, h+3, g+5, h+15);
+
+        triangle(g+20, h+1, g+10, h+3, g+15, h+15);
+
+        triangle(g, h+19, g+10, h+17, g+5, h+5);
+
+        triangle(g+20, h+19, g+10, h+17, g+15, h+5);
+
+        fill(189, 120, 0);
+
+        ellipse(g+10, h+10, 11, 16);
+
+        triangle(g+3, h+3.5, g+10, h+3, g+5, h+15);
+
+        triangle(g+17, h+3.5, g+10, h+3, g+15, h+15);
+
+        triangle(g+3, h+16.5, g+10, h+17, g+5, h+5);
+
+        triangle(g+17, h+16.5, g+10, h+17, g+15, h+5);
+};
+var drawEmptyMilkBucket = function(x, g, h)
+{
+        fill(120, 120, 120);
+        
+        ellipse(g+10, h+19, 15, 8);
+        rect(g+2, h+4, 16, 15);
+        ellipse(g+10, h+3, 15, 8);
+
+        fill(89);
+        
+        ellipse(g+10, h+3, 12, 6);
+};
+
+var drawFullMilkBucket = function(x, g, h)
+{
+        fill(120, 120, 120);
+
+        ellipse(g+10, h+19, 15, 8);
+        rect(g+2, h+4, 16, 15);
+        ellipse(g+10, h+3, 15, 8);
+
+        fill(255);
+
+        ellipse(g+10, h+3, 12, 6);
+};
+var drawFlintAndSteelIcon = function(x, g, h)
+{        fill(89, 89, 89);
+        triangle(g+8, h+20, g+20, h+8, g+20, h+20);
+
+        fill(120);
+        ellipse(g+6, h+5, 8, 8);
+
+        fill(this.get(g, h));
+        ellipse(g+8, h+6, 7, 7);
+};
+
+var drawCobbleStoneBlockIcon = function(x, g, h)
+{
+        fill(161, 161, 161);
+        strokeWeight(2);
+        stroke(71, 71, 71);
+        rect(g, h, 10, 10);
+        rect(g+10, h+10, 10, 10);
+        rect(g, h+10, 10, 10);
+        rect(g+10, h, 10, 10);
+        
+        noStroke();
+};
+
+
+var drawBrickBlockIcon = function(x, g, h)
+{
+    fill(230, 87, 21);
+    rect(g, h, 20, 20);
+
+    stroke(173, 155, 135);
+
+    line(g, h, g+20, h);
+    line(g+5, h, g+5, h+3);
+    line(g+15, h, g+15, h+3);
+    line(g, h+5, g+20, h+5);
+    line(g+10, h+5, g+10, h+8);
+    line(g, h+10, g+20, h+10);
+    line(g+5, h+10, g+5, h+13);
+    line(g+15, h+10, g+15, h+13);
+    line(g, h+15, g+20, h+15);
+    line(g+10, h+15, g+10, h+18);
+
+    noStroke();
+};
+	
+var drawWoodenPlankBlockIcon = function(x, g, h)
+{
+    fill(179, 126, 46);
+    rect(g, h, 20, 20);
+    stroke(102, 67, 33);
+    strokeWeight(2);
+    line(g, h, g+20, h);
+    line(g, h+5, g+20, h+5);
+    line(g, h+10, g+20, h+10);
+    line(g, h+15, g+20, h+15);
+
+    noStroke();
+};
+
+var drawLogBlockIcon = function(x, g, h)
+{
+    fill(214, 120, 39);
+    rect(g, h, 20, 20);
+
+    stroke(59, 32, 0);
+    strokeWeight(2);
+
+    line(g, h, g, h+18);
+    line(g+20, h, g+20, h+18);
+
+    noStroke();
+};
+
+
+var drawGrassBlockIcon = function(x, g, h)
+{
+        fill(209, 87, 0);
+        rect(g, h, 20, 20);
+        rect(g, h, 20, 5);
+};
+
+var drawDirtBlockIcon = function(x, g, h)
+{
+        fill(140, 58, 0);
+        rect(g, h, 20, 20);
+};
+
+var drawStoneBlockIcon = function(x, g, h)
+{
+        fill(212, 212, 212);
+        rect(g, h, 20, 20);
+};
+
+
+
+
+var drawIronHelmetIcon = function(g, h)
+{
+    fill(230);
+    stroke(140);
+    rect(g, h, 20, 20, 10);
+
+    noStroke();
+    fill(this.get(g, h));
+    rect(g+5, h+8, 11, 15, 5);
+};
+
+var drawIronShieldIcon = function(g, h)
+{
+    fill(230);
+    stroke(140);
+
+    rect(g, h, 20, 5, 10);
+    rect(g, h, 20, 20, 10);
+};
+
+var drawIronPantsIcon = function(g, h)
+{
+    fill(230);
+    stroke(140);
+
+    rect(g, h, 8, 20, 10);
+    rect(g+12, h, 8, 20, 10);
+    rect(g, h, 20, 10, 10);
+};
+
+var drawIronShoesIcon = function(g, h)
+{
+    fill(230);
+    stroke(140);
+    
+    rect(g, h+10, 8, 10, 10);
+    rect(g+12, h+10, 8, 10, 10);
+};        
+
 
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();

@@ -2662,6 +2662,873 @@ var blockDurability = [];
 var specDurabilities = [];
 
 
+blockDurability[0] = 0;
+blockDurability[1] = 1;
+blockDurability[2] = 10;
+blockDurability[3] = 10;
+blockDurability[4] = 70;
+blockDurability[5] = 35;
+blockDurability[6] = 50;
+blockDurability[7] = 30;
+blockDurability[8] = 20;
+blockDurability[9] = 5;
+
+blockDurability[15] = 0;
+blockDurability[16] = 0;
+blockDurability[17] = 0;
+
+blockDurability[19] = 15;
+blockDurability[20] = 10;
+blockDurability[21] = 10;
+blockDurability[22] = 80;
+blockDurability[23] = 85;
+blockDurability[24] = 80;
+blockDurability[25] = 90;
+blockDurability[26] = 50;
+blockDurability[27] = 140;
+blockDurability[28] = 30;
+blockDurability[29] = 30;
+blockDurability[30] = 30;
+blockDurability[31] = 5;
+blockDurability[32] = 30;
+blockDurability[33] = 90;
+blockDurability[34] = 40;
+blockDurability[35] = 70;
+blockDurability[36] = 100;
+blockDurability[37] = 90;
+blockDurability[38] = 95;
+blockDurability[39] = 115;
+
+var blockStrength = null;
+var selDurability = null;
+
+var isCrafting = false;
+var isSmelting = false;
+
+var onChest = false;
+
+noCursor();
+
+var c = 0;
+
+var place = 0;
+var jump = 0;
+var fall = 10;
+
+// Conrad: related to x and y coordinates of mouse
+var a = 0;
+var b = 0;
+
+// Conrad: for inventory item selection
+var g;
+var h;
+
+var world = newWorld;
+
+// Conrad: finds the minimum of two values
+var minVal = function(val1, val2)
+{
+    if (val1 < val2)
+    {
+        return val1;
+    }
+    else 
+    {
+        return val2;
+    }
+};
+
+/*
+// Conrad: determines if a value exists within a certain range. 
+// val: the value 
+// lb: the lowerbound value
+// lbInclusive (boolean variable): 
+// If true, function determines if lb <= val. Else, function determines if lb < val
+// ub: the upperbound value
+// ubInclusive (boolean variable): 
+// If true, function determines if val <= ub . Else, function determines if val < ub
+*/
+var inBounds = function(val, lb, ub, lbInclusive, ubInclusive)
+{
+    if (lbInclusive)
+    {
+        if (ubInclusive)
+        {
+             return (val >= lb && val <= ub);
+        }
+        else
+        {
+             return (val >= lb && val < ub);
+        }
+    }
+    else 
+    {
+        if (ubInclusive)
+        {
+             return (val > lb && val <= ub);
+        }
+        else
+        {
+             return (val > lb && val < ub);
+        }
+    }
+};
+
+/*
+// Conrad: determines if a point lies within a rectangular bounds (inclusive bounds)
+// val: the value 
+// lb_x: the lowerbound value for the x coordinate
+// ub_x: the upperbound value for the x coordinate
+// lb_y: the lowerbound value for the y coordinate
+// ub_y: the upperbound value for the y coordinate
+*/
+var inRectangularBounds = function(x, lb_x, ub_x, y, lb_y, ub_y)
+{
+	var xCoordInBounds = inBounds(x, lb_x, ub_x, true, true);
+	var yCoordInBounds = inBounds(y, lb_y, ub_y, true, true);
+
+	return xCoordInBounds && yCoordInBounds;
+};
+
+
+var putInMatchingBarSlot = function(itemID, l, amount)
+{
+    var spaceLeftInSlot = maxStacks[itemID] - quickSelectBarQty[l];
+    var changeAmount = minVal(amount, spaceLeftInSlot);
+    
+    quickSelectBar[l] = itemID;
+    quickSelectBarQty[l] += changeAmount;
+
+    return changeAmount;
+};
+
+var putInEmptyBarSlot = function(itemID, itemIndex, amount)
+{        
+    var spaceLeftInSlot = maxStacks[itemID] - quickSelectBarQty[itemIndex];
+    var changeAmount = minVal(amount, spaceLeftInSlot);
+    
+    quickSelectBar[itemIndex] = itemID;
+    quickSelectBarQty[itemIndex] += changeAmount;
+    
+    return changeAmount;
+};
+
+
+var putInMatchingInvSlot = function(itemID, i, j, amount)
+{
+    var spaceLeftInSlot = maxStacks[itemID] - invContentQty[j][i];
+    var changeAmount = minVal(amount, spaceLeftInSlot);
+    
+    invContents[j][i] = itemID;
+    
+    var notAir = (invContents[j][i] !== 0);
+    
+    // Conrad: changes block only if it was never air would be a 
+    //         problem if this larger function were called to 
+    //         insert air into inventory
+    if(notAir)
+    {
+        invContents[j][i] = itemID;
+        invContentQty[j][i] += changeAmount;
+        invSpecs[j][i] = itemDurabilities[itemID];
+    }
+    
+    return changeAmount;
+};
+
+var putInEmptyInvSlot = function(itemID, indexI, indexJ, amount)
+{
+    var spaceLeftInSlot = maxStacks[itemID] - invContentQty[indexJ][indexI];
+    var changeAmount = minVal(amount, spaceLeftInSlot);
+
+    invContents[indexJ][indexI] = itemID;        
+    invContentQty[indexJ][indexI] += changeAmount;
+    
+    return changeAmount;
+};
+
+
+// Conrad: stores items in inventory and returns the quantity of items stored
+var amountPlacedInBar = function(itemID, amount)
+{
+    var amountStored = 0;
+    //var foundItem = false;    
+    var itemIndex = 0;
+    var l = 0;
+    var foundEmptySlot = false;  
+    while (l < 9 && amount > 0)
+    {
+        var emptySlot = (quickSelectBarQty[l] === 0);
+        var slotHoldsTargetItem = (quickSelectBar[l] === itemID);
+        
+        if (slotHoldsTargetItem)
+        {
+            var amtPutInSlot = putInMatchingBarSlot(itemID, l, amount);
+            amountStored += amtPutInSlot;
+            amount -= amtPutInSlot;
+        }
+        else if (emptySlot && !foundEmptySlot)
+        {
+            foundEmptySlot = true;
+            itemIndex = l;
+        }
+        ++l;
+    }
+    
+    if (foundEmptySlot && amount > 0)
+    {
+        var amtPutInSlot = putInEmptyBarSlot(itemID, itemIndex, amount);
+        amountStored += amtPutInSlot;
+        amount -= amtPutInSlot;
+    }
+    
+    return amountStored;
+};
+
+
+// Conrad: stores items in inventory and returns the quantity of items stored
+var amountPlacedInInventory = function(itemID, amount)
+{
+    var indexJ;
+    var indexI;
+    var foundEmptySlot = false;    
+    
+    var i = 0;
+    while (i < 4 && amount > 0)
+    {
+        var j = 0;
+        while (j < 6 && amount > 0)
+        {
+            var emptySlot = invContentQty[j][i] === 0;
+            var slotHoldsTargetItem = invContents[j][i] === itemID;
+            
+            if (slotHoldsTargetItem)
+            {
+                var amtPutInSlot = putInMatchingInvSlot(itemID, i, j, amount);
+                var notAir = (invContents[j][i] !== 0);
+                
+                if(notAir)
+                {     
+                    // Conrad: put inside if statement for notAir?
+                    amount -= amtPutInSlot;
+                }
+            } 
+            else if (emptySlot && !foundEmptySlot)
+            {
+                indexJ = j;
+                indexI = i;
+                foundEmptySlot = true;
+            }
+            
+            j++;
+        }
+
+        i++;
+    }
+    
+    if (foundEmptySlot && amount > 0)
+    {
+        var amtPutInSlot = putInEmptyInvSlot(itemID, indexI, indexJ, amount);
+        amount -= amtPutInSlot;
+    }
+};
+
+ 
+var getItem = function(itemID, amount)
+{
+    var cntOfStoredItems = amountPlacedInBar(itemID, amount);
+
+    if (cntOfStoredItems < amount) { amountPlacedInInventory(itemID, amount); }
+};
+
+
+var spawnMobs = function(x, y, type)
+{
+    append(mobs.type, type);
+    append(mobs.x, x);
+    append(mobs.y, y);
+
+    switch(type)
+    {
+        case 0:
+            
+            append(mobs.health, 10);
+            break;
+
+        // actual (green) mobs that damage health
+        case 1:
+
+            append(mobs.health, 20);
+            break;
+
+        case 2:
+
+            append(mobs.health, 99999);
+            break;
+
+        case 3:
+
+            append(mobs.health, 10);
+            break;
+    }
+
+    append(mobs.inWater, false);
+    append(mobs.inLava, false);
+    append(mobs.onFire, false);
+    append(mobs.fireTix, false);
+    append(mobs.state, 0);
+    append(mobs.legPos, 0);
+
+    mobs.length++;
+};
+
+
+var generateWater = function(d)
+{
+    world[d][world[0].length-5] = 11;
+    world[d][world[0].length-4] = 11;
+    world[d][world[0].length-3] = 11;
+    world[d][world[0].length-2] = 11;
+    world[d][world[0].length-1] = 11;
+    world[d+1][world[0].length-3] = 11;
+    world[d+1][world[0].length-2] = 11;
+};
+
+
+var setToBlockType = function(d, blockID)
+{
+    world[d-2][world[0].length-1] = blockID;
+    world[d-2][world[0].length] = blockID;
+    world[d-2][world[0].length+1] = blockID;
+    world[d-1][world[0].length-2] = blockID;
+    world[d-1][world[0].length-1] = blockID;
+    world[d-1][world[0].length] = blockID;
+    world[d-1][world[0].length+1] = blockID;
+    world[d-1][world[0].length+2] = blockID;
+    
+    world[d][world[0].length-2] = blockID;
+    world[d][world[0].length-1] = blockID;
+    world[d][world[0].length] = blockID;
+    world[d][world[0].length+1] = blockID;
+    world[d][world[0].length+2] = blockID;
+    
+    world[d+1][world[0].length-2] = blockID;
+    world[d+1][world[0].length-1] = blockID;
+    world[d+1][world[0].length] = blockID;
+    world[d+1][world[0].length+1] = blockID;
+    world[d+1][world[0].length+2] = blockID;
+    
+    world[d+2][world[0].length-1] = blockID;
+    world[d+2][world[0].length] = blockID;
+    world[d+2][world[0].length+1] = blockID;
+};
+
+var generateOres = function(d)
+{
+    if(round(random(0, 3)))
+    {}
+    else
+    {
+        if(d > 18 && d < 38)
+        {
+            c = round(random(0, 5));
+
+            switch(c)
+            {
+                case 1:
+
+                    world[d][world[0].length] = 22;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 22;
+                    world[d][world[0].length-1] = 22;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 22;
+                    world[d][world[0].length-1] = 22;
+                    world[d+1][world[0].length] = 22;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 22;
+                    world[d][world[0].length-1] = 22;
+                    world[d+1][world[0].length] = 22;
+                    world[d+1][world[0].length-1] = 22;
+            }
+        }
+    }
+
+    if(round(random(0, 8)))
+    {}
+    else
+    {
+        if(d > 18 && d < 38)
+        {
+            c = round(random(0, 9));
+
+            switch(c)
+            {
+                case 1:
+
+                    world[d][world[0].length] = 23;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    world[d+1][world[0].length] = 23;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    world[d+1][world[0].length] = 23;
+                    world[d+1][world[0].length-1] = 23;
+            }
+        }
+    }
+
+    if(round(random(0, 8)))
+    {}
+    else
+    {
+        if(d > 28 && d < 38)
+        {
+            c = round(random(0, 1));
+
+            switch(c)
+            {
+                case 1:
+
+                    world[d][world[0].length] = 24;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 24;
+                    world[d][world[0].length-1] = 24;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 24;
+                    world[d][world[0].length-1] = 24;
+                    world[d+1][world[0].length] = 24;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 24;
+                    world[d][world[0].length-1] = 24;
+                    world[d+1][world[0].length] = 24;
+                    world[d+1][world[0].length-1] = 24;
+            }
+        }
+    }
+
+    if(round(random(0, 8)))
+    {}
+    else
+    {
+        if(d > 18 && d < 38)
+        {
+            c = round(random(0, 5));
+
+            switch(c)
+            {
+                case 1:
+                    
+                    world[d][world[0].length] = 23;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    world[d+1][world[0].length] = 23;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 23;
+                    world[d][world[0].length-1] = 23;
+                    world[d+1][world[0].length] = 23;
+                    world[d+1][world[0].length-1] = 23;
+            }
+        }
+    }
+
+    if(round(random(0, 12)))
+    {}
+    else
+    {
+        if(d > 33 && d < 38)
+        {
+            c = round(random(0, 5));
+            
+            switch(c)
+            {
+                case 1:
+
+                    world[d][world[0].length] = 25;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 25;
+                    world[d][world[0].length-1] = 25;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 25;
+                    world[d][world[0].length-1] = 25;
+                    world[d+1][world[0].length] = 25;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 25;
+                    world[d][world[0].length-1] = 25;
+                    world[d+1][world[0].length] = 25;
+                    world[d+1][world[0].length-1] = 25;
+            }
+        }
+    }
+
+    //DIAMONDZ
+
+    if(round(random(0, 20)))
+    {}
+    else
+    {
+        if(d > 33 && d < 38)
+        {
+            c = round(random(0, 5));
+
+            switch(c)
+            {
+                case 1:
+
+                    world[d][world[0].length] = 26;
+                    break;
+
+                case 2:
+
+                    world[d][world[0].length] = 26;
+                    world[d][world[0].length-1] = 26;
+                    break;
+
+                case 3:
+
+                    world[d][world[0].length] = 26;
+                    world[d][world[0].length-1] = 26;
+                    world[d+1][world[0].length] = 26;
+                    world[d+1][world[0].length-1] = 1;
+                    break;
+
+                case 4:
+
+                    world[d][world[0].length] = 26;
+                    world[d][world[0].length-1] = 26;
+                    world[d+1][world[0].length] = 26;
+                    world[d+1][world[0].length-1] = 26;
+            }
+        }
+    }
+
+    if(d>20 && d<36)
+    {
+        if(round(random(0, 13)))
+        {}
+        else
+        {
+            setToBlockType(d, 3);
+        }
+    }
+
+    if(d>20 && d<36)
+    {
+        if(round(random(0, 13)))
+        {}
+        else
+        {setToBlockType(d, 21);}
+    }
+};
+
+var generateTrees = function(d)
+{
+    world[d][world[0].length] = 7;
+    
+    world[d-1][world[0].length] = 7;
+    world[d-2][world[0].length] = 7;
+    world[d-3][world[0].length] = 7;
+    
+    world[d-2][world[0].length-2] = 9;
+    world[d-2][world[0].length-1] = 9;
+    world[d-2][world[0].length+1] = 9;
+    world[d-2][world[0].length+2] = 9;
+    
+    world[d-3][world[0].length-2] = 9;
+    world[d-3][world[0].length-1] = 9;
+    world[d-3][world[0].length+1] = 9;
+    world[d-3][world[0].length+2] = 9;
+    
+    world[d-4][world[0].length-2] = 9;
+    world[d-4][world[0].length-1] = 9;
+    world[d-4][world[0].length] = 9;
+    world[d-4][world[0].length+1] = 9;
+    world[d-4][world[0].length+2] = 9;
+    
+    world[d-5][world[0].length-1] = 9;
+    world[d-5][world[0].length] = 9;
+    world[d-5][world[0].length+1] = 9;
+}; 
+
+var generateCactus = function(d)
+{
+    world[d][world[0].length] = 31;
+    world[d-1][world[0].length] = 31;
+    world[d-2][world[0].length] = 31;
+};
+
+var randomItemGenerator = function(hurr, durr)
+{
+    var item;
+    var itemStacks;
+    
+    var itemSeed = random(0, 100);
+    
+    // [0, 100]
+    if(itemSeed <= 100)
+    {
+        item = 0;
+        itemStacks = 0;
+        
+        // [0, 25)
+        if(itemSeed < 25)
+        {
+            item = 302;
+            itemStacks = round(random(1, 4));
+        }
+        
+        // [25, 50)
+        else if(itemSeed < 50)
+        {
+            item = 303;
+            itemStacks = round(random(1, 4));
+        }
+        // [50, 75)
+        else if(itemSeed < 75)
+        {
+            // [50, 62.5)
+            if(itemSeed < 63)
+            {
+                item = 309;
+                itemStacks = 1;
+            }
+            // [62.5, 75)
+            else
+            {
+                item = 314;
+                itemStacks = 1;
+            }
+        }
+        // [75, 100]                                    
+        else
+        {
+            itemStacks = 1;
+            // [75, 80) 
+            if(itemSeed < 80) { item = 320; }
+            // [80, 85) 
+            else if(itemSeed < 85) { item = 321; }
+            // [85, 90) 
+            else if(itemSeed < 90) { item = 322; }
+            // [90, 95) 
+            else if(itemSeed < 95) { item = 323; }
+            // [95, 100] 
+            else
+            {
+                item = 305;
+                itemStacks = round(random(1,5));
+            }
+        }
+    }
+
+    specs[hurr][durr][0][g][h] = item;
+    specs[hurr][durr][1][g][h] = itemStacks;
+
+    if(itemDurabilities[item])
+    { specs[hurr][durr][2][g][h] = itemDurabilities[item]; }
+};
+ 
+var dungeonGenerator = function(d)
+{
+    var l = world[0].length;
+
+    var dungeonCenter = round(random(2, 4));
+    var dungeonLength = dungeonCenter*2+1;
+    var dungeonHeight = round(random(4, 6));
+
+    for(var i = l-dungeonLength; i < l; i++)
+    {
+        for(var j = d; j < d+dungeonHeight; j++)
+        {
+            world[j][i] = 0;
+
+            if(i === l-dungeonLength || i === l-1) { world[j][i] = 4; }
+
+            if(i === l-dungeonLength-1 || i === l-2)
+            {
+                if(round(random(0, 0)))
+                {}
+                else
+                {
+                    var durr = i;
+                    var hurr = d + dungeonHeight-1;
+
+                    world[d + dungeonHeight - 1][i] = 34;
+
+                    specs[d + dungeonHeight - 1][i] = [
+
+                        [[0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0]],
+
+                        [[0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0]],
+
+                        [[0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0],
+
+                        [0,0,0,0]]];
+
+                    for(var g = 0; g < 6; g++)
+                    {
+                        for(var h = 0; h < 4; h++)
+                        {
+                            if(!round(random(0,5)))
+                            {randomItemGenerator(hurr, durr);}
+                        }
+                    }
+                }
+            }
+        }
+
+        if(round(random(0,1))) { world[d+dungeonHeight][i] = 4; }
+        else { world[d+dungeonHeight][i] = 35; }
+    }
+    
+    world[d+dungeonHeight-1][l-dungeonCenter-1] = 36;
+};
+ 
+ 
+//This function makes the world truly infinite
+var genWorld = function()
+{
+    if(round(random(0, 10)))
+    {}
+    else { curBiome = round(random(0, 3)); }
+
+    append(biomes, curBiome);
+
+    for(var d = 0; d < world.length; d++)
+    {
+        if(round(random(0, 750)))
+        {}
+        else
+        { if(d>18 && d<30) { dungeonGenerator(d); } }
+
+        if(d < 14) { append(world[d], 0); }
+        else if(d === 14 && curBiome !== 1) { append(world[d], 2); }
+        else if(d > 14 && d < 18 && curBiome !== 1) { append(world[d], 3); }
+        else if(d > 17 && d < 38) { append(world[d], 1); }
+        else if(d > 37) { append(world[d], 10); }
+
+        if(d > 13 && d < 18 && curBiome === 1) { append(world[d], 20); }
+
+        if(round(random(0,10)))
+        {}
+        else if(curBiome === 2)
+        { if(d === 14) { generateWater(d); } }
+
+        if(round(random(0, 5)))
+        {}
+        else
+        { if(d === 13 && curBiome === 1) { generateCactus(d); } }
+
+        if(round(random(0,4)))
+        {}
+        else if(curBiome !== 1 && world[14][world[0].length] !== 11)
+        {
+            if(d === 13 && world[d+1][world[0].length] !== 11)
+            { generateTrees(d); }
+
+            generateOres(d);
+        }
+    }
+};
+
+var spawnEntity = function(x, y, t, t2)
+{
+    append(entity.x, x);
+    append(entity.y, y);
+    append(entity.type, t);
+    append(entity.type2, t2);
+    
+    entity.length++;
+};
+
+
+
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();
         stroke(148, 113, 61);

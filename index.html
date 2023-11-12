@@ -4199,6 +4199,462 @@ var drawIronShoesIcon = function(g, h)
 };        
 
 
+
+var drawDiamondzHelmetIcon = function(g, h)
+{
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    rect(g, h, 20, 20, 10);
+    
+    noStroke();
+    fill(this.get(g, h));
+    rect(g+5, h+8, 11, 15, 5);
+};
+
+var drawDiamondzShieldIcon = function(g, h)
+{
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    
+    rect(g, h, 20, 5, 10);
+    rect(g, h, 20, 20, 10);
+}; 
+
+var drawDiamondzPantsIcon = function(g, h)
+{
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    
+    rect(g, h, 8, 20, 10);
+    rect(g+12, h, 8, 20, 10);
+    rect(g, h, 20, 10, 10);
+};
+
+
+var drawDiamondzShoesIcon = function(g, h)
+{
+    stroke(0, 148, 148);
+    fill(0, 255, 255);
+    
+    rect(g, h+10, 8, 10, 10);
+    rect(g+12, h+10, 8, 10, 10);
+};
+
+
+var drawGoldHelmetIcon = function(g, h)
+{
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+    rect(g, h, 20, 20, 10);
+
+    noStroke();
+    fill(this.get(g, h));
+    rect(g+5, h+8, 11, 15, 5);
+};
+
+var drawGoldShieldIcon = function(g, h)
+{
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+
+    rect(g, h, 20, 5, 10);
+    rect(g, h, 20, 20, 10);
+};
+
+var drawGoldPantsIcon = function(g, h)
+{
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+
+    rect(g, h, 8, 20, 10);
+    rect(g+12, h, 8, 20, 10);
+    rect(g, h, 20, 10, 10);
+};
+
+var drawGoldShoesIcon = function(g, h)
+{
+    fill(255, 234, 0);
+    stroke(209, 157, 0);
+    
+    rect(g, h+10, 8, 10, 10);
+    rect(g+12, h+10, 8, 10, 10);
+};
+
+
+
+var drawLeatherHelmetIcon = function(x, g, h)
+{
+    fill(189, 120, 0);
+    stroke(125, 75, 0);
+    rect(g, h, 20, 20, 10);
+    
+    noStroke();
+    
+    fill(this.get(g, h));
+    rect(g+5, h+8, 11, 15, 5);
+};
+
+var drawLeatherShieldIcon = function(x, g, h)
+{
+    fill(189, 120, 0);
+    stroke(125, 75, 0);
+    
+    rect(g, h, 20, 5, 10);
+    rect(g, h, 20, 20, 10);
+};
+
+var drawLeatherPantsIcon = function(x, g, h)
+{
+    fill(189, 120, 0);
+    stroke(125, 75, 0);
+    
+    rect(g, h, 8, 20, 10);
+    rect(g+12, h, 8, 20, 10);
+    rect(g, h, 20, 10, 10);
+};
+
+var drawLeatherShoesIcon = function(x, g, h)
+{
+    fill(189, 120, 0);
+    stroke(125, 75, 0);
+    
+    rect(g, h+10, 8, 10, 10);
+    rect(g+12, h+10, 8, 10, 10);
+};
+
+// Conrad - edit here next time by breaking each case into its own function
+
+// Conrad: has instructions for drawing each type of block in game
+var drawBlocks = function(x, g, h)
+{
+    noStroke();
+    strokeWeight(2);
+
+    switch(x)
+    {
+
+    case 1:
+        drawStoneBlockIcon(x, g, h);
+        break;
+
+    case 2:
+        drawGrassBlockIcon(x, g, h);
+        break;
+
+    case 3:
+        drawDirtBlockIcon(x, g, h);
+        break;
+
+    case 4:
+        drawCobbleStoneBlockIcon(x, g, h);
+        break;
+
+    case 5:
+        drawWoodenPlankBlockIcon(x, g, h);
+        break;
+
+    case 6:
+        drawBrickBlockIcon(x, g, h);
+        break;
+
+    case 7:
+        drawLogBlockIcon(x, g, h);
+        break;
+
+    case 8:
+        drawObsidianIcon(g, h);
+        break;
+
+    case 9:
+        drawBlock9Icon(g, h);
+        break;
+
+    case 11:
+        drawBlockCase11(g, h);
+        break;
+
+    case 13:
+        drawBlockCase13(g,h);
+        break;
+
+    case 15:
+        drawTNTIcon(g, h);
+        break;
+
+    case 16:
+       drawBlockCase16(g, h);
+       break;
+
+    case 17:
+        drawFlintAndSteelIcon(x, g, h);
+        break;
+
+    case 19:
+        drawNetherrackIcon(g, h);
+        break;
+
+    case 20:
+        drawBlockCase20(g, h);
+        break;
+
+    case 21:
+        drawBlockCase21(g, h);
+        break;
+
+    case 22:
+        drawBlockCase22(g, h);
+        break;
+
+    case 23:
+        drawBlockCase23(g, h);
+        break;
+
+    case 24:
+        drawBlockCase24(g, h);
+
+        break;
+
+    case 25:
+        drawLapisLazuliIcon(g, h);
+        break;
+
+    case 26:
+        drawDiamondOreIcon(g,h);
+        break;
+
+    case 27:
+        drawCraftingTableIcon(g, h);
+        break;
+
+    case 28:
+        drawWoodenDoorIcon(g, h);
+        break;
+
+    case 30:
+        drawLadderIcon(g, h);
+        break;
+
+    case 31:
+        drawBlockCase31(g, h);
+        break;
+
+    case 33:
+        drawFurnaceIcon(g, h);
+        break;
+
+    case 34:
+        drawBlockCase34(g, h);
+        break;
+
+    case 35:
+        drawMossStoneIcon(g, h);
+        break;
+
+    case 36:
+        drawMonsterSpawnerIcon(g, h);
+        break;
+
+    case 37:
+        drawIronBlockIcon(g, h);
+        break;
+
+    case 38:
+        drawGoldBlockIcon(g, h);
+        break;
+
+    case 39:
+        drawBlockCase39(g, h);
+        break;
+
+    case 300:
+        drawBlockCase300(g, h);
+        break;
+
+    case 301:
+        drawCoalIcon(g, h);
+        break;
+
+    case 302:
+        drawIronIngotIcon(g, h);
+        break;
+
+    case 303:
+        drawBlockCase303(g, h);
+        break;
+
+    case 304:
+        drawBlockCase304(g, h);
+        break;
+
+    case 305:
+        drawDiamondzIcon(g, h);
+        break;
+
+    case 306:
+        drawFlintIcon(g, h);
+        break;
+
+    case 307:
+        drawBlock307Icon(g, h);
+        break;
+
+    case 308:
+        drawBlock308Icon(g, h);
+        break;
+
+    case 309:
+        drawBlock309Icon(g, h);
+        break;
+
+    case 310:
+        drawBlock310Icon(g,h);
+        break;
+
+    case 311:
+        drawDiamondzPickaxeIcon(g, h);
+        break;
+
+    case 312:
+        drawBronzeSwordIcon(g,h);
+        break;
+
+    case 313:
+        drawStoneSwordIcon(g, h);
+        break;
+
+    case 314:
+        drawIronSwordIcon(g,h);
+        break;
+
+    case 315:
+        drawGoldSwordIcon(g, h);
+        break;
+
+    case 316:
+        drawDiamondzSwordIcon(g, h);
+        break;
+
+    case 317:
+        drawRawPorkChopIcon(g, h);
+        break;
+
+    case 318:
+        drawGunpowderIcon(g,h);
+        break;
+
+    case 319:
+        drawCookedPorkChopIcon(g, h);
+        break;
+
+    case 320:
+        drawIronHelmetIcon(g, h);
+        break;
+
+    case 321:
+        drawIronShieldIcon(g, h);
+        break;
+
+    case 322:
+        drawIronPantsIcon(g, h);
+        break;
+
+    case 323:
+        drawIronShoesIcon(g, h);
+        break;
+
+    case 324:
+        drawGoldHelmetIcon(g, h);
+        break;
+
+    case 325:
+        drawGoldShieldIcon(g, h);
+        break;
+
+    case 326:
+        drawGoldPantsIcon(g, h);
+        break;
+
+    case 327:
+        drawGoldShoesIcon(g, h);
+        break;
+
+    case 328:
+        drawDiamondzHelmetIcon(g, h);
+        break;
+
+    case 329:
+        drawDiamondzShieldIcon(g, h);
+        break;
+
+    case 330:
+        drawDiamondzPantsIcon(g, h);
+        break;
+
+    case 331:
+        drawDiamondzShoesIcon(g, h);
+        break;
+
+    case 332:
+        drawLeatherHelmetIcon(x, g, h);
+        break;
+
+    case 333:
+        drawLeatherShieldIcon(x, g, h);
+        break;
+
+    case 334:
+        drawLeatherPantsIcon(x, g, h);
+        break;
+
+    case 335:
+        drawLeatherShoesIcon(x, g, h);
+        break;
+
+    case 336:
+        drawLeatherIcon(x, g, h);
+        break;
+
+    case 337:
+        drawEmptyMilkBucket(x, g, h);
+        break;
+
+    case 338:
+        drawFullMilkBucket(x, g, h);
+        break;
+
+            }
+
+    strokeWeight(2);
+
+    noStroke();
+};
+
+var herp;
+
+var drawItemTagVersion1 = function(NBTtag)
+{
+    stroke(54, 0, 171);
+    fill(0, 0, 0);
+
+    var length = (NBTtag.split()).length;
+
+    rect(mouseX, mouseY-15, length*85, 15);
+
+    fill(255, 255, 255);
+    text(NBTtag, mouseX, mouseY);
+};
+
+var drawItemTagVersion2 = function(NBTtag)
+{
+    stroke(54, 0, 171);
+    fill(0, 0, 0);
+    rect(mouseX, mouseY-15, 85, 15);
+
+    fill(255, 255, 255);
+    text(NBTtag, mouseX, mouseY);
+};
+
+
       var drawCookedPorkChopIcon = function (g, h) {
         noFill();
         stroke(148, 113, 61);

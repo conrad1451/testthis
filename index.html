@@ -5136,6 +5136,1376 @@
 
 
 
+      // ----------------Conrad: SECTION 2: DRAW BLOCKS AND WORLD -----------------//
+
+
+      var drawLeaves = function (x, y, scrollX, scrollY) {
+        rect(x * 40 + scrollX, y * 40 + scrollY, 10, 10);
+
+        rect(x * 40 + 20 + scrollX, y * 40 + scrollY, 10, 10);
+
+        rect(x * 40 + 10 + scrollX, y * 40 + scrollY + 10, 10, 10);
+
+        rect(x * 40 + 30 + scrollX, y * 40 + scrollY + 10, 10, 10);
+
+        rect(x * 40 + scrollX, y * 40 + 20 + scrollY, 10, 10);
+
+        rect(x * 40 + 20 + scrollX, y * 40 + 20 + scrollY, 10, 10);
+
+        rect(x * 40 + 10 + scrollX, y * 40 + 30 + scrollY, 10, 10);
+
+        rect(x * 40 + 30 + scrollX, y * 40 + 30 + scrollY, 10, 10);
+      };
+
+      var drawSapling = function (x, y, scrollX, scrollY) {
+        fill(107, 50, 0);
+
+        rect(x * 40 + 9 + scrollX, y * 40 + 20 + scrollY, 4, 20);
+
+        fill(8, 168, 0);
+
+        rect(x * 40 + 5 + scrollX, y * 40 + 17 + scrollY, 20, 10);
+
+        rect(x * 40 + 7 + scrollX, y * 40 + 13 + scrollY, 10, 20);
+      };
+
+      var drawFurnace = function (x, y, scrollX, scrollY) {
+        fill(0);
+
+        strokeWeight(2);
+
+        stroke(71, 71, 71);
+
+        fill(120);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 20);
+
+        fill(0);
+
+        ellipse(x * 40 + scrollX + 20, y * 40 + scrollY + 20, 30, 25);
+
+        fill(168);
+
+        rect(x * 40 + scrollX, y * 40 + 20 + scrollY, 40, 20);
+
+        fill(0);
+      };
+
+      var drawFurnaceHelper = function (x, y, scrollX, scrollY) {
+        if (specs[y][x][3] > 1) {
+          if (specs[y][x][10] > 0) {
+            specs[y][x][3] -= 0.5;
+          }
+        }
+        else if (specs[y][x][3] > 0) {
+          // Conrad: seems specs[a][b][c] (a, b, c are integers) 
+          // is input into furnaceRecipies to retrieve the value at 
+          // the specs[a][b][c] index of furnaceRecipes: eg. if index 24 
+          // in furnaceRecipes stored a certain value and specs[a][b][c] 
+          // happened to equal 24, we could call furnaceRecipes[specs[a][b][c]]; 
+          // to obtain the value at the 24th index of furnaceRecipes (the value 
+          // corresponding the the block with ID 24)   
+
+          specs[y][x][7] = furnaceRecipes[specs[y][x][4]];
+          specs[y][x][8]++;
+
+          specs[y][x][5]--;
+
+          specs[y][x][3] -= 1;
+        }
+        else {
+          specs[y][x][3] = 0;
+
+          if (furnaceRecipes[specs[y][x][4]] && specs[y][x][10] > 0) {
+            specs[y][x][3] = 50;
+          }
+        }
+
+        if (specs[y][x][1] <= 0) {
+          specs[y][x][0] = 0;
+        }
+
+        if (specs[y][x][5] <= 0) {
+          specs[y][x][4] = 0;
+        }
+
+        if (burnValues[specs[y][x][0]] !== null && furnaceRecipes[specs[y][x][4]] !== null && specs[y][x][10] === 0) {
+          specs[y][x][11] = burnValues[specs[y][x][0]];
+          specs[y][x][10] = burnValues[specs[y][x][0]] * 5;
+
+          specs[y][x][1]--;
+        }
+
+        if (specs[y][x][10] > 0) {
+          fill(255, 0, 0);
+          specs[y][x][10] -= 0.05;
+        }
+        else {
+          fill(0);
+        }
+
+        var d = [], e = [];
+
+        for (var i = 0; i < 4; i++) {
+          d[i] = sin(i * 60 + 90) * 15 + x * 40 + scrollX + 20;
+
+          e[i] = cos(i * 60 + 90) * 17 + y * 40 + scrollY + 40;
+        }
+
+        if (!furnaceRecipes[specs[y][x][4]]) {
+          specs[y][x][3] = 50;
+        }
+
+        bezier(d[0], e[0], d[1], e[1], d[2], e[2], d[3], e[3]);
+
+        noStroke();
+
+        if (specs[y][x][10] < 0) {
+          specs[y][x][10] = 0;
+        }
+
+        if (specs[y][x][10] > 0) {
+          for (var i = 3; i >= 0; i--) {
+            fill(255, 255 - i * 55, 0);
+
+            for (var j = 0; j < 4; j++) {
+              d[j] = sin(j * 60 + 90) * (i * 4 - 1) + x * 40 + scrollX + 20;
+              e[j] = cos(j * 60 + 90) * (i * 4 - 1) + y * 40 + scrollY + 40;
+            }
+
+            bezier(d[0], e[0], d[1], e[1], d[2], e[2], d[3], e[3]);
+          }
+        }
+      };
+
+      var drawGravel = function (x, y, scrollX, scrollY) {
+        var airUnderBlock = world[y + 1][x] === 0;
+        var standingWaterUnderBlock = world[y + 1][x] === 11;
+        var flowingWaterUnderBlock = world[y + 1][x] === 12;
+        var standingLavaUnderBlock = world[y + 1][x] === 13;
+        var flowingLavaUnderBlock = world[y + 1][x] === 14;
+        var saplingUnderBlock = world[y + 1][x] === 16;
+        var fireUnderBlock = world[y + 1][x] === 17;
+
+        fill(136, 127, 140);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var hazardUnderBlock = standingWaterUnderBlock || flowingWaterUnderBlock || standingLavaUnderBlock || flowingLavaUnderBlock || fireUnderBlock;
+
+        if (airUnderBlock || saplingUnderBlock || hazardUnderBlock) {
+          world[y][x] = 0;
+          world[y + 1][x] = 21;
+        }
+      };
+
+      var drawSand = function (x, y, scrollX, scrollY) {
+        var airUnderBlock = world[y + 1][x] === 0;
+        var standingWaterUnderBlock = world[y + 1][x] === 11;
+        var flowingWaterUnderBlock = world[y + 1][x] === 12;
+        var standingLavaUnderBlock = world[y + 1][x] === 13;
+        var flowingLavaUnderBlock = world[y + 1][x] === 14;
+        var saplingUnderBlock = world[y + 1][x] === 16;
+        var fireUnderBlock = world[y + 1][x] === 17;
+
+        fill(255, 230, 166);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var hazardUnderBlock = standingWaterUnderBlock || flowingWaterUnderBlock || standingLavaUnderBlock || flowingLavaUnderBlock || fireUnderBlock;
+
+        if (airUnderBlock || saplingUnderBlock || hazardUnderBlock) {
+          world[y][x] = 0;
+          world[y + 1][x] = 20;
+        }
+      };
+
+      var drawNetherPortal = function (x, y, scrollX, scrollY) {
+        var airOverBlock = world[y - 1][x] === 0;
+        var airUnderBlock = world[y + 1][x] === 0;
+
+        var airLeftOfBlock = world[y][x - 1] === 0;
+        var airRightOfBlock = world[y][x + 1] === 0;
+
+        fill(157, 0, 255);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        if (airRightOfBlock || airLeftOfBlock || airOverBlock || airUnderBlock) {
+          world[y][x] = 0;
+        }
+      };
+
+
+      var obsidianTransformation = function (x, y, scrollX, scrollY) {
+        var obUnder = world[y + 1][x] === 8;
+        var obBottomRight = world[y + 1][x + 1] === 8;
+        var obLeft = world[y][x - 1] === 8;
+        var obRight = world[y][x + 1] === 8;
+
+        var obRightTwice = world[y][x + 2] === 8;
+
+
+        var obTopLeft = world[y - 1][x - 1] === 8;
+        var obTopRightTwice = world[y - 1][x + 2] === 8;
+
+        var obTopTwiceLeft = world[y - 2][x - 1] === 8;
+        var obTopTwiceRightTwice = world[y - 2][x + 2] === 8;
+        var obTopTwiceRight = world[y - 2][x + 1] === 8;
+
+        var obTopThrice = world[y - 3][x] === 8;
+        var obTopThriceRight = world[y - 3][x + 1] === 8;
+        var obTopThriceLeft = world[y - 3][x - 1] === 8;
+
+        var obTopLeftTwice = world[y - 1][x - 2] === 8;
+        var obUnderLeft = world[y + 1][x - 1] === 8;
+
+        var obLeftTwice = world[y][x - 2] === 8;
+        var obTopRight = world[y - 1][x + 1] === 8;
+        var obTopTwiceLeftTwice = world[y - 2][x - 2] === 8;
+
+
+        var commonConditions = obUnder && obTopThrice;
+
+        var condition1 = commonConditions && obBottomRight && obLeft && obRightTwice && obTopLeft && obTopRightTwice && obTopTwiceLeft && obTopTwiceRightTwice && obTopThriceRight;
+
+        var condition2 = commonConditions && obUnderLeft && obRight && obLeftTwice && obTopRight && obTopLeftTwice && obTopTwiceRight && obTopTwiceLeftTwice && obTopThriceLeft;
+
+        if (condition1) {
+          world[y][x] = 18;
+          world[y][x + 1] = 18;
+          world[y - 1][x] = 18;
+          world[y - 1][x + 1] = 18;
+          world[y - 2][x] = 18;
+          world[y - 2][x + 1] = 18;
+        }
+
+        if (condition2) {
+          world[y][x] = 18;
+          world[y][x - 1] = 18;
+          world[y - 1][x] = 18;
+          world[y - 1][x - 1] = 18;
+          world[y - 2][x] = 18;
+          world[y - 2][x - 1] = 18;
+        }
+      };
+
+      var lavaFromCertainCircumstances = function (x, y, scrollX, scrollY) {
+        fill(255, 149, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var airUnderBlock = world[y + 1][x] === 0;
+        var airLeftOfBlock = world[y][x - 1] === 0;
+        var airRightOfBlock = world[y][x + 1] === 0;
+
+        var standingWaterUnderBlock = world[y + 1][x] === 11;
+        var flowingWaterUnderBlock = world[y + 1][x] === 12;
+
+        var standingLavaUnderBlock = world[y + 1][x] === 13; var standingLavaOverBlock = world[y - 1][x] === 13;
+        var flowingLavaUnderBlock = world[y + 1][x] === 14;
+        var flowingLavaOverBlock = world[y - 1][x] === 14;
+        var saplingUnderBlock = world[y + 1][x] === 16;
+        var fireUnderBlock = world[y + 1][x] === 17;
+
+        if (airUnderBlock) {
+          // Conrad: block changed to flowing lava
+          world[y + 1][x] = 14;
+          airUnderBlock = false;
+        }
+        else if (world[y + 1][x] < 11 || world[y + 1][x] > 15) {
+          if (airRightOfBlock) {
+            world[y][x + 1] = 14;
+            airRightOfBlock = false;
+          }
+          if (airLeftOfBlock) {
+            world[y][x - 1] = 14;
+            airLeftOfBlock = false;
+          }
+        }
+        else if (flowingWaterUnderBlock) {
+          // Conrad: block changed to cobblestone
+          world[y + 1][x] = 4;
+          flowingWaterUnderBlock = false;
+        }
+        else if (standingWaterUnderBlock) {
+          // Conrad: block changed to stone
+          world[y + 1][x] = 1;
+          standingWaterUnderBlock = false;
+        }
+        if (!flowingLavaOverBlock || !standingLavaOverBlock) {
+          // Conrad: set block to air (empty)
+          world[y][x] = 0;
+        }
+
+      };
+
+
+
+      var drawIce = function (x, y, scrollX, scrollY) {
+        fill(199, 230, 255);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(255);
+
+        line(x * 40 + scrollX + 10, y * 40 + scrollY + 30, x * 40 + scrollX + 20, y * 40 + scrollY + 20);
+
+        line(x * 40 + scrollX + 5, y * 40 + scrollY + 15, x * 40 + scrollX + 15, y * 40 + scrollY + 5);
+
+        stroke(92, 171, 255);
+
+        line(x * 40 + scrollX + 25, y * 40 + scrollY + 35, x * 40 + scrollX + 35, y * 40 + scrollY + 25);
+
+        line(x * 40 + scrollX + 20, y * 40 + scrollY + 15, x * 40 + scrollX + 30, y * 40 + scrollY + 5);
+      };
+
+      var drawCactus = function (x, y, scrollX, scrollY) {
+        stroke(0);
+
+        line(x * 40 + scrollX, y * 40 + scrollY + 5, x * 40 + scrollX + 40, y * 40 + scrollY + 5);
+
+        line(x * 40 + scrollX, y * 40 + scrollY + 15, x * 40 + scrollX + 40, y * 40 + scrollY + 15);
+
+        line(x * 40 + scrollX, y * 40 + scrollY + 25, x * 40 + scrollX + 40, y * 40 + scrollY + 25);
+
+        line(x * 40 + scrollX, y * 40 + scrollY + 35, x * 40 + scrollX + 40, y * 40 + scrollY + 35);
+
+        fill(0, 130, 0);
+
+        noStroke();
+
+        rect(x * 40 + scrollX + 2, y * 40 + scrollY, 36, 40);
+
+      };
+
+      var drawCobbleStone = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        strokeWeight(2);
+        stroke(71, 71, 71);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 20, 20);
+        rect(x * 40 + 20 + scrollX, y * 40 + scrollY, 20, 20);
+        rect(x * 40 + scrollX, y * 40 + 20 + scrollY, 20, 20);
+        rect(x * 40 + 20 + scrollX, y * 40 + 20 + scrollY, 20, 20);
+
+        noStroke();
+      };
+
+      var drawWoodenPlanks = function (x, y, scrollX, scrollY) {
+        fill(173, 109, 12);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(120, 83, 44);
+        strokeWeight(2);
+
+        line(x * 40 + scrollX, y * 40 + scrollY, x * 40 + 40 + scrollX, y * 40 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 10 + scrollY, x * 40 + 40 + scrollX, y * 40 + 10 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 20 + scrollY, x * 40 + 40 + scrollX, y * 40 + 20 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 30 + scrollY, x * 40 + 40 + scrollX, y * 40 + 30 + scrollY);
+
+        noStroke();
+      };
+
+      var drawBricks = function (x, y, scrollX, scrollY) {
+        fill(255, 81, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(237, 209, 176);
+
+        line(x * 40 + scrollX, y * 40 + scrollY, x * 40 + 40 + scrollX, y * 40 + scrollY);
+        line(x * 40 + 10 + scrollX, y * 40 + scrollY, x * 40 + 10 + scrollX, y * 40 + 10 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 10 + scrollY, x * 40 + scrollX + 40, y * 40 + scrollY + 10);
+        line(x * 40 + 30 + scrollX, y * 40 + scrollY, x * 40 + 30 + scrollX, y * 40 + 10 + scrollY);
+        line(x * 40 + 40 + scrollX, y * 40 + 20 + scrollY, x * 40 + 40 + scrollX, y * 40 + 20 + scrollY);
+        line(x * 40 + 20 + scrollX, y * 40 + 10 + scrollY, x * 40 + 20 + scrollX, y * 40 + 20 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 20 + scrollY, x * 40 + 40 + scrollX, y * 40 + 20 + scrollY);
+        line(x * 40 + 10 + scrollX, y * 40 + 20 + scrollY, x * 40 + 10 + scrollX, y * 40 + 30 + scrollY);
+        line(x * 40 + 30 + scrollX, y * 40 + 20 + scrollY, x * 40 + 30 + scrollX, y * 40 + 30 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 30 + scrollY, x * 40 + 40 + scrollX, y * 40 + 30 + scrollY);
+        line(x * 40 + 20 + scrollX, y * 40 + 30 + scrollY, x * 40 + 20 + scrollX, y * 40 + 40 + scrollY);
+
+        noStroke();
+      };
+
+      var drawLog = function (x, y, scrollX, scrollY) {
+        fill(166, 77, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(59, 32, 0);
+        strokeWeight(2);
+
+        line(x * 40 + scrollX, y * 40 + scrollY, x * 40 + scrollX, y * 40 + 40 + scrollY);
+        line(x * 40 + scrollX + 40, y * 40 + scrollY, x * 40 + scrollX + 40, y * 40 + 40 + scrollY);
+      };
+
+      var drawTNT = function (x, y, scrollX, scrollY) {
+        fill(255, 0, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(255, 255, 255);
+        rect(x * 40 + scrollX, y * 40 + 10 + scrollY, 40, 20);
+      };
+
+      var drawFire = function (x, y, scrollX, scrollY) {
+        fill(173, 49, 0);
+
+        triangle(x * 40 + scrollX, y * 40 + 40 + scrollY, x * 40 + 10 + scrollX, y * 40 + 10 + scrollY,
+          x * 40 + 20 + scrollX, y * 40 + 40 + scrollY);
+
+        triangle(x * 40 + 20 + scrollX, y * 40 + 40 + scrollY, x * 40 + 30 + scrollX, y * 40 + 10 + scrollY,
+          x * 40 + 40 + scrollX, y * 40 + 40 + scrollY);
+
+        fill(227, 170, 0);
+
+        triangle(x * 40 + 2 + scrollX, y * 40 + 40 + scrollY, x * 40 + 10 + scrollX, y * 40 + 18 + scrollY,
+          x * 40 + 16 + scrollX, y * 40 + 40 + scrollY);
+
+        triangle(x * 40 + 24 + scrollX, y * 40 + 40 + scrollY, x * 40 + 30 + scrollX, y * 40 + 18 + scrollY,
+          x * 40 + 36 + scrollX, y * 40 + 40 + scrollY);
+      };
+
+      var drawCoalOre = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(0, 0, 0);
+
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 10 + scrollY, 8, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 12 + scrollY, 10, 10);
+        ellipse(x * 40 + 20 + scrollX, y * 40 + 18 + scrollY, 6, 6);
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 24 + scrollY, 12, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 30 + scrollY, 18, 14);
+      };
+
+      var drawIronOre = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(191, 155, 82);
+
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 10 + scrollY, 8, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 12 + scrollY, 10, 10);
+        ellipse(x * 40 + 20 + scrollX, y * 40 + 18 + scrollY, 6, 6);
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 24 + scrollY, 12, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 30 + scrollY, 18, 14);
+      };
+
+      var drawGoldOre = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(255, 234, 0);
+
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 10 + scrollY, 8, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 12 + scrollY, 10, 10);
+        ellipse(x * 40 + 20 + scrollX, y * 40 + 18 + scrollY, 6, 6);
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 24 + scrollY, 12, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 30 + scrollY, 18, 14);
+      };
+
+      var drawLapisOre = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(0, 21, 255);
+
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 10 + scrollY, 8, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 12 + scrollY, 10, 10);
+        ellipse(x * 40 + 20 + scrollX, y * 40 + 18 + scrollY, 6, 6);
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 24 + scrollY, 12, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 30 + scrollY, 18, 14);
+      };
+
+
+      var drawDiamondOre = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        fill(0, 238, 255);
+
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 10 + scrollY, 8, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 12 + scrollY, 10, 10);
+        ellipse(x * 40 + 20 + scrollX, y * 40 + 18 + scrollY, 6, 6);
+        ellipse(x * 40 + 10 + scrollX, y * 40 + 24 + scrollY, 12, 8);
+        ellipse(x * 40 + 28 + scrollX, y * 40 + 30 + scrollY, 18, 14);
+      };
+
+
+      var drawCraftingTable = function (x, y, scrollX, scrollY) {
+        fill(201, 153, 80);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(120, 83, 44);
+
+        strokeWeight(2);
+
+        line(x * 40 + scrollX, y * 40 + scrollY, x * 40 + 40 + scrollX, y * 40 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 10 + scrollY, x * 40 + 40 + scrollX, y * 40 + 10 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 20 + scrollY, x * 40 + 40 + scrollX, y * 40 + 20 + scrollY);
+        line(x * 40 + scrollX, y * 40 + 30 + scrollY, x * 40 + 40 + scrollX, y * 40 + 30 + scrollY);
+        line(x * 40 + scrollX, y * 40 + scrollY, x * 40 + scrollX, y * 40 + 40 + scrollY);
+        line(x * 40 + 40 + scrollX, y * 40 + scrollY, x * 40 + 40 + scrollX, y * 40 + 40 + scrollY);
+
+        fill(255, 230, 199);
+
+        triangle(x * 40 + 2 + scrollX, y * 40 + scrollY, x * 40 + 20 + scrollX, y * 40 + 16 + scrollY,
+          x * 40 + 38 + scrollX, y * 40 + scrollY);
+
+        stroke(122, 122, 122);
+
+        strokeWeight(4);
+
+        line(x * 40 + 10 + scrollX, y * 40 + 20 + scrollY, x * 40 + 10 + scrollX, y * 40 + 34 + scrollY);
+        line(x * 40 + 30 + scrollX, y * 40 + 16 + scrollY, x * 40 + 30 + scrollX, y * 40 + 30 + scrollY);
+
+        noStroke();
+
+        strokeWeight(2);
+      };
+
+      var drawDoor = function (x, y, scrollX, scrollY) {
+        fill(201, 153, 80);
+        stroke(97, 58, 0);
+
+        if (specs[y][x] === 0) {
+          rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+          rect(x * 40 + 5 + scrollX, y * 40 + 5 + scrollY, 30, 30);
+
+          fill(66, 66, 66);
+          stroke(66, 66, 66);
+          ellipse(x * 40 + 35 + scrollX, y * 40 + scrollY, 3, 3);
+
+          strokeWeight(4);
+          line(x * 40 + 35 + scrollX, y * 40 + scrollY, x * 40 + 30 + scrollX, y * 40 + scrollY);
+        }
+        else if (specs[y][x] === 1) { rect(x * 40 + scrollX, y * 40 + scrollY, 10, 40); }
+
+        strokeWeight(2);
+      };
+
+      var drawUpperDoor = function (x, y, scrollX, scrollY) {
+        fill(201, 153, 80);
+        stroke(97, 58, 0);
+
+        if (specs[y][x] === 0) {
+          rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+          rect(x * 40 + 5 + scrollX, y * 40 + 5 + scrollY, 30, 30);
+        }
+        else if (specs[y][x] === 1) { rect(x * 40 + scrollX, y * 40 + scrollY, 10, 40); }
+
+        if (world[y + 1][x] !== 28) { world[y][x] = 0; }
+      };
+
+      var drawLadder = function (x, y, scrollX, scrollY) {
+        fill(201, 153, 80);
+        stroke(120, 83, 44);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 7, 40);
+        rect(x * 40 + 33 + scrollX, y * 40 + scrollY, 7, 40);
+        rect(x * 40 + scrollX, y * 40 + scrollY + 10, 40, 7);
+        rect(x * 40 + scrollX, y * 40 + scrollY + 30, 40, 7);
+      };
+
+
+      var drawBlockOfIron = function (x, y, scrollX, scrollY) {
+        fill(230);
+        stroke(140);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawBlockOfGold = function (x, y, scrollX, scrollY) {
+        fill(255, 234, 0);
+        stroke(209, 157, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawBlockOfDiamond = function (x, y, scrollX, scrollY) {
+        stroke(0, 148, 148);
+        fill(0, 255, 255);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawMonsterSpawner = function (x, y, scrollX, scrollY) {
+        fill(0, 64, 66);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 5, 40);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 5);
+        rect(x * 40 + scrollX + 35, y * 40 + scrollY, 5, 40);
+        rect(x * 40 + scrollX, y * 40 + scrollY + 35, 40, 5);
+
+        stroke(0, 64, 66);
+        strokeWeight(3);
+
+        line(x * 40 + scrollX + 10, y * 40 + scrollY + 2, x * 40 + scrollX + 10, y * 40 + scrollY + 40);
+        line(x * 40 + scrollX + 28, y * 40 + scrollY + 2, x * 40 + scrollX + 28, y * 40 + scrollY + 40);
+        line(x * 40 + scrollX + 2, y * 40 + scrollY + 10, x * 40 + scrollX + 35, y * 40 + scrollY + 10);
+        line(x * 40 + scrollX + 2, y * 40 + scrollY + 28, x * 40 + scrollX + 35, y * 40 + scrollY + 28);
+      };
+
+      var drawMossyCobbleStone = function (x, y, scrollX, scrollY) {
+        fill(122, 122, 122);
+
+        strokeWeight(2);
+        stroke(49, 105, 0);
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 20, 20);
+        rect(x * 40 + 20 + scrollX, y * 40 + scrollY, 20, 20);
+        rect(x * 40 + scrollX, y * 40 + 20 + scrollY, 20, 20);
+        rect(x * 40 + 20 + scrollX, y * 40 + 20 + scrollY, 20, 20);
+
+        noStroke();
+
+        fill(166, 194, 134);
+
+        triangle(x * 40 + scrollX + 5, y * 40 + scrollY,
+          x * 40 + scrollX + 13, y * 40 + scrollY,
+          x * 40 + scrollX + 9, y * 40 + scrollY + 15);
+
+        triangle(x * 40 + scrollX + 25, y * 40 + scrollY + 10,
+          x * 40 + scrollX + 33, y * 40 + scrollY + 10,
+          x * 40 + scrollX + 29, y * 40 + scrollY + 20);
+
+        triangle(x * 40 + scrollX + 10, y * 40 + scrollY + 25,
+          x * 40 + scrollX + 20, y * 40 + scrollY + 25,
+          x * 40 + scrollX + 15, y * 40 + scrollY + 40);
+      };
+
+
+
+      var drawChestSubFunction = function (x, y, scrollX, scrollY) {
+        if (world[y][x - (-1)] === 34) {
+          rect(x * 40 + scrollX + 3, y * 40 + scrollY + 5, 74, 35);
+
+          line(x * 40 + scrollX + 5, y * 40 + 10 + scrollY + 3, x * 40 + 74 + scrollX, y * 40 + 10 + scrollY + 3);
+          line(x * 40 + scrollX + 5, y * 40 + 20 + scrollY + 3, x * 40 + 74 + scrollX, y * 40 + 20 + scrollY + 3);
+          line(x * 40 + scrollX + 5, y * 40 + 30 + scrollY + 3, x * 40 + 74 + scrollX, y * 40 + 30 + scrollY + 3);
+
+          var conditionA = (x === blockTargeted[1]);
+          var conditionB = (x === blockTargeted[1] - 1);
+          var conditionC = (conditionA || conditionB);
+
+          if (onChest && conditionC && y === blockTargeted[0]) {
+            fill(184, 133, 57);
+
+            stroke(120, 83, 44);
+            rect(x * 40 + scrollX + 3, y * 40 + scrollY - 21, 74, 32);
+
+            stroke(120, 83, 44);
+
+            fill(20);
+            rect(x * 40 + scrollX + 7, y * 40 + scrollY - 17, 66, 24);
+
+            fill(145, 104, 51);
+            rect(x * 40 + scrollX + 37, y * 40 + scrollY + 12, 6, 8);
+
+            stroke(200);
+
+            fill(225);
+            rect(x * 40 + scrollX + 37, y * 40 + scrollY - 24, 6, 4);
+          }
+
+          else {
+            stroke(200);
+            fill(225);
+            rect(x * 40 + scrollX + 37, y * 40 + scrollY + 10, 6, 10);
+          }
+        }
+        else {
+          rect(x * 40 + scrollX + 3, y * 40 + scrollY + 5, 34, 35);
+
+          line(x * 40 + scrollX + 5, y * 40 + 10 + scrollY + 3, x * 40 + 34 + scrollX, y * 40 + 10 + scrollY + 3);
+          line(x * 40 + scrollX + 5, y * 40 + 20 + scrollY + 3, x * 40 + 34 + scrollX, y * 40 + 20 + scrollY + 3);
+          line(x * 40 + scrollX + 5, y * 40 + 30 + scrollY + 3, x * 40 + 34 + scrollX, y * 40 + 30 + scrollY + 3);
+
+          if (onChest && x === blockTargeted[1] && y === blockTargeted[0]) {
+            rect(x * 40 + scrollX + 3, y * 40 + scrollY - 22, 34, 35);
+
+            fill(87, 59, 24);
+            rect(x * 40 + scrollX + 6, y * 40 + scrollY - 19, 28, 29);
+
+            stroke(200);
+            fill(225);
+            rect(x * 40 + scrollX + 17, y * 40 + scrollY - 24, 6, 4);
+          }
+          else {
+            stroke(200);
+            fill(225);
+            rect(x * 40 + scrollX + 17, y * 40 + scrollY + 10, 6, 10);
+          }
+        }
+      };
+
+      var drawChest = function (x, y, scrollX, scrollY) {
+        fill(184, 133, 57);
+        stroke(120, 83, 44);
+        strokeWeight(2);
+
+        if (world[y][x - 1] !== 34) { drawChestSubFunction(x, y, scrollX, scrollY); }
+        noStroke();
+      };
+
+
+      var areaClearedForTree = function (x, y) {
+        var firstHeightLevelClear = world[y - 1][x] === 0 && world[y - 2][x] === 0 && world[y - 3][x] === 0;
+
+        var secondHeightLevelClear = world[y - 2][x - 1] === 0 && world[y - 2][x - 2] === 0 && world[y - 2][x + 2] === 0 && world[y - 2][x + 1] === 0;
+
+        var thirdHeightLevelClear = world[y - 3][x - 2] === 0 && world[y - 3][x - 1] === 0 && world[y - 3][x + 1] === 0 && world[y - 3][x + 2] === 0;
+
+        var fourthHeightLevelClear = world[y - 4][x - 2] === 0 && world[y - 4][x - 1] === 0 && world[y - 4][x] === 0 && world[y - 4][x + 1] === 0 && world[y - 4][x + 2] === 0;
+
+        var fifthHeightLevelClear = world[y - 5][x - 1] === 0 && world[y - 5][x] === 0 && world[y - 5][x + 1] === 0;
+
+        var everyLevelClear = firstHeightLevelClear && secondHeightLevelClear && thirdHeightLevelClear && fourthHeightLevelClear && fifthHeightLevelClear;
+
+        return everyLevelClear;
+      };
+
+      var drawTree = function (x, y) {
+        //trunk
+
+        world[y][x] = 7;
+        world[y - 1][x] = 7;
+        world[y - 2][x] = 7;
+        world[y - 3][x] = 7;
+
+        //leaves
+
+        world[y - 2][x - 1] = 9;
+        world[y - 2][x - 2] = 9;
+        world[y - 2][x + 1] = 9;
+        world[y - 2][x + 2] = 9;
+
+        world[y - 3][x - 1] = 9;
+        world[y - 3][x - 2] = 9;
+        world[y - 3][x + 1] = 9;
+        world[y - 3][x + 2] = 9;
+
+        world[y - 4][x - 1] = 9;
+        world[y - 4][x - 2] = 9;
+        world[y - 4][x] = 9;
+        world[y - 4][x + 1] = 9;
+        world[y - 4][x + 2] = 9;
+
+        world[y - 5][x - 1] = 9;
+        world[y - 5][x] = 9;
+        world[y - 5][x + 1] = 9;
+      };
+
+
+
+
+
+
+
+
+
+      var drawStone = function (x, y, scrollX, scrollY) {
+        fill(224, 224, 224);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawGrass = function (x, y, scrollX, scrollY) {
+        fill(107, 45, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        switch (biomes[x]) {
+          case 0:
+
+            fill(74, 184, 0);
+
+            break;
+
+          case 1:
+
+            fill(181, 194, 0);
+
+            break;
+
+          case 2:
+
+            fill(0, 80, 0);
+
+            break;
+
+          case 3:
+
+            fill(255);
+
+            break;
+
+          default:
+
+            fill(255, 0, 0);
+        }
+
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 10);
+
+        c = random(1, 200);
+
+        if (world[y - 1][x] !== 0 && c > 199) {
+          world[y][x] = 3;
+        }
+      };
+
+      var drawDirt = function (x, y, scrollX, scrollY) {
+        fill(130, 56, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        c = random(1, 200);
+
+        if (world[y - 1][x] === 0 && c > 199) {
+          world[y][x] = 2;
+        }
+      };
+
+      var drawObsidian = function (x, y, scrollX, scrollY) {
+        fill(64, 2, 135);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawBedrock = function (x, y, scrollX, scrollY) {
+        fill(0, 0, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+      };
+
+      var drawStillWater = function (x, y, scrollX, scrollY) {
+        fill(0, 104, 250);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var lavaUnderBlock = (world[y + 1][x] === 13);
+
+        if (lavaUnderBlock) {
+          // Conrad: block under the water now becomes obsidian
+          world[y + 1][x] = 8;
+          lavaUnderBlock = false;
+        }
+
+        var airAboveBlock = world[y - 1][x] === 0;
+
+        if (biomes[x] === 3 && airAboveBlock) {
+          if (!round(random(0, 100))) {
+            world[y][x] = 32;
+          }
+        }
+
+        var airUnderBlock = world[y + 1][x] === 0;
+
+        if (airUnderBlock) {
+          // Conrad: block under the water now becomes obsidian
+          world[y + 1][x] = 12;
+          airUnderBlock = false;
+        }
+        else if (world[y + 1][x] < 11 || world[y + 1][x] > 15) {
+          if (world[y][x + 1] === 0) {
+            world[y][x + 1] = 12;
+          }
+        }
+      };
+
+      var drawFlowingWater = function (x, y, scrollX, scrollY) {
+        fill(0, 104, 250);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var airUnderBlock = world[y + 1][x] === 0;
+        var airLeftOfBlock = world[y][x - 1] === 0;
+        var airRightOfBlock = world[y][x + 1] === 0;
+
+        var lavaUnderBlock = world[y + 1][x] === 13;
+
+        if (airUnderBlock) {
+          // Conrad: fill block with water
+          world[y + 1][x] = 12;
+        }
+        else if (world[y + 1][x] < 11) {
+          // Conrad: filling empty blocks next to 
+          // the block with water
+          if (airRightOfBlock) {
+            // Conrad: fill air block with flowing water
+            world[y][x + 1] = 12;
+            airRightOfBlock = false;
+          }
+          if (airLeftOfBlock) {
+            // Conrad: fill the air block with water
+            world[y][x - 1] = 12;
+            airLeftOfBlock = false;
+          }
+        }
+
+        if (lavaUnderBlock) {
+          // Conrad: fill block with Obsidian
+          world[y + 1][x] = 8;
+          lavaUnderBlock = false;
+        }
+        else if (world[y + 1][x] < 11 || world[y + 1][x] > 15) {
+          if (airRightOfBlock) {
+            // Conrad: fill it with flowing water
+            world[y][x + 1] = 12;
+            airRightOfBlock = false;
+          }
+        }
+
+        var waterOverBlock = world[y - 1][x] === 11;
+        var flowingWaterOverBlock = world[y - 1][x] === 12;
+
+        if (!flowingWaterOverBlock || !waterOverBlock) {
+          world[y][x] = 0;
+        }
+
+      };
+
+      var drawStillLava = function (x, y, scrollX, scrollY) {
+
+        fill(255, 149, 0);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        var airUnderBlock = world[y + 1][x] === 0;
+        var standingWaterUnderBlock = world[y + 1][x] === 11;
+        var flowingWaterUnderBlock = world[y + 1][x] === 12;
+
+        if (flowingWaterUnderBlock) {
+          // Conrad: change the block under to be cobblestone
+          world[y + 1][x] = 4;
+          flowingWaterUnderBlock = false;
+        }
+        else if (standingWaterUnderBlock) {
+          // Conrad: change the block under to be stone
+          world[y + 1][x] = 1;
+          standingWaterUnderBlock = false;
+        }
+
+        if (airUnderBlock) {
+          world[y + 1][x] = 14;
+          airUnderBlock = false;
+        }
+
+      };
+
+      var defaultBlock = function (x, y, scrollX, scrollY) {
+        fill(234, 0, 255);
+        rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+        stroke(164, 0, 179);
+        strokeWeight(4);
+
+        line(x * 40 + scrollX + 2, y * 40 + scrollY + 2, x * 40 + scrollX + 2, y * 40 + scrollY + 37);
+        line(x * 40 + scrollX + 2, y * 40 + scrollY + 2, x * 40 + scrollX + 37, y * 40 + scrollY + 2);
+
+        strokeWeight(2);
+      };
+
+      var drawWorld = function () {
+
+        for (
+          var x = round((scrollX / 40) - (scrollX / 20) - 1);
+          x < round((scrollX / 40) - (scrollX / 20) + 20) + 20;
+          x++
+        ) {
+          for (var y = 0; y < world.length; y++) {
+            noStroke();
+
+            if (specs[y][x] === 15) {
+              explode(x, y);
+            }
+
+            if (world[y][x] === 0) {
+              specs[y][x] = 0;
+            }
+
+            switch (world[y][x]) {
+              //air (no code)
+              case 0:
+
+                break;
+
+              //stone
+              case 1:
+
+                drawStone(x, y, scrollX, scrollY);
+
+                break;
+
+              //grass
+              case 2:
+
+                drawGrass(x, y, scrollX, scrollY);
+
+                break;
+
+              //dirt
+              case 3:
+
+                drawDirt(x, y, scrollX, scrollY);
+
+                break;
+
+              //cobblestone
+              case 4:
+
+                drawCobbleStone(x, y, scrollX, scrollY);
+
+                break;
+
+              //wooden planks
+              case 5:
+
+                drawWoodenPlanks(x, y, scrollX, scrollY);
+
+                break;
+
+              //bricks
+              case 6:
+
+                drawBricks(x, y, scrollX, scrollY);
+
+                break;
+
+              //log
+              case 7:
+
+                drawLog(x, y, scrollX, scrollY);
+
+                break;
+
+              //obsidian
+
+              case 8:
+
+                drawObsidian(x, y, scrollX, scrollY);
+
+                break;
+
+              //leaves
+
+              case 9:
+
+                switch (biomes[x]) {
+                  case 0:
+
+                    fill(157, 255, 87);
+
+                    break;
+
+                  case 1:
+
+                    fill(0, 204, 82);
+
+                    break;
+
+                  case 2:
+
+                    fill(26, 82, 26);
+
+                    break;
+
+                  case 3:
+
+                    fill(255);
+
+                    break;
+
+                  default:
+
+                    fill(255, 0, 0);
+                }
+
+                drawLeaves(x, y, scrollX, scrollY);
+
+                break;
+
+              //bedrock
+
+              case 10:
+
+                drawBedrock(x, y, scrollX, scrollY);
+
+                break;
+
+              //water
+
+              case 11:
+
+                drawStillWater(x, y, scrollX, scrollY);
+
+                break;
+
+              //flowing water
+
+              case 12:
+
+                drawFlowingWater(x, y, scrollX, scrollY);
+
+                break;
+
+              //lava
+
+              case 13:
+
+                drawStillLava(x, y, scrollX, scrollY);
+
+
+
+                break;
+
+              //flowing lava
+
+              case 14:
+                lavaFromCertainCircumstances(x, y, scrollX, scrollY);
+
+                break;
+
+              // conrad: TNT
+              case 15:
+
+                drawTNT(x, y, scrollX, scrollY);
+
+                break;
+
+              // conrad: sapling
+              case 16:
+
+                drawSapling(x, y, scrollX, scrollY);
+
+                c = random(1, 500);
+                /* var firstHeightLevelClear = world[y-1][x] === 0 && world[y-2][x] === 0 && world[y-3][x] === 0;
+                    
+                var secondHeightLevelClear = world[y-2][x-1] === 0 && world[y-2][x-2] === 0 && world[y-2][x+2] === 0 && world[y-2][x+1] === 0;
+                    
+                var thirdHeightLevelClear = world[y-3][x-2] === 0 && world[y-3][x-1] === 0 && world[y-3][x+1] === 0 && world[y-3][x+2] === 0;
+                    
+                var fourthHeightLevelClear = world[y-4][x-2] === 0 && world[y-4][x-1] === 0 && world[y-4][x] === 0 && world[y-4][x+1] === 0 && world[y-4][x+2] === 0;
+                    
+                var fifthHeightLevelClear = world[y-5][x-1] === 0 && world[y-5][x] === 0 && world[y-5][x+1] === 0;
+                    
+                var everyLevelClear =  firstHeightLevelClear && secondHeightLevelClear && thirdHeightLevelClear && fourthHeightLevelClear && fifthHeightLevelClear;
+                
+                */
+                var clearedArea = areaClearedForTree(x, y);
+
+                if (c > 499 && clearedArea) {
+                  drawTree(x, y);
+                }
+
+                var airUnderBlock = world[y + 1][x] === 0;
+                var standingWaterUnderBlock = world[y + 1][x] === 11;
+                var flowingWaterUnderBlock = world[y + 1][x] === 12;
+                var standingLavaUnderBlock = world[y + 1][x] === 13;
+                var flowingLavaUnderBlock = world[y + 1][x] === 14;
+                var saplingUnderBlock = world[y + 1][x] === 16;
+                var fireUnderBlock = world[y + 1][x] === 17;
+
+                var partOfgroundLevel = airUnderBlock || standingWaterUnderBlock || flowingWaterUnderBlock || standingLavaUnderBlock || flowingLavaUnderBlock || saplingUnderBlock || fireUnderBlock;
+
+                if (partOfgroundLevel) {
+                  // Conrad: set block to air (empty)
+                  world[y][x] = 0;
+                }
+
+                break;
+
+              // conrad: fire
+              case 17:
+
+                var airUnderBlock = world[y + 1][x] === 0;
+
+                var standingWaterUnderBlock = world[y + 1][x] === 11;
+                var flowingWaterUnderBlock = world[y + 1][x] === 12;
+                var standingLavaUnderBlock = world[y + 1][x] === 13;
+                var flowingLavaUnderBlock = world[y + 1][x] === 14;
+                var fireUnderBlock = world[y + 1][x] === 17;
+
+                var saplingUnderBlock = world[y + 1][x] === 16;
+
+                drawFire(x, y, scrollX, scrollY);
+
+                var hazardUnderBlock = standingWaterUnderBlock || flowingWaterUnderBlock || standingLavaUnderBlock || flowingLavaUnderBlock || fireUnderBlock;
+
+                if (airUnderBlock || saplingUnderBlock || hazardUnderBlock) {
+                  // Conrad: change block to air (empty)
+                  world[y][x] = 0;
+                }
+
+                obsidianTransformation(x, y, scrollX, scrollY);
+
+                c = random(0, 400);
+
+                if (c > 399 && world[y + 1][x] !== 19) {
+                  if (world[y + 1][x] === 7 || world[y + 1][x] === 9 || world[y + 1][x] === 5) {
+                    if (c < 399.9) {
+                      world[y + 1][x] = 17;
+                    }
+                    else {
+                      world[y + 1][x] = 0;
+                    }
+                  }
+
+                  world[y][x] = 0;
+                }
+
+                break;
+
+              case 18:
+
+                drawNetherPortal(x, y, scrollX, scrollY);
+
+                break;
+
+              case 19:
+
+                fill(99, 21, 2);
+
+                rect(x * 40 + scrollX, y * 40 + scrollY, 40, 40);
+
+                break;
+
+              case 20:
+
+                drawSand(x, y, scrollX, scrollY);
+
+                break;
+
+              case 21:
+
+                drawGravel(x, y, scrollX, scrollY);
+                break;
+
+              // conrad: coal ore
+              case 22:
+
+                drawCoalOre(x, y, scrollX, scrollY);
+
+                break;
+
+              // iron ore
+              case 23:
+
+                drawIronOre(x, y, scrollX, scrollY);
+
+                break;
+
+              // gold ore
+              case 24:
+
+                drawGoldOre(x, y, scrollX, scrollY);
+                break;
+
+              case 25: // lapis ore
+
+                drawLapisOre(x, y, scrollX, scrollY);
+                break;
+
+              case 26: // diamond ore
+
+                drawDiamondOre(x, y, scrollX, scrollY);
+                break;
+
+              // Conrad: is there a memory leak here?
+              case 27: // crafting table
+                drawCraftingTable(x, y, scrollX, scrollY);
+                break;
+
+              case 28:
+
+                drawDoor(x, y, scrollX, scrollY);
+
+                break;
+
+              case 29:
+
+                drawUpperDoor(x, y, scrollX, scrollY);
+
+                break;
+
+              case 30: // ladder
+                drawLadder(x, y, scrollX, scrollY);
+                break;
+
+              case 31: // cactus
+
+                drawCactus(x, y, scrollX, scrollY);
+
+                if (world[y - (-1)][x] !== 20 && world[y - (-1)][x] !== 31) {
+                  world[y][x] = 0;
+
+                  spawnEntity(x * 40 + 10, y * 40 + 10, 0, 31);
+                }
+
+                break;
+
+              case 32: // ice
+
+                drawIce(x, y, scrollX, scrollY);
+
+                break;
+
+              case 33:
+
+                drawFurnace(x, y, scrollX, scrollY);
+
+                drawFurnaceHelper(x, y, scrollX, scrollY);
+
+                break;
+
+              case 34: // draw chest  
+
+                drawChest(x, y, scrollX, scrollY);
+
+                break;
+
+              case 35:
+
+                drawMossyCobbleStone(x, y, scrollX, scrollY);
+
+                break;
+
+              case 36:
+
+                noStroke();
+
+                image(getImage("avatars/marcimus"), x * 40 + scrollX + 5, y * 40 + scrollY + 5, 30, 30);
+
+                drawMonsterSpawner(x, y, scrollX, scrollY);
+
+                if (round(random(0, 50))) { }
+                else if (dist(x, y, posB, posA) < 10) {
+                  spawnMobs(x * 40 + random(-120, 120), y * 40 - 40, 0);
+                }
+
+                break;
+
+              case 37:
+
+                drawBlockOfIron(x, y, scrollX, scrollY);
+
+                break;
+
+              case 38:
+
+                drawBlockOfGold(x, y, scrollX, scrollY);
+
+                break;
+
+              case 39:
+
+                drawBlockOfDiamond(x, y, scrollX, scrollY);
+
+                break;
+
+              default:
+
+                defaultBlock(x, y, scrollX, scrollY);
+
+            }
+          }
+        }
+      };
+
+
+
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);
       // ellipse(200, 200, 200, 200);

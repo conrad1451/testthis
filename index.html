@@ -4794,6 +4794,254 @@
 
 
 
+      var openCrafting = function (craftingSquares) {
+        drawCraftingInterface(craftingSquares);
+
+        fill(255);
+
+        if (holdingQty > 1) {
+          // Conrad: displays qty of item currently held (Text color is white)
+          textSize(15);
+          text(holdingQty, mouseX + 10, mouseY + 13);
+          textSize(12);
+        }
+
+        if (NBTtag !== null && NBTtag !== "") {
+          drawItemTagVersion1(NBTtag);
+        }
+
+        textSize(15);
+        fill(255, 255, 255);
+
+        if (craftedStacks > 1) {
+          text(craftedStacks, 303, 270);
+        }
+
+        var itemCrafted = generateCraftedItem();
+
+        if (!itemCrafted) {
+          craftedItem = 0;
+          craftedStacks = 0;
+        }
+      };
+
+
+
+      // draw the Chest Items
+      var drawChestItems = function (targetChest) {
+        for (var i = 0; i < 4; i++) {
+          for (var j = 0; j < 6; j++) {
+            drawBlocks(targetChest[0][j][i], i * 40 + 210, j * 40 + 50);
+
+            if (targetChest[1][j][i] > 1) {
+              textSize(15);
+              fill(255);
+              text(targetChest[1][j][i], i * 40 + 230, j * 40 + 73);
+            }
+
+            textSize(12);
+          }
+        }
+      };
+
+      // draw the Chest Interface
+      var drawChestInterface = function (targetChest) {
+        fill(199, 199, 199);
+        stroke(0, 0, 0);
+        strokeWeight(3);
+        rect(25, 10, 350, 300);
+        textSize(20);
+
+        fill(0, 0, 0);
+        text("Chest:", 30, 30);
+        textSize(12);
+        strokeWeight(2);
+
+        line(200, 30, 200, 285);
+
+        noStroke();
+        displayInventoryItems(40, 50, 40);
+
+        drawChestItems(targetChest);
+      };
+
+      // open the chest
+      var openChest = function () {
+        var targetChest = specs[blockTargeted[0]][blockTargeted[1]];
+
+        if (keyCode === 69) {
+          onChest = false;
+          keyCode = 0;
+        }
+
+        isCrafting = false;
+        isSmelting = false;
+        e2open = false;
+
+        drawChestInterface(targetChest);
+
+        stroke(0, 0, 0);
+        strokeWeight(2);
+        // drawBlocks(holdingBlock, mouseX-10, mouseY-10);
+
+        if (NBTtag !== null && NBTtag !== "") {
+          drawItemTagVersion1(NBTtag);
+        }
+
+        fill(255);
+
+        if (holdingQty > 1) {
+          textSize(15);
+          text(holdingQty, mouseX + 10, mouseY + 13);
+          textSize(12);
+        }
+      };
+
+
+
+
+var drawFurnaceInterface = function()
+{
+    fill(199, 199, 199);
+    stroke(0, 0, 0);
+    strokeWeight(3);
+    rect(50, 10, 300, 300);
+
+    textSize(20);
+    fill(0, 0, 0);
+    text("Furnace:", 60, 30);
+
+    textSize(12);
+    strokeWeight(2);
+    noStroke();
+
+    displayInventoryItems(70, 50, 40);
+
+    noStroke();
+};
+
+var drawFurnaceFlames = function(fireHeight)
+{
+    fill(173, 49, 0);
+    triangle(275, 120, 280, 120-fireHeight, 285, 120);
+    triangle(265, 120, 270, 120-fireHeight, 275, 120);
+
+    fill(227, 170, 0);
+    triangle(277, 120, 280, 122-fireHeight/1.2, 283, 120);
+    triangle(267, 120, 270, 122-fireHeight/1.2, 273, 120);
+
+    fill(222);
+    stroke(0);
+};
+
+
+var furnaceBurning = function()
+{
+    var targetFurnace = specs[blockTargeted[0]][blockTargeted[1]];
+
+    var fuel = targetFurnace[0];
+    var fuelStacks = targetFurnace[1];
+    var fuelSpecs = targetFurnace[2];
+
+    var smeltingTime = targetFurnace[3];
+
+    var item = targetFurnace[4];
+    var itemStacks = targetFurnace[5];
+    var itemSpecs = targetFurnace[6];
+
+    var smeltedItem = targetFurnace[7];
+    var smeltedStacks = targetFurnace[8];
+    var smeltedSpecs = targetFurnace[9];
+
+    var burnTime = targetFurnace[10];
+
+    var setValue = targetFurnace[11];
+
+    drawFurnaceInterface();
+
+    var fireHeight = (burnTime/setValue)*5;
+
+    drawFurnaceFlames(fireHeight);
+
+    if(smeltingTime > 0 && smeltingTime < 49)
+    {
+        triangle(265, 180, 285, 180, 275, 180+51-smeltingTime);
+    }
+
+    rect(255, 50, 40, 40);
+    rect(255, 130, 40, 40);
+    rect(255, 240, 40, 40);
+
+    // Conrad: I think the item to be smelted goes in the top box 
+    // and the fuel in the bottom box to retrieve the final 
+    // result from the middle box when comparing the furnace 
+    // interface to the following three lines
+
+    drawBlocks(item, 265, 60);
+    drawBlocks(smeltedItem, 265, 250);
+    drawBlocks(fuel, 265, 140);
+
+    fill(255);
+
+    textSize(15);
+
+    if(smeltedStacks > 1)
+    {
+        text(smeltedStacks, 285, 275);
+    }
+
+    if(fuelStacks > 1)
+    {
+        text(fuelStacks, 285, 165);
+    }
+
+    if(itemStacks > 1)
+    {
+        text(itemStacks, 285, 85);
+    }
+
+    if(fuelStacks > 1)
+    {
+
+    }
+
+    drawBlocks(holdingBlock, mouseX-10, mouseY-10);
+
+    if(NBTtag!==null && NBTtag!=="")
+    {
+        drawItemTagVersion2(NBTtag);
+    }
+
+    fill(255);
+
+    if(holdingQty>1)
+    {
+        textSize(15);
+        text(holdingQty, mouseX+10, mouseY+13);
+        textSize(12);
+    }
+
+    textSize(15);
+    
+    specs[blockTargeted[0]][blockTargeted[1]][0] = fuel;
+    specs[blockTargeted[0]][blockTargeted[1]][1] = fuelStacks;
+    specs[blockTargeted[0]][blockTargeted[1]][2] = fuelSpecs;
+    
+    specs[blockTargeted[0]][blockTargeted[1]][3] = smeltingTime;
+    
+    specs[blockTargeted[0]][blockTargeted[1]][4] = item;
+    specs[blockTargeted[0]][blockTargeted[1]][5] = itemStacks;
+    specs[blockTargeted[0]][blockTargeted[1]][6] = itemSpecs;
+    
+    specs[blockTargeted[0]][blockTargeted[1]][7] = smeltedItem;
+    specs[blockTargeted[0]][blockTargeted[1]][8] = smeltedStacks;
+    specs[blockTargeted[0]][blockTargeted[1]][9] = smeltedSpecs;
+    
+    specs[blockTargeted[0]][blockTargeted[1]][10] = burnTime;
+};
+
+
+
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);
       // ellipse(200, 200, 200, 200);

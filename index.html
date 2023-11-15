@@ -6466,7 +6466,8 @@
 
                 noStroke();
 
-                image(getImage("avatars/marcimus"), x * 40 + scrollX + 5, y * 40 + scrollY + 5, 30, 30);
+                // FIXME: commenting out images for now, will fix later
+                // image(getImage("avatars/marcimus"), x * 40 + scrollX + 5, y * 40 + scrollY + 5, 30, 30);
 
                 drawMonsterSpawner(x, y, scrollX, scrollY);
 
@@ -6750,7 +6751,7 @@
 
         var loadWorldButton = inRectangularBounds(mouseX, lb_x2, ub_x2, mouseY, lb_y2, ub_y2);
 
-        if (mouseIsPressed) {
+        if (mousePressed) {
           if (backButton) {
             loadingWorld = false;
           }
@@ -6801,7 +6802,7 @@
 
         var inLoadWorldButtonArea = inRectangularBounds(mouseX, lb_x2, ub_x2, mouseY, lb_y2, ub_y2);
 
-        if (mouseIsPressed) {
+        if (mousePressed) {
           if (inLoadWorldButtonArea && !loadingWorld) {
             loadingWorld = true;
             // loadSavedWorld();
@@ -7079,7 +7080,7 @@
 
         quickSelectBarQty[barSlot]--;
 
-        mouseIsPressed = false;
+        mousePressed = false;
         keys[SHIFT] = false;
       };
 
@@ -7209,7 +7210,7 @@
 
           world[a][b] = 0;
 
-          mouseIsPressed = false;
+          mousePressed = false;
         }
       };
 
@@ -7704,7 +7705,7 @@
         armorSlots[a * 2 + b] = oldBlock;
         armorSpecs[a * 2 + b] = oldSpecs;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
 
@@ -7717,14 +7718,14 @@
         armorSlots[a * 2 + b] = 0;
         armorSpecs[a * 2 + b] = 0;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
 
       var wearingArmor = function (a, b) {
         setTag(armorSlots[a * 2 + b]);
 
-        if (mouseIsPressed && a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+        if (mousePressed && a >= 0 && a <= 1 && b >= 0 && b <= 1) {
           var blockIsArmor = (holdingBlock >= 320 && holdingBlock <= 335);
 
           if (holdingBlock === 0) {
@@ -7766,13 +7767,13 @@
           craftingGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0];
         }
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
       var grabCraftedItemsLargePlatform = function () {
         setTag(craftedItem);
 
-        if (mouseIsPressed) {
+        if (mousePressed) {
           if (keys[SHIFT]) {
             autoGrab();
           }
@@ -7785,7 +7786,7 @@
       var grabCraftedItemsSmallPlatform = function () {
         setTag(craftedItem);
 
-        if (mouseIsPressed && craftedItem !== 0) {
+        if (mousePressed && craftedItem !== 0) {
           if (keys[SHIFT]) {
             autoGrab();
           }
@@ -7823,7 +7824,7 @@
 
         keyCode = 0;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
       var handInventoryItemSwap = function (a, b) {
@@ -7860,14 +7861,14 @@
         if (a < 7 && b < 5 && a > 0 && b > 0) {
           setTag(invContents[a - 1][b - 1]);
 
-          if (mouseIsPressed) {
+          if (mousePressed) {
             takeFromInventory(a, b);
 
             if (keyCodeTriggered) {
               keyCode = 0;
             }
 
-            mouseIsPressed = false;
+            mousePressed = false;
           }
         }
       };
@@ -7896,7 +7897,7 @@
         targetChest[1][a][b] = oldQty;
         targetChest[2][a][b] = oldSpec;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
 
@@ -7907,7 +7908,7 @@
         if (b > 0 && b <= 9) {
           setTag(quickSelectBar[b - 1]);
 
-          if (mouseIsPressed) {
+          if (mousePressed) {
             takeFromQuickSelectBar(b);
           }
         }
@@ -7931,7 +7932,7 @@
             if (a < 6 && b < 4 && a >= 0 && b >= 0) {
               setTag(targetChest[0][a][b]);
 
-              if (mouseIsPressed) {
+              if (mousePressed) {
                 takeFromChest(targetChest, a, b);
               }
             }
@@ -7941,7 +7942,7 @@
           interactWithQuickSelectBar();
         }
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
 
@@ -7972,7 +7973,7 @@
           takeItemsOffCraftingTable(a, b);
         }
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
 
@@ -8009,7 +8010,7 @@
             if (mouseY < 200 && mouseX > 210 && b < 2 && b >= 0 && a < 2 && a >= 0) {
               setTag(craftingSquares[a][b]);
 
-              if (mouseIsPressed) {
+              if (mousePressed) {
                 interactWithCraftingPlatform(craftingSquares, a, b);
               }
             }
@@ -8055,7 +8056,7 @@
             if (mouseY < 200 && mouseX > 210 && b < 3 && b >= 0 && a < 3 && a >= 0) {
               setTag(craftingSquares[a][b]);
 
-              if (mouseIsPressed) {
+              if (mousePressed) {
                 interactWithCraftingPlatform(craftingSquares, a, b);
               }
             }
@@ -8087,7 +8088,7 @@
           holdingSpecs = itemDurabilities[smeltedItem];
         }
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
       var furnaceFuelArea = function (smeltedItem, smeltedStacks, fuel, fuelStacks, fuelSpecs) {
@@ -8103,7 +8104,7 @@
         fuelStacks = oldQty;
         fuelSpecs = oldSpec;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
       var furnaceTopAreaFunctioning = function (smeltedItem, smeltedStacks, fuel, item, itemStacks, itemSpecs) {
@@ -8119,7 +8120,7 @@
         itemStacks = oldQty;
         itemSpecs = oldSpec;
 
-        mouseIsPressed = false;
+        mousePressed = false;
       };
 
       var interactWithFurnace = function () {
@@ -8172,15 +8173,15 @@
         // 		collected, middle area where the fuel goes, and
         //               bottom area where the items to be smelted goes
 
-        if (mouseInFurnaceBottomArea && mouseIsPressed) {
+        if (mouseInFurnaceBottomArea && mousePressed) {
           furnaceSmeltedItemCollection(smeltedItem, smeltedStacks, fuel);
         }
 
-        if (mouseInFurnaceMiddleArea && mouseIsPressed) {
+        if (mouseInFurnaceMiddleArea && mousePressed) {
           furnaceFuelArea(smeltedItem, smeltedStacks, fuel, fuelStacks, fuelSpecs);
         }
 
-        if (mouseInFurnaceTopArea && mouseIsPressed) {
+        if (mouseInFurnaceTopArea && mousePressed) {
           furnaceTopAreaFunctioning(smeltedItem, smeltedStacks, fuel, item, itemStacks, itemSpecs);
         }
 
@@ -8305,7 +8306,7 @@
         else {
           legPos = 0;
 
-          if (!mouseIsPressed) {
+          if (!mousePressed) {
             armPos = 0;
           }
         }
@@ -8511,7 +8512,7 @@
 
         noStroke();
 
-        if (mouseIsPressed && mouseButton === LEFT && armTimer <= 0) {
+        if (mousePressed && mouseButton === LEFT && armTimer <= 0) {
           armTimer = 5;
         }
 
@@ -9180,7 +9181,7 @@
               mobs.y[s] += 10;
             }
 
-            if (dist(mobB, mobA, b, a) === 0 && mouseIsPressed && rightClick) {
+            if (dist(mobB, mobA, b, a) === 0 && mousePressed && rightClick) {
               if (quickSelectBarQty[barSlot] === 1) {
                 quickSelectBar[barSlot] = 338;
               }
@@ -9189,7 +9190,7 @@
                 getItem(338, 1);
               }
 
-              mouseIsPressed = false;
+              mousePressed = false;
             }
 
             break;
@@ -9214,7 +9215,7 @@
             break;
         }
 
-        if (dist(mobB, mobA, b, a) === 0 && mouseIsPressed && mouseButton === LEFT) {
+        if (dist(mobB, mobA, b, a) === 0 && mousePressed && mouseButton === LEFT) {
           mobs.health[s]--;
 
           if (mobB < posB) {
@@ -9226,7 +9227,7 @@
 
           mobs.y[s] -= 10;
 
-          mouseIsPressed = false;
+          mousePressed = false;
 
           var isASword = quickSelectBar[barSlot] > 311 && quickSelectBar[barSlot] < 317;
 
@@ -9312,13 +9313,13 @@
         if (furnaceClicked) {
           isSmelting = true;
           blockTargeted = [a, b];
-          mouseIsPressed = false;
+          mousePressed = false;
         }
 
         if (chestClicked) {
           onChest = true;
           blockTargeted = [a, b];
-          mouseIsPressed = false;
+          mousePressed = false;
         }
 
         if (craftingTableClicked) {
@@ -9342,7 +9343,7 @@
 
         if (swordSelected && gameHacks) {
           spawnMobs(b * 40, a * 40, 0);
-          mouseIsPressed = false;
+          mousePressed = false;
         }
 
         if (health < MAX_HEALTH) {
@@ -9633,7 +9634,7 @@
             selectedWater = false;
             selectedLava = false;
 
-            mouseIsPressed = false;
+            mousePressed = false;
           }
           else {
             // Conrad: Reduces amount of item in inventory
@@ -9656,7 +9657,7 @@
         var blockNotAir = quickSelectBar[barSlot] !== 0;
         var ofCertainBlocks = quickSelectBar[barSlot] < 300;
 
-        if (mouseIsPressed && thatRightClick && ofCertainBlocks && blockNotAir) {
+        if (mousePressed && thatRightClick && ofCertainBlocks && blockNotAir) {
           var isAir = world[a][b] === 0;
           var isStandingWater = world[a][b] === 11;
           var isFlowingWater = world[a][b] === 12;
@@ -9695,7 +9696,7 @@
           }
         }
 
-        if (mouseIsPressed && thatRightClick) { rightClickActions(thatRightClick); }
+        if (mousePressed && thatRightClick) { rightClickActions(thatRightClick); }
       };
 
 
@@ -9962,9 +9963,9 @@
         if (keyCode > 48 && keyCode < 58 && !chatOpened) { barSlot = keyCode - 49; }
 
         //Now to make it so we can break blocks.
-        if (!mouseIsPressed) { blockStrength = null; }
+        if (!mousePressed) { blockStrength = null; }
 
-        if (mouseIsPressed && !inventory && !news) {
+        if (mousePressed && !inventory && !news) {
           if (mouseButton === LEFT && world[a][b] !== 18) {
             if (world[a][b] < 10 || world[a][b] > 14) { breakBlocks(); }
           }
@@ -9996,7 +9997,7 @@
 
 
         //the Debug menu
-        if (keyIsPressed && keyCode === 114) {
+        if (keyPressed && keyCode === 114) {
           // if f3 is pressed and debug is false, set it to true
           if (!debugMenu) { debugMenu = true; }
           else { debugMenu = false; }

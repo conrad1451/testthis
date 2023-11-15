@@ -7914,6 +7914,1381 @@
       };
 
 
+      var chestFunctioning = function () {
+        var targetChest = specs[blockTargeted[0]][blockTargeted[1]];
+
+        if (mouseY < 350) {
+          if (mouseX < 200) {
+            a = (mouseY / 40 + 0.5).toFixed(0, 0) - 1;
+            b = (mouseX / 40 + 0.75).toFixed(0, 0) - 1;
+
+            interactWithInventoryItems(a, b, false);
+          }
+          else {
+            a = ((mouseY - 220) / 40).toFixed(0, 0) - (-4);
+            b = ((mouseX - 60) / 40).toFixed(0, 0) - 4;
+
+            if (a < 6 && b < 4 && a >= 0 && b >= 0) {
+              setTag(targetChest[0][a][b]);
+
+              if (mouseIsPressed) {
+                takeFromChest(targetChest, a, b);
+              }
+            }
+          }
+        }
+        else {
+          interactWithQuickSelectBar();
+        }
+
+        mouseIsPressed = false;
+      };
+
+
+
+      // Conrad: allows users to place items on crafting platform
+      var placeItemsOnCraftingTable = function (a, b) {
+        craftingGrid[a * 3 + b] = holdingBlock;
+        holdingQty--;
+
+        keyCode = 0;
+      };
+
+
+      // Conrad: allows users to take items off of crafting platform
+      var takeItemsOffCraftingTable = function (a, b) {
+        holdingBlock = craftingGrid[a * 3 + b];
+        holdingQty++;
+
+        craftingGrid[a * 3 + b] = 0;
+      };
+
+
+      var interactWithCraftingPlatform = function (craftingSquares, a, b) {
+        if (craftingSquares[a][b] === 0) {
+          placeItemsOnCraftingTable(a, b);
+        }
+        else if (holdingBlock === 0 || holdingBlock === craftingSquares[a][b]) {
+          takeItemsOffCraftingTable(a, b);
+        }
+
+        mouseIsPressed = false;
+      };
+
+
+
+      // Conrad: displays the full inventory platform
+
+      var fullInventoryPlatform = function () {
+        // var craftedItem = 0; //  Conrad this is a test july 20
+        // Conrad: added this line
+        displayMouseCoords();
+
+        var craftingSquares = [[], [], []];
+
+        // setting items in crafting square
+        for (var i = 0; i < 3; i++) {
+          for (var j = 0; j < 3; j++) {
+            craftingSquares[i][j] = craftingGrid[i * 3 + j];
+          }
+        }
+
+        var inCraftingWindowVerticalBounds = mouseY < 350;
+
+        if (inCraftingWindowVerticalBounds) {
+          if (mouseX < 220) {
+            a = (mouseY / 40 + 0.5).toFixed(0, 0) - 1;
+            b = (mouseX / 40 + 0.75).toFixed(0, 0) - 2;
+
+            interactWithInventoryItems(a, b, false);
+          }
+          else {
+            a = ((mouseY) / 30).toFixed(0, 0) - 2;
+            b = ((mouseX) / 30).toFixed(0, 0) - 9;
+
+            if (mouseY < 200 && mouseX > 210 && b < 2 && b >= 0 && a < 2 && a >= 0) {
+              setTag(craftingSquares[a][b]);
+
+              if (mouseIsPressed) {
+                interactWithCraftingPlatform(craftingSquares, a, b);
+              }
+            }
+
+            if (mouseX > 255 && mouseX < 295 && mouseY > 140 && mouseY < 180) {
+              grabCraftedItemsSmallPlatform();
+            }
+            else if (mouseX > 240 && mouseX < 310 && mouseY > 185 && mouseY < 255) {
+              a = ((mouseY - 175) / 30).toFixed(0, 0) - 1;
+              b = ((mouseX - 225) / 35).toFixed(0, 0) - 1;
+
+              wearingArmor(a, b);
+            }
+          }
+        }
+        else {
+          interactWithQuickSelectBar();
+        }
+      };
+
+      var largeCraftingPlatform = function () {
+        displayMouseCoords();
+
+        var craftingSquares = [[], [], []];
+
+        for (var i = 0; i < 3; i++) {
+          for (var j = 0; j < 3; j++) {
+            craftingSquares[i][j] = craftingGrid[i * 3 + j];
+          }
+        }
+
+        if (mouseY < 350) {
+          if (mouseX < 220) {
+            a = (mouseY / 40 + 0.5).toFixed(0, 0) - 1;
+            b = (mouseX / 40 + 0.75).toFixed(0, 0) - 2;
+
+            interactWithInventoryItems(a, b, false);
+          }
+          else {
+            a = ((mouseY) / 30).toFixed(0, 0) - 2;
+            b = ((mouseX) / 30).toFixed(0, 0) - 9;
+
+            if (mouseY < 200 && mouseX > 210 && b < 3 && b >= 0 && a < 3 && a >= 0) {
+              setTag(craftingSquares[a][b]);
+
+              if (mouseIsPressed) {
+                interactWithCraftingPlatform(craftingSquares, a, b);
+              }
+            }
+
+            if (mouseX > 270 && mouseX < 315 && mouseY > 225 && mouseY < 270) {
+              grabCraftedItemsLargePlatform();
+            }
+          }
+        }
+        else {
+          interactWithQuickSelectBar();
+        }
+      };
+
+
+      var furnaceSmeltedItemCollection = function (smeltedItem, smeltedStacks, fuel) {
+        if (keys[SHIFT]) {
+          getItem(smeltedItem, smeltedStacks);
+
+          smeltedItem = 0;
+          smeltedStacks = 0;
+        }
+        else if (holdingBlock === 0) {
+          holdingBlock = smeltedItem;
+          holdingQty = smeltedStacks;
+          smeltedItem = 0;
+          smeltedStacks = 0;
+
+          holdingSpecs = itemDurabilities[smeltedItem];
+        }
+
+        mouseIsPressed = false;
+      };
+
+      var furnaceFuelArea = function (smeltedItem, smeltedStacks, fuel, fuelStacks, fuelSpecs) {
+        var oldBlock = holdingBlock;
+        var oldQty = holdingQty;
+        var oldSpec = holdingSpecs;
+
+        holdingBlock = fuel;
+        holdingQty = fuelStacks;
+        holdingSpecs = fuelSpecs;
+
+        fuel = oldBlock;
+        fuelStacks = oldQty;
+        fuelSpecs = oldSpec;
+
+        mouseIsPressed = false;
+      };
+
+      var furnaceTopAreaFunctioning = function (smeltedItem, smeltedStacks, fuel, item, itemStacks, itemSpecs) {
+        var oldBlock = holdingBlock;
+        var oldQty = holdingQty;
+        var oldSpec = holdingSpecs;
+
+        holdingBlock = item;
+        holdingQty = itemStacks;
+        holdingSpecs = itemSpecs;
+
+        item = oldBlock;
+        itemStacks = oldQty;
+        itemSpecs = oldSpec;
+
+        mouseIsPressed = false;
+      };
+
+      var interactWithFurnace = function () {
+        var targetFurnace = specs[blockTargeted[0]][blockTargeted[1]];
+
+        for (var i = 0; i <= 10; i++) {
+          if (specs[blockTargeted[0]][blockTargeted[1]][i] === undefined) {
+            specs[blockTargeted[0]][blockTargeted[1]][i] = 0;
+          }
+        }
+
+        var fuel = targetFurnace[0];
+        var fuelStacks = targetFurnace[1];
+        var fuelSpecs = targetFurnace[2];
+
+        var smeltingTime = targetFurnace[3];
+
+        var item = targetFurnace[4];
+        var itemStacks = targetFurnace[5];
+        var itemSpecs = targetFurnace[6];
+
+        var smeltedItem = targetFurnace[7];
+        var smeltedStacks = targetFurnace[8];
+        var smeltedSpecs = targetFurnace[9];
+
+        var burnTime = targetFurnace[10];
+
+        /*
+        
+        255, 50, 40, 40
+        
+        255, 130, 40, 40
+        
+        255, 240, 40, 40
+        
+        */
+
+        var xBounds = inBounds(mouseX, 255, 295, false, false);
+        var yBottomBounds = inBounds(mouseY, 240, 280, false, false);
+        var yMiddleBounds = inBounds(mouseY, 130, 170, false, false);
+        var yTopBounds = inBounds(mouseY, 50, 90, false, false);
+
+        var mouseInFurnaceBottomArea = (xBounds && yBottomBounds);
+
+        var mouseInFurnaceMiddleArea = (xBounds && yMiddleBounds);
+
+        var mouseInFurnaceTopArea = (xBounds && yTopBounds);
+
+        // Conrad: top seems to be where smelted items are
+        // 		collected, middle area where the fuel goes, and
+        //               bottom area where the items to be smelted goes
+
+        if (mouseInFurnaceBottomArea && mouseIsPressed) {
+          furnaceSmeltedItemCollection(smeltedItem, smeltedStacks, fuel);
+        }
+
+        if (mouseInFurnaceMiddleArea && mouseIsPressed) {
+          furnaceFuelArea(smeltedItem, smeltedStacks, fuel, fuelStacks, fuelSpecs);
+        }
+
+        if (mouseInFurnaceTopArea && mouseIsPressed) {
+          furnaceTopAreaFunctioning(smeltedItem, smeltedStacks, fuel, item, itemStacks, itemSpecs);
+        }
+
+        specs[blockTargeted[0]][blockTargeted[1]][0] = fuel;
+        specs[blockTargeted[0]][blockTargeted[1]][1] = fuelStacks;
+        specs[blockTargeted[0]][blockTargeted[1]][2] = fuelSpecs;
+
+        specs[blockTargeted[0]][blockTargeted[1]][3] = smeltingTime;
+
+        specs[blockTargeted[0]][blockTargeted[1]][4] = item;
+        specs[blockTargeted[0]][blockTargeted[1]][5] = itemStacks;
+        specs[blockTargeted[0]][blockTargeted[1]][6] = itemSpecs;
+
+        specs[blockTargeted[0]][blockTargeted[1]][7] = smeltedItem;
+        specs[blockTargeted[0]][blockTargeted[1]][8] = smeltedStacks;
+        specs[blockTargeted[0]][blockTargeted[1]][9] = smeltedSpecs;
+
+        specs[blockTargeted[0]][blockTargeted[1]][10] = burnTime;
+      };
+
+
+      var openFurnaceInterface = function () {
+        if (mouseY < 350) {
+          if (mouseX < 220) {
+            a = (mouseY / 40 + 0.5).toFixed(0, 0) - 1;
+            b = (mouseX / 40 + 0.75).toFixed(0, 0) - 2;
+
+            interactWithInventoryItems(a, b, true);
+          }
+          else {
+            interactWithFurnace();
+          }
+        }
+        else {
+          interactWithQuickSelectBar();
+        }
+      };
+
+
+
+      var injuredByFall = function (theDecision) {
+        if (theDecision) {
+          if (fallTix > 10) {
+            blocksFallen++;
+          }
+        }
+        else {
+          if (blocksFallen > 5) {
+            health -= blocksFallen * 2;
+          }
+
+          blocksFallen = 0;
+
+          fallTix = 0;
+        }
+      };
+
+      var shouldDoItNow = function () {
+        var firstBlockIsAir = world[posA - (-1)][posB] === 0;
+        var firstBlockIsStillWater = world[posA - (-1)][posB] === 11;
+        var firstBlockIsFlowingWater = world[posA - (-1)][posB] === 12;
+        var firstBlockIsStillLava = world[posA - (-1)][posB] === 13;
+        var firstBlockIsFlowingLava = world[posA - (-1)][posB] === 14;
+        var firstBlockIsSappling = world[posA - (-1)][posB] === 16;
+        var firstBlockIsFire = world[posA - (-1)][posB] === 17;
+
+        var firstBlockIsHazard = (firstBlockIsStillWater || firstBlockIsFlowingWater || firstBlockIsStillLava || firstBlockIsFlowingLava || firstBlockIsFire);
+
+        var firstBlockConditions = (firstBlockIsAir || firstBlockIsHazard || firstBlockIsSappling);
+
+
+        var secondBlockIsAir = world[posA - (-1)][posB2] === 0;
+        var secondBlockIsStillWater = world[posA - (-1)][posB2] === 11;
+        var secondBlockIsFlowingWater = world[posA - (-1)][posB2] === 12;
+        var secondBlockIsStillLava = world[posA - (-1)][posB2] === 13;
+        var secondBlockIsFlowingLava = world[posA - (-1)][posB2] === 14;
+        var secondBlockIsSappling = world[posA - (-1)][posB2] === 16;
+        var secondBlockIsFire = world[posA - (-1)][posB2] === 17;
+
+        var secondBlockIsHazard = (secondBlockIsStillWater || secondBlockIsFlowingWater || secondBlockIsStillLava || secondBlockIsFlowingLava || secondBlockIsFire);
+
+        var secondBlockConditions = (secondBlockIsAir || secondBlockIsHazard || secondBlockIsSappling);
+
+        return firstBlockConditions && secondBlockConditions;
+      };
+
+
+
+
+      var drawCharacterHead = function () {
+        fill(199, 154, 77);
+        rect(0, 0, 20, 20);
+
+        fill(117, 84, 0);
+        triangle(0, 0 + 5, 0 + 15, 0 + 5, 0, 0 + 10);
+        rect(0, 0, 20, 5);
+
+        fill(255);
+        rect(0 + 15, 0 + 7, 5, 3);
+
+        fill(108, 0, 196);
+        rect(0 + 17, 0 + 7, 3, 3);
+      };
+
+      var drawItemHeld = function () {
+        if (quickSelectBar[barSlot] > 300) {
+          drawBlocks(quickSelectBar[barSlot], 6, 10);
+        }
+        else {
+          scale(0.75, 0.75);
+          drawBlocks(quickSelectBar[barSlot], 6, 20);
+        }
+
+      };
+
+      var characterDirection = function () {
+        // A and D keys controlling movement
+        if (keys[65] || keys[68]) {
+          legPos = sin(time * 30) * 30;
+          armPos = sin(time * 30) * 15;
+        }
+        else {
+          legPos = 0;
+
+          if (!mouseIsPressed) {
+            armPos = 0;
+          }
+        }
+      };
+
+
+
+      var showCharacter = function () {
+        var playerX = scrollX - posX + 195, playerY = scrollY - posY + 135;
+
+        if (mouseX > playerX) {
+          direction = LEFT;
+        }
+        else {
+          direction = RIGHT;
+        }
+
+        characterDirection();
+
+        translate(playerX + 10, playerY + 50);
+
+
+        // Conrad: behind leg of character
+        rotate(-legPos);
+
+        fill(15, 0, 110);
+        rect(-6, 0, 12, 30);
+
+        // Conrad: behind armor shins of character
+        if (armorSlots[2] > 0) {
+          switch (armorSlots[2]) {
+            case 322:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 326:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 330:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 334:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+          }
+
+          rect(-6, 0, 11, 25, 30);
+          noStroke();
+        }
+
+        // Conrad: behind armored shoes of character
+        if (armorSlots[3] > 0) {
+          switch (armorSlots[3]) {
+            case 323:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 327:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 331:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 335:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+
+          }
+
+          rect(-7, 20, 14, 13, 30);
+          noStroke();
+        }
+
+        resetMatrix();
+
+        translate(playerX + 10, playerY + 22);
+
+
+        // Conrad: behind arm of character
+
+        rotate(-armPos);
+
+        fill(0, 122, 122);
+        rect(-5, 0, 10, 10);
+
+        fill(143, 105, 43);
+        rect(-5, 10, 10, 20);
+
+        resetMatrix();
+
+
+        translate(playerX, playerY);
+
+        if (direction === RIGHT) {
+          scale(-1, 1);
+
+          translate(-20, 0);
+        }
+
+
+
+        drawCharacterHead();
+
+        // Conrad: breastplate of character
+        if (armorSlots[1] > 0) {
+          switch (armorSlots[1]) {
+            case 321:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 325:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 329:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 333:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+          }
+
+          rect(2, 20, 16, 35, 15);
+
+          noStroke();
+        }
+
+        // Conrad: helmet of character
+        if (armorSlots[0] > 0) {
+          switch (armorSlots[0]) {
+            case 320:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 324:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 328:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 332:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+          }
+
+          rect(-2, -3, 25, 8, 30);
+        }
+
+        noStroke();
+
+        if (mouseIsPressed && mouseButton === LEFT && armTimer <= 0) {
+          armTimer = 5;
+        }
+
+        if (armTimer > 0) {
+          armTimer--;
+        }
+
+        resetMatrix();
+
+
+        translate(playerX + 10, playerY + 50);
+
+        // Conrad: front leg of character
+
+        rotate(legPos);
+
+        fill(23, 0, 156);
+        rect(-6, 0, 12, 30);
+
+        // Conrad: front armor shins of character
+        if (armorSlots[2] > 0) {
+          switch (armorSlots[2]) {
+            case 322:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 326:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 330:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 334:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+          }
+
+          rect(-6, -3, 11, 28, 30);
+
+          noStroke();
+        }
+
+        // Conrad: front armored shoes of character
+        if (armorSlots[3] > 0) {
+          switch (armorSlots[3]) {
+            case 323:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 327:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 331:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 335:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+
+          }
+
+          rect(-7, 20, 14, 13, 30);
+
+          noStroke();
+        }
+
+        resetMatrix();
+
+        translate(playerX + 10, playerY + 22);
+
+        if (armTimer > 0) {
+          if (direction === RIGHT) {
+            rotate(armTimer * 10);
+          }
+          else {
+            rotate(-armTimer * 10);
+          }
+        }
+        else {
+          rotate(armPos);
+        }
+
+
+        // Conrad: front arm of character
+        fill(0, 189, 189);
+        rect(-5, 0, 10, 10);
+
+        fill(199, 154, 77);
+        rect(-5, 10, 10, 20);
+
+        // Conrad: armored shoulders of character
+        if (armorSlots[1] > 0) {
+          switch (armorSlots[1]) {
+            case 321:
+
+              fill(225);
+              stroke(150);
+
+              break;
+
+            case 325:
+
+              fill(255, 213, 0);
+              stroke(191, 150, 0);
+
+              break;
+
+            case 329:
+
+              fill(0, 255, 255);
+              stroke(0, 168, 168);
+
+              break;
+
+            case 333:
+
+              fill(189, 120, 0);
+              stroke(125, 75, 0);
+
+              break;
+          }
+
+          rect(-8, -3, 15, 15, 15);
+
+          noStroke();
+        }
+
+        if (direction === RIGHT) {
+          scale(-1, 1);
+        }
+
+        drawItemHeld();
+
+        resetMatrix();
+      };
+
+
+      var characterDrowning = function (inWater, oxygen) {
+        var theOxygen = oxygen;
+        // controls oxygen levels of player and health if they begin to drown
+        if (inWater) {
+          // both drownCount and oxygen can be encapsulated with this entire if else statement concerning water into a helper function called isdrowning, which is defined elsewhere and called here
+
+          drownCount++;
+
+          for (var ll = 0; ll < oxygen; ll++) {
+            noFill();
+            stroke(0, 196, 230, 150);
+            ellipse(ll * 16 + 30, 301, 16, 16);
+          }
+
+          if (drownCount % 50 === 0) {
+            if (oxygen < 0) {
+              health -= 2;
+            }
+
+            theOxygen = oxygen - 1;
+          }
+        }
+        else {
+          theOxygen = 10;
+        }
+
+        return theOxygen;
+      };
+
+
+      var probableAnimal = function (mobX, mobY, mobA, mobB, rightClick, s) {
+        noStroke();
+        fill(255, 181, 181);
+
+        resetMatrix();
+
+        if (mobs.direction[s] === RIGHT) {
+          translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(sin(time * 30) * 15);
+          }
+
+          fill(179, 127, 127);
+
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(-sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          fill(255, 181, 181);
+
+          rect(mobs.x[s] + scrollX - 15, mobs.y[s] + scrollY + 25, 40, 20);
+
+          translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(-sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+        }
+        else {
+          translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(sin(time * 30) * 15);
+          }
+
+          fill(179, 127, 127);
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(-sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          fill(255, 181, 181);
+
+          rect(mobs.x[s] + scrollX - 15, mobs.y[s] + scrollY + 25, 40, 20);
+
+          translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+
+          resetMatrix();
+
+          translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+          if (mobs.state[s] !== 0) {
+            rotate(-sin(time * 30) * 15);
+          }
+
+          rect(-5, 0, 10, 15);
+        }
+
+        resetMatrix();
+
+        text(mobs.direction[s], mobX + scrollX, mobY + scrollY);
+
+        if (dist(mobB, mobA, posB, posA) < 4) {
+          var x = posX - posX * 2 + 195;
+          var y = posY - posY * 2 + 135;
+
+          if (mobs.direction[s] === LEFT) {
+            translate(mobX + scrollX - 10, mobY + scrollY + 30);
+          }
+          else {
+            translate(mobX + scrollX + 25, mobY + scrollY + 30);
+          }
+
+          rotate(atan2(mobY - y, mobX - x));
+
+          rect(-10, -10, 20, 20);
+
+          if (posB < mobB) {
+            rect(-14, -2, 6, 8);
+
+            fill(255);
+            rect(-10, -6, 5, 3);
+
+            fill(0);
+            rect(-8, -6, 3, 3);
+
+            if (mobs.state[s] === 0) {
+              mobs.direction[s] = LEFT;
+            }
+          }
+          else {
+            rect(-14, -6, 6, 8);
+
+            fill(255);
+            rect(-10, 3, 5, 3);
+
+            fill(0);
+            rect(-8, 3, 3, 3);
+
+            if (mobs.state[s] === 0) {
+              mobs.direction[s] = RIGHT;
+            }
+          }
+        }
+        else {
+          if (mobs.direction === LEFT) {
+            translate(mobX + scrollX + 10, mobY + scrollY + 30);
+          }
+          else {
+            translate(mobX + scrollX - 10, mobY + scrollY + 30);
+          }
+
+          if (direction === RIGHT) {
+
+            scale(-1, 1);
+
+          }
+
+          mobs.headPos[s] = 0;
+
+          rect(-10, -10, 20, 20);
+          rect(-14, -2, 6, 8);
+
+          fill(255);
+          rect(-10, -6, 5, 3);
+
+          fill(0);
+          rect(-8, -6, 3, 3);
+        }
+
+        resetMatrix();
+
+        if (round(random(0, 100))) { }
+        else {
+          mobs.state[s] = round(random(0, 2) + 0.5);
+        }
+
+        if (round(random(0, 25))) { }
+        else {
+          mobs.state[s] = 0;
+        }
+
+        if (mobs.state[s] !== 0) {
+          mobs.legPos[s] = sin(time) * 10;
+        }
+
+        if (world[mobA - (-1)][mobB] === 0) {
+          mobs.y[s] += 10;
+        }
+
+      };
+
+
+
+      var mobFunction = function (mobX, mobY, mobA, mobB, rightClick, s) {
+        switch (mobs.type[s]) {
+          case 0:
+            probableAnimal(mobX, mobY, mobA, mobB, rightClick, s);
+
+
+
+            break;
+
+          case 1:
+
+            noStroke();
+
+            image(getImage("avatars/old-spice-man"), mobX + scrollX, mobY + scrollY + 30, 40, 40);
+
+            if (round(random(0, 100))) { }
+            else {
+              mobs.state[s] = round(random(0, 2) + 0.5);
+            }
+
+            if (round(random(0, 50))) { }
+            else {
+              mobs.state[s] = 0;
+            }
+
+            if (world[mobA - (-1)][mobB] === 0) {
+              mobs.y[s] += 10;
+            }
+
+            if (dist(mobB, mobA, posB, posA) < 10) {
+              if (mobB < posB) {
+                mobs.state[s] = 1;
+              }
+              else {
+                mobs.state[s] = 2;
+              }
+            }
+
+            if (dist(mobB, mobA, posB, posA) < 2) {
+              explode(mobB, mobA);
+
+              mobs.health[s] = 0;
+
+              health -= 10;
+            }
+
+            break;
+
+          case 2:
+
+            noStroke();
+
+            image(getImage("cute/CharacterBoy"), mobX + scrollX, mobY + scrollY - 25, 60, 110);
+            fill(0, 0, 0, 60);
+            rect(mobX + scrollX, mobY + scrollY, 60, 15);
+
+            fill(255);
+            text("Herobrine", mobX + scrollX + 3, mobY + scrollY + 15);
+
+            ellipse(mobX + scrollX + 19, mobY + scrollY + 43, 4, 5);
+            ellipse(mobX + scrollX + 42, mobY + scrollY + 43, 4, 5);
+
+            if (round(random(0, 100))) { }
+            else {
+              mobs.state[s] = round(random(0, 2) + 0.5);
+            }
+
+            if (round(random(0, 50))) { }
+            else {
+              mobs.state[s] = 0;
+            }
+
+            if (dist(mobB, mobA, posB, posA) < 20) {
+              if (mobB < posB) {
+                mobs.state[s] = 1;
+              }
+              else {
+                mobs.state[s] = 2;
+              }
+
+              if (dist(mobB, mobA, posB, posA) < 2) {
+                health -= 10;
+              }
+            }
+            else {
+              mobs.x[s] = posB * 40;
+              mobs.y[s] = posA * 40;
+              broadcast("<Herobrine> You cannot run!");
+            }
+
+            if (world[mobA - (-1)][mobB] === 0) {
+              mobs.y[s] += 10;
+            }
+
+            break;
+
+          case 3:
+
+            noStroke();
+
+            noStroke();
+
+            fill(255, 181, 181);
+
+            if (dist(mobB, mobA, posB, posA) < 4) {
+              var x = posX - posX * 2 + 195;
+              var y = posY - posY * 2 + 135;
+
+              if (mobs.direction === LEFT) {
+                translate(mobX + scrollX + 10, mobY + scrollY + 30);
+              }
+              else {
+                translate(mobX + scrollX - 15, mobY + scrollY + 30);
+              }
+
+              rotate(atan2(mobY - y, mobX - x));
+
+              rect(-10, -10, 20, 20);
+
+              if (posB < mobB) {
+                rect(-14, -2, 6, 8);
+
+                fill(255);
+                rect(-10, -6, 5, 3);
+
+                fill(0);
+                rect(-8, -6, 3, 3);
+
+                if (mobs.state[s] === 0) {
+                  mobs.direction[s] = RIGHT;
+                }
+              }
+              else {
+                rect(-14, -6, 6, 8);
+
+                fill(255);
+                rect(-10, 3, 5, 3);
+
+                fill(0);
+                rect(-8, 3, 3, 3);
+
+                if (mobs.state[s] === 0) {
+                  mobs.direction[s] = LEFT;
+                }
+              }
+            }
+            else {
+              if (mobs.direction === LEFT) {
+                translate(mobX + scrollX + 10, mobY + scrollY + 30);
+              }
+              else {
+                translate(mobX + scrollX - 10, mobY + scrollY + 30);
+              }
+
+              if (direction === RIGHT) {
+                scale(-1, 1);
+              }
+
+              mobs.headPos[s] = 0;
+
+              rect(-10, -10, 20, 20);
+
+              rect(-14, -2, 6, 8);
+
+              fill(255);
+              rect(-10, -6, 5, 3);
+
+              fill(0);
+              rect(-8, -6, 3, 3);
+            }
+
+            resetMatrix();
+
+            if (mobs.direction[s] === LEFT) {
+              translate(mobs.x[s] + scrollX - 20, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(sin(time * 30) * 15);
+              }
+
+              fill(179, 127, 127);
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              translate(mobs.x[s] + scrollX - 50, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(-sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              fill(255, 181, 181);
+
+              rect(mobs.x[s] + scrollX - 55, mobs.y[s] + scrollY + 25, 40, 20);
+
+              translate(mobs.x[s] + scrollX - 50, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              translate(mobs.x[s] + scrollX - 20, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(-sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+            }
+            else {
+              translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(sin(time * 30) * 15);
+              }
+
+              fill(179, 127, 127);
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(-sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              fill(89, 39, 0);
+
+              rect(mobs.x[s] + scrollX - 15, mobs.y[s] + scrollY + 25, 40, 20);
+
+              translate(mobs.x[s] + scrollX - 10, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+
+              resetMatrix();
+
+              translate(mobs.x[s] + scrollX + 20, mobs.y[s] + scrollY + 40);
+
+              if (mobs.state[s] !== 0) {
+                rotate(-sin(time * 30) * 15);
+              }
+
+              rect(-5, 0, 10, 15);
+
+            }
+
+            resetMatrix();
+
+            if (round(random(0, 100))) { }
+            else {
+              mobs.state[s] = round(random(0, 2) + 0.5);
+            }
+
+            if (round(random(0, 50))) { }
+            else {
+              mobs.state[s] = 0;
+            }
+
+            if (world[mobA - (-1)][mobB] === 0) {
+              mobs.y[s] += 10;
+            }
+
+            if (dist(mobB, mobA, b, a) === 0 && mouseIsPressed && rightClick) {
+              if (quickSelectBarQty[barSlot] === 1) {
+                quickSelectBar[barSlot] = 338;
+              }
+              else {
+                quickSelectBarQty[barSlot]--;
+                getItem(338, 1);
+              }
+
+              mouseIsPressed = false;
+            }
+
+            break;
+
+        }
+
+        switch (mobs.state[s]) {
+          case 1:
+
+            if (world[mobA][mobB] === 0) {
+              mobs.x[s] += 3;
+            }
+
+            break;
+
+          case 2:
+
+            if (world[mobA][mobB - 1] === 0) {
+              mobs.x[s] -= 3;
+            }
+
+            break;
+        }
+
+        if (dist(mobB, mobA, b, a) === 0 && mouseIsPressed && mouseButton === LEFT) {
+          mobs.health[s]--;
+
+          if (mobB < posB) {
+            mobs.x[s] -= 5;
+          }
+          else {
+            mobs.x[s] += 5;
+          }
+
+          mobs.y[s] -= 10;
+
+          mouseIsPressed = false;
+
+          var isASword = quickSelectBar[barSlot] > 311 && quickSelectBar[barSlot] < 317;
+
+          if (isASword) {
+            quickSelectBarSpecs[barSlot]--;
+
+            mobs.health[s] -= (quickSelectBar[barSlot] - 310) * 2;
+          }
+
+          if (mobs.health[s] <= 0) {
+            switch (mobs.type[s]) {
+              case 0:
+
+                for (var i = 0; i < random(0, 3); i++) {
+                  spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 317);
+                }
+
+                break;
+
+              case 1:
+
+                for (var i = 0; i < random(0, 3); i++) {
+                  spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 318);
+                }
+
+                break;
+
+              case 2:
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 311);
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 316);
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 328);
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 329);
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 330);
+
+                spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 331);
+
+                broadcast("You just made a powerful enemy...");
+
+                break;
+
+              case 3:
+
+                for (var i = 0; i < random(0, 3); i++) {
+                  spawnEntity(mobs.x[s] + random(0, 40), mobs.y[s] + 20, 0, 336);
+                }
+
+                break;
+
+            }
+
+          }
+
+        }
+      };
+
+
+
 
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);

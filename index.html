@@ -9289,6 +9289,1389 @@
 
 
 
+      var rightClickActions = function (rightClick) {
+        var diamondOreClicked = (world[a][b] === 26);
+
+        var craftingTableClicked = (world[a][b] === 27);
+        var doorClicked = (world[a][b] === 28);
+        var upperDoorClicked = (world[a][b] === 29);
+        var furnaceClicked = (world[a][b] === 33);
+
+        var chestClicked = (world[a][b] === 34);
+
+        var diamondZSelected = (quickSelectBar[barSlot] === 305);
+
+        var swordSelected = (quickSelectBar[barSlot] === 316);
+        var rawPorckhopSelected = (quickSelectBar[barSlot] === 317);
+        var cookedPorckhopSelected = (quickSelectBar[barSlot] === 319);
+
+        if (gameHacks) {
+          grabWaterOrLava();
+        }
+
+        if (furnaceClicked) {
+          isSmelting = true;
+          blockTargeted = [a, b];
+          mouseIsPressed = false;
+        }
+
+        if (chestClicked) {
+          onChest = true;
+          blockTargeted = [a, b];
+          mouseIsPressed = false;
+        }
+
+        if (craftingTableClicked) {
+          isCrafting = true;
+        }
+        else if (diamondOreClicked && diamondZSelected && gameHacks) {
+          heartsShowing = true;
+
+          quickSelectBarQty[barSlot]--;
+
+          if (shieldsShowing) {
+            shieldsShowingCount += 1000;
+          }
+        }
+        else if (doorClicked) {
+          openCloseDoor();
+        }
+        else if (upperDoorClicked) {
+          openCloseUpperDoor();
+        }
+
+        if (swordSelected && gameHacks) {
+          spawnMobs(b * 40, a * 40, 0);
+          mouseIsPressed = false;
+        }
+
+        if (health < MAX_HEALTH) {
+          if (rawPorckhopSelected) {
+            eatPorkChop(false);
+          }
+          if (cookedPorckhopSelected) {
+            eatPorkChop(true);
+          }
+        }
+      };
+
+
+      var blockDestructionProgression = function (x, y) {
+        if (blockStrength < (selDurability / 7) * 6) {
+          stroke(0); strokeWeight(3);
+
+          line(x * 40 + scrollX + 20, y * 40 + scrollY + 20, x * 40 + scrollX + 11, y * 40 + scrollY + 37);
+
+          if (blockStrength < (selDurability / 7) * 5) {
+            line(x * 40 + scrollX + 20, y * 40 + scrollY + 20, x * 40 + scrollX + 35, y * 40 + scrollY + 11);
+
+            if (blockStrength < (selDurability / 7) * 4) {
+              line(x * 40 + scrollX + 28, y * 40 + scrollY + 15, x * 40 + scrollX + 33, y * 40 + scrollY + 34);
+            }
+
+            if (blockStrength < (selDurability / 7) * 3) {
+              line(x * 40 + scrollX + 6, y * 40 + scrollY + 15, x * 40 + scrollX + 20, y * 40 + scrollY + 20);
+            }
+
+            if (blockStrength < (selDurability / 7) * 2) {
+              line(x * 40 + scrollX + 14, y * 40 + scrollY + 17, x * 40 + scrollX + 20, y * 40 + scrollY + 7);
+            }
+
+            if (blockStrength < (selDurability / 7)) {
+              line(x * 40 + scrollX + 25, y * 40 + scrollY + 27, x * 40 + scrollX + 14, y * 40 + scrollY + 32);
+            }
+          }
+
+          strokeWeight(2);
+        }
+      };
+
+      var harvestBlock = function () {
+        switch (world[a][b]) {
+          case 1:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 4);
+
+            break;
+
+          case 2:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 3);
+
+            break;
+
+          case 3:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 3);
+
+            break;
+
+          case 4:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 4);
+
+            break;
+
+          case 5:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 5);
+
+            break;
+
+          case 6:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 6);
+
+            break;
+
+          case 7:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 7);
+
+            break;
+
+          case 8:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 8);
+
+            break;
+
+          case 9:
+
+            c = random(0, 5);
+
+            if (c > 4.5) {
+              spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 16);
+            }
+
+            break;
+
+          case 15:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 15);
+
+            break;
+
+          case 16:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 16);
+
+            break;
+
+          case 19:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 19);
+
+            break;
+
+          case 20:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 20);
+
+            break;
+
+          case 21:
+
+            c = random(0, 5);
+
+            if (c > 4) {
+              spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 306);
+            }
+            else {
+              spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 21);
+            }
+
+            break;
+
+          case 22:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 301);
+
+            break;
+
+          case 23:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 23);
+
+            break;
+
+          case 24:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 24);
+
+            break;
+
+          case 25:
+
+            c = round(random(4, 5));
+
+            for (var i = 0; i < c; i++) {
+              spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 304);
+            }
+
+            break;
+
+          case 26:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 305);
+
+            break;
+
+          case 27:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 27);
+
+            break;
+
+          case 28:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 28);
+
+            world[a - 1][b] = 0;
+
+            break;
+
+          case 29:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 28);
+
+            world[a - (-1)][b] = 0;
+
+            break;
+
+          case 30:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 30);
+
+            break;
+
+          case 31:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 31);
+
+            break;
+
+          case 33:
+
+            furnaceInteraction(a, b);
+
+            break;
+
+          case 34:
+
+            chestInteraction(a, b);
+
+            break;
+
+          case 35:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 35);
+
+            break;
+
+          case 37:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 37);
+
+            break;
+
+          case 38:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 38);
+
+            break;
+
+          case 39:
+
+            spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 39);
+
+            break;
+
+        }
+      };
+
+
+      var breakBlocks = function () {
+        if (blockStrength === null) {
+          changeDurability(a, b);
+        }
+
+        if (blockStrength <= 0) {
+          harvestBlock();
+
+          blockStrength = null;
+
+          if (world[a][b] !== 0) {
+            var theItemID = quickSelectBar[barSlot];
+            var degradeAmount = degradeByAmount(theItemID);
+
+            quickSelectBarSpecs[barSlot] -= degradeAmount;
+          }
+
+          world[a][b] = 0;
+        }
+        else if (blockStrength !== null) {
+          if (blockTargeted[0] === a && blockTargeted[1] === b) {
+            blockStrength--;
+          }
+          else {
+            blockStrength = null;
+          }
+        }
+      };
+
+
+      var reduceQtyAndSpecs = function () {
+        if (!itemDurabilities[quickSelectBar[barSlot]]) {
+          var selectedWater = quickSelectBar[barSlot] === 11;
+          var selectedLava = quickSelectBar[barSlot] === 13;
+
+          // Conrad: this triggers the milk buckets
+          if (selectedWater || selectedLava) {
+            quickSelectBar[barSlot] = 337;
+
+            selectedWater = false;
+            selectedLava = false;
+
+            mouseIsPressed = false;
+          }
+          else {
+            // Conrad: Reduces amount of item in inventory
+            // after placing it into the world
+            quickSelectBarQty[barSlot]--;
+          }
+        }
+        else {
+          // Conrad: don’t understand purpose of this statement
+          quickSelectBarSpecs[barSlot]--;
+        }
+      };
+
+
+
+      var breakAndTakeBlock = function (thatRightClick) {
+        a = (mouseY / 40 + 0.5 - scrollY / 40).toFixed(0, 0) - 1;
+        b = (mouseX / 40 + 0.5 - scrollX / 40).toFixed(0, 0) - 1;
+
+        var blockNotAir = quickSelectBar[barSlot] !== 0;
+        var ofCertainBlocks = quickSelectBar[barSlot] < 300;
+
+        if (mouseIsPressed && thatRightClick && ofCertainBlocks && blockNotAir) {
+          var isAir = world[a][b] === 0;
+          var isStandingWater = world[a][b] === 11;
+          var isFlowingWater = world[a][b] === 12;
+          var isStandingLava = world[a][b] === 13;
+          var isFlowingLava = world[a][b] === 14;
+
+          var isHazard = (isStandingWater || isFlowingWater || isStandingLava || isFlowingLava);
+
+          if (isAir || isHazard) {
+            armTimer = 5;
+            world[a][b] = (quickSelectBar[barSlot]);
+
+            var isFurnace = world[a][b] === 33;
+
+            if (isFurnace) { createNewFurnace(); }
+
+            var isChest = world[a][b] === 34;
+
+            if (isChest) { createNewChest(); }
+
+            reduceQtyAndSpecs();
+
+            var isDoor = world[a][b] === 28;
+
+            if (isDoor) {
+              specs[a][b] = 1;
+              specs[a - 1][b] = 1;
+              world[a - 1][b] = 29;
+            }
+          }
+          else {
+            var isTNT = world[a][b] === 15;
+            var selectedFire = quickSelectBar[barSlot] === 17;
+
+            if (isTNT && selectedFire) { explode(b, a); }
+          }
+        }
+
+        if (mouseIsPressed && thatRightClick) { rightClickActions(thatRightClick); }
+      };
+
+
+      var armorDestroyed = function () {
+        for (var e = 0; e < 2; e++) {
+          for (var d = 0; d < 2; d++) {
+            if (armorSpecs[e * 2 + d] <= 0) {
+              armorSlots[e * 2 + d] = 0;
+              armorSpecs[e * 2 + d] = 0;
+            }
+          }
+        }
+      };
+
+
+      var resetBlockHeld = function () {
+        if (holdingQty === 0 || holdingBlock === 0) {
+          holdingBlock = 0;
+          holdingQty = 0;
+          holdingSpecs = 0;
+        }
+      };
+
+      var characterGamePlay = function (rightClick) {
+        textAlign(LEFT, BOTTOM);
+        place = (scrollX / 20) - (scrollX / 10);
+
+        if (!heartsShowing) { normalMode(); }
+        else { specialMode(); }
+
+        strokeWeight(2);
+
+        noStroke();
+        if (!nether) { drawClouds(cloudX, time, night); }
+
+        drawWorld();
+
+        var x = blockTargeted[1];
+        var y = blockTargeted[0];
+
+        if (x === blockTargeted[1] && y === blockTargeted[0] && blockStrength !== null) { blockDestructionProgression(x, y); }
+
+        var entX, entY, entA, entB;
+
+        for (var tt = 0; tt < entity.length; tt++) {
+          entX = entity.x[tt] + scrollX;
+          entY = entity.y[tt] + scrollY;
+          entA = (entity.y[tt] / 40).toFixed(0, 0);
+          entB = (entity.x[tt] / 40).toFixed(0, 0);
+
+          switch (entity.type[tt]) {
+            case 0:
+
+              var distance = dist(entB, entA, posB, posA);
+              drawBlocks(entity.type2[tt], entX, entY);
+
+              if (world[entA][entB] === 0) { entity.y[tt] += 5; }
+
+              if (distance < 2) {
+                entity.type[tt] = null;
+                getItem(entity.type2[tt], 1);
+              }
+              break;
+
+            case 1:
+
+              break;
+          }
+        }
+
+
+        // conrad: it seems that "round(random(0,100))" spawns mobs at random times, the type depending on if it is day or night
+
+        // conrad: the way these if statements are set up, at random points a type 0 or type 3 mob will be spawned, only at night will a type 1 mob be spawned
+
+
+        if (round(random(0, 100))) { }
+        else {
+          // conrad: changed this from 0 to 1 to see what happens..
+          spawnMobs(random(0, (world[0].length - 1) * 40), 12 * 40, 1);
+        }
+
+        if (round(random(0, 100))) { }
+        else if (night) {
+          // conrad: green mob type
+          spawnMobs(random(0, (world[0].length - 1) * 40), 12 * 40, 1);
+        }
+
+        if (round(random(0, 100))) { }
+        else {
+          spawnMobs(random(0, (world[0].length - 1) * 40), 12 * 40, 3);
+        }
+
+        var mobX, mobY, mobA, mobB;
+
+        for (var s = 0; s < mobs.length; s++) {
+          mobX = mobs.x[s];
+          mobY = mobs.y[s];
+          mobA = (mobY / 40).toFixed(0, 0);
+          mobB = (mobX / 40).toFixed(0, 0);
+
+          if (mobs.health[s] > 0) { mobFunction(mobX, mobY, mobA, mobB, rightClick, s); }
+        }
+
+        fall = fallAmount(inWater, inLava);
+
+        if (jump > 0) { jump--; }
+        var bottomStillWater = (world[posA][posB] === 11);
+        var bottomFlowingWater = (world[posA][posB] === 12);
+        var topStillWater = (world[posA - 1][posB] === 11);
+        var topFlowingWater = (world[posA - 1][posB] === 12);
+
+        if (bottomStillWater || bottomFlowingWater || topStillWater || topFlowingWater) { inWater = true; }
+        else { inWater = false; }
+
+        playerSpeed = 8;
+
+        if (world[posA][posB] === 13 || world[posA][posB] === 14) {
+          onFire = true;
+          inLava = true;
+        }
+        else { inLava = false; }
+
+        if (world[posA][posB] === 17) { onFire = true; }
+
+        posA = (posY / 40 - posY / 20 + 4).toFixed(0, 0);
+        posB = (posX / 40 - posX / 20 + 5).toFixed(0, 0);
+
+        posA2 = ((posY - 30) / 40 - (posY - 30) / 20).toFixed(0, 0);
+        posB2 = ((posX + 30) / 40 - (posX + 30) / 20 + 5).toFixed(0, 0);
+
+        var decisionToDoItNow = shouldDoItNow();
+
+        if (decisionToDoItNow) { posY -= fall - jump; }
+        else { jump = 20; }
+
+        injuredByFall(decisionToDoItNow);
+
+        //to prevent infinity health hax
+        if (health > MAX_HEALTH) { health = MAX_HEALTH; }
+
+        if (inWater) { onFire = false; }
+
+        noStroke();
+        if (onFire) { personBurning(); }
+
+        showCharacter();
+
+        if (onFire) { drawBurningFire(); }
+
+        posA2 = ((posY + 10) / 40 - (posY + 10) / 20 + 4).toFixed(0, 0);
+
+        if (world[posA2][posB] !== 0 || world[posA2][posB2] !== 0) { jump = 18; }
+
+        posA2 = ((posY - 30) / 40 - (posY - 30) / 20 + 4).toFixed(0, 0);
+
+        if (place + 100 > world[0].length) { genWorld(); }
+
+        //the quickSelectBar
+        if (!hide) { drawQuickSelectBar(); }
+
+        //Hearts, armor, etc.
+        if (shake === 2) { shake = - 2; }
+        else { shake = 2; }
+
+        oxygen = characterDrowning(inWater, oxygen);
+
+        for (var L = 0; L < armor / 2; L++) { image(shield, 400 - L * 16 - 40, 312, 16, 24); }
+
+        //Now to select what blocks to place.
+
+        if (!inventory && !news && !isCrafting && !isSmelting) { breakAndTakeBlock(rightClick); }
+        else if (inventory) { fullInventoryPlatform(); }
+
+        if (onChest) { chestFunctioning(); }
+
+        if (isCrafting) { largeCraftingPlatform(); }
+
+        if (isSmelting) { openFurnaceInterface(); }
+
+        resetBlockHeld();
+
+        if (keys[112]) {
+          if (!hide) { hide = true; }
+          else { hide = false; }
+          keyCode = 0;
+        }
+
+        if (keyTimer > 0 && !isSprinting) { keyTimer--; }
+
+        if (keys[68]) {
+          //direction=LEFT;
+          posB2 = ((posX + 30) / 40 - (posX + 30) / 20 + 6).toFixed(0, 0);
+
+          var sprintDecision = shouldSprintLeft();
+          var firstBlockIsCactus = (world[posA][posB2] === 31);
+          var secondBlockIsCactus = (world[posA2][posB2] === 31);
+
+          if (sprintDecision) { sprintLeft(); }
+          else {
+            isSprinting = false;
+
+            if (firstBlockIsCactus || secondBlockIsCactus) { health -= 1; }
+          }
+
+          posB2 = ((posX + 30) / 40 - (posX + 30) / 20 + 5).toFixed(0, 0);
+        }
+
+        if (keys[65]) {
+          //direction=RIGHT;
+          var sprintDecision = shouldSprintRight();
+          var firstBlockIsCactus = (world[posA][posB - 1] === 31);
+          var secondBlockIsCactus = (world[posA2][posB - 1] === 31);
+
+          if (sprintDecision) { sprintRight(); }
+          else {
+            if (firstBlockIsCactus || secondBlockIsCactus) { health -= 1; }
+
+            isSprinting = false;
+          }
+        }
+
+        if (keys[16] || keys[83]) {
+          if (world[posA - (-1)][posB] === 30 || world[posA - (-1)][posB] === 0) { posY -= playerSpeed; }
+
+          if (isSitting) { isSitting = false; }
+          else { isSitting = true; }
+
+          keyCode = 0;
+        }
+
+        // Conrad: work on this next time
+        if (keys[32] || keys[87]) {
+          if ((world[posA - 1][posB] === 0 || world[posA - 1][posB] === 11 || world[posA - 1][posB] === 12 || world[posA - 1][posB] === 13 || world[posA - 1][posB] === 14 || world[posA - 1][posB] === 16 || world[posA - 1][posB] === 17)) {
+            if (inWater) {
+              posY += 1;
+            }
+
+            if (inLava) {
+              posY += 2;
+            }
+            else if ((world[posA - (-1)][posB] !== 0 && world[posA - (-1)][posB] !== 11 && world[posA - (-1)][posB] !== 12 && world[posA - (-1)][posB] !== 13 && world[posA - (-1)][posB] !== 14) || (world[posA - (-1)][posB2] !== 0 && world[posA - (-1)][posB2] !== 11 && world[posA - (-1)][posB2] !== 12 && world[posA - (-1)][posB2] !== 13 && world[posA - (-1)][posB2] !== 14)) {
+              jump = 30;
+
+              posY += 6;
+            }
+          }
+
+          if (world[posA][posB] === 30) {
+            posY += playerSpeed;
+          }
+        }
+
+        if (keys[115]) {
+          health -= 4;
+          broadcast("Ouch...");
+          keys[115] = false;
+        }
+
+        if (posX < -10) { scrollX = posX; }
+
+        if (posY < 0 && posY > -1187) { scrollY = posY; }
+
+        if (keyCode > 48 && keyCode < 58 && !chatOpened) { barSlot = keyCode - 49; }
+
+        //Now to make it so we can break blocks.
+        if (!mouseIsPressed) { blockStrength = null; }
+
+        if (mouseIsPressed && !inventory && !news) {
+          if (mouseButton === LEFT && world[a][b] !== 18) {
+            if (world[a][b] < 10 || world[a][b] > 14) { breakBlocks(); }
+          }
+          else if (world[a][b] === 18) { teleport(); }
+        }
+
+        noStroke();
+        if (keys[84]) {
+          if (!chatOpened) { chatOpened = true; }
+          keys[84] = false;
+        }
+
+        textSize(15);
+
+        drawChatArea(chatOpened, input);
+
+        textSize(12);
+
+        if (nether || night) { fill(255, 255, 255); }
+        else { fill(0, 0, 0); }
+
+        text("^ Punch that block", 57, 15);
+
+        // Conrad: test, visual represenation of health
+        textSize(22);
+        fill(0, 197, 204);
+        text("health = " + health, 27, 309);
+        // text("showMyNum = " + showMyNum, 27, 279);
+
+
+        //the Debug menu
+        if (keyIsPressed && keyCode === 114) {
+          // if f3 is pressed and debug is false, set it to true
+          if (!debugMenu) { debugMenu = true; }
+          else { debugMenu = false; }
+          keyCode = 0;
+        }
+
+        // Conrad: The Inventory - Must (isCrafting || isSmelting) come between 
+        // (!inventory && !isCrafting) and (!inventory && !isCrafting && !isSmelting) 
+        if (keyCode === 69 && !chatOpened) {
+          if (!inventory && !isCrafting) {
+            inventory = true;
+            keyCode = 0;
+          }
+
+          if ((isCrafting || isSmelting)) {
+            isSmelting = false;
+            isCrafting = false;
+
+            keyCode = 0;
+          }
+
+          if (!inventory && !isCrafting && !isSmelting) {
+            inventory = true;
+            keyCode = 0;
+          }
+        }
+
+
+        // CHQ: attempted to translate charcter not working, will work on later
+        if (keyCode === 85) {
+          posB = 6;
+          posB2 = 5;
+          posA = 13;
+          posA2 = 13;
+        }
+
+        var craftingSquares = [[], [], []];
+
+        for (var r = 0; r < 3; r++) {
+          for (var s = 0; s < 3; s++) { craftingSquares[s][r] = craftingGrid[r + s * 3]; }
+        }
+
+        if (onChest) { openChest(); }
+
+        textSize(22);
+        fill(70, 240, 231);
+
+        if (inventory) { openInventory(craftingSquares); }
+
+        if (isSmelting) { furnaceBurning(); }
+
+        armorDestroyed();
+
+        if (e2open && !news) { notificationBanner(); }
+
+        resetInventorySlots();
+
+        if (health < 1) { isDead = true; }
+
+        if (news) { displayNews(); }
+
+        if (keys[ENTER] && news) { news = false; }
+
+        if (isCrafting) { openCrafting(craftingSquares); }
+
+        // Conrad: Copies current world layout to be saved for later
+        if (keyCode === 113) { saveWorld(); }
+
+        //the Bennimus Studios logo
+
+        scale(0.25, 0.25);
+        drawMiniLogoCharacter();
+        scale(4, 4);
+
+        if (debugMenu) { drawDebugMenu(); }
+
+        if (!hide && !isDead) {
+          noStroke();
+          fill(255);
+          rect(mouseX - 5, mouseY - 1, 10, 2);
+          rect(mouseX - 1, mouseY - 5, 2, 10);
+        }
+        else if (!hide) { cursor(); }
+      };
+
+
+
+
+      // ------------------------- JUMP TO MAIN GAME FUNCTION --------------------- //
+
+      //If there is one, retrieve a saved minecraft world from your browser
+      var draw = function () {
+        // conrad: right click can also be achieved by 
+        // trackpad click + SHIFT (for Mac users)
+        var rightClick = (mouseButton === RIGHT || (mouseButton === LEFT && keys[SHIFT]));
+
+        if (!isDead && !bennimusStudios && !onTitleScreen) { characterGamePlay(rightClick); }
+
+        var damage = oldHealth - health;
+        armor = armorStrength();
+
+        if (damageTimer > 0) {
+          health = oldHealth;
+          damageTimer--;
+          isDead = false;
+
+          if (damageTimer <= 0) {
+            health -= damage;
+            // Conrad: armor protection restoring some reduced health
+            health += round((damage * (armor / 20)) * 0.8);
+          }
+        }
+
+        if (health <= 0) { isDead = true; }
+
+        // Conrad: armor protection
+        if (damage > 0 && damageTimer === 0) {
+          damageTimer = 20;
+          health += round(damage * (armor / 20)) * 0.8;
+
+          for (var i = 0; i < 4; i++) {
+            if (armorSpecs[i] > 0) { armorSpecs[i]--; }
+          }
+        }
+
+        oldHealth = health;
+        if (health > MAX_HEALTH) { health = MAX_HEALTH; }
+        if (oldHealth > MAX_HEALTH) { oldHealth = MAX_HEALTH; }
+
+        noCursor();
+        if (health > 0) { isDead = false; }
+
+        if (!bennimusStudios) { updateHealthAnimation(health); }
+
+        if (!bennimusStudios && isDead) { deathMsg(); }
+
+        if (bennimusStudios) { preStartScreen(); }
+
+        if (herp === undefined) { herp = 0; }
+
+        if (onTitleScreen) {
+          cursor();
+          background(196, 225, 255);
+
+          // Conrad: may comment out if taxing on CPU
+          // drawWorld();
+          // drawTitleScreenInterface();
+
+          if (loadingWorld) { loadSavedWorld(); }
+          else { loadOrNewGame(); }
+        }
+
+        if (heartsShowing) { specialModeTimeAndFrameRate(); }
+        else { frameRate(60); }
+      };
+
+
+      var charInput = function (uppercase, lowercase) {
+        if (keys[SHIFT]) { input += uppercase; }
+        else { input += lowercase; }
+      };
+
+
+      // ———— Conrad: Keypressed Functions ——— //
+
+      var clearAllTheItems = function () {
+        var itemsCleared = 0;
+
+        for (var i = 0; i < 9; i++) {
+          itemsCleared += quickSelectBarQty[i];
+          quickSelectBar[i] = 0;
+          quickSelectBarQty[i] = 0;
+        }
+
+        for (var i = 0; i < 6; i++) {
+          for (var j = 0; j < 4; j++) {
+            itemsCleared += invContentQty[i][j];
+
+            invContents[i][j] = 0;
+            invContentQty[i][j] = 0;
+          }
+        }
+
+        for (var i = 0; i < 4; i++) {
+          if (armorSlots[i]) {
+            itemsCleared++;
+
+            armorSlots[i] = 0;
+            armorSpecs[i] = 0;
+          }
+        }
+
+        if (itemsCleared) {
+          broadcast("Cleared the inventory of " + username + ", removing " + itemsCleared + " items.");
+        }
+        else {
+          broadcast("Could not clear the inventory of " + username + ", no items to remove.");
+        }
+      };
+
+      var giveTheItems = function (commandLine) {
+        var condition1 = (commandLine[1] !== undefined);
+        var condition2 = (commandLine[1] > 0 && commandLine[1] < blocks);
+        var condition3 = (commandLine[1] >= 300 && commandLine[1] < items);
+
+        if (condition1 && condition2 || condition3) {
+          if (commandLine[2]) { getItem(commandLine[1] - 0, commandLine[2] - 0); }
+          else {
+            getItem(commandLine[1] - 0, 1);
+            commandLine[2] = 1;
+          }
+
+          var partOfMsg = "given " + username + " " + commandLine[2] + " of " + commandLine[1];
+
+          if (commandLine[1] < 300) { broadcast(partOfMsg + " (" + tileNames[commandLine[1]] + ")."); }
+          else { broadcast(partOfMsg + " (" + itemNames[commandLine[1] - 300] + ")."); }
+        }
+        else { broadcast(commandLine[1] + " is not a valid number."); }
+      };
+
+      var timeCaseInFunction = function (commandLine) {
+        if (commandLine[1] !== undefined && commandLine[2] !== undefined) {
+          switch (commandLine[1]) {
+            case "set":
+
+              time = commandLine[2];
+              broadcast("Time set to " + time);
+              break;
+
+            case "add":
+
+              time += (commandLine[2] - 0);
+
+              if (time > 20000) {
+                while (time > 20000) { time -= 20000; }
+              }
+
+              broadcast("Time set to " + time);
+              break;
+
+            default:
+
+              broadcast("Usage: /time <set/add> <value>");
+          }
+        }
+        else { broadcast("Usage: /time <set/add> <value>"); }
+      };
+
+      var helpMessages = function () {
+        if (mobs.type[0] !== 2) {
+          broadcast("==========[ HELP ]==========");
+
+          broadcast("/give [data] [amount]");
+          broadcast("gives you item by data and amount");
+
+          broadcast("/clear");
+          broadcast("clears your inventory");
+
+          broadcast("/kill");
+          broadcast("Ouch! that look like it hurt!");
+
+          broadcast("/killall");
+          broadcast("kills everything. Good for dat lag");
+          broadcast("==========================");
+        }
+        else { broadcast("Only god can help you now..."); }
+      };
+
+      var showUsername = function (commandLine) {
+        var message = "";
+
+        for (var i = 1; i < commandLine.length; i++) { message += (commandLine[i] + " "); }
+
+        broadcast("* " + username + " " + message);
+      };
+
+      var killCharacter = function () {
+        health = 0;
+        broadcast("Ouch! That look like it hurt!");
+      };
+
+
+      var killMobs = function () {
+        var mobsKilled = 0;
+        var msg = "<Herobrine> You thought it was that easy to destroy me...";
+
+        for (var i = 0; i < mobs.length; i++) {
+          if (mobs.type[i] !== 2) {
+            if (mobs.health[i] > 0) { mobsKilled++; }
+
+            mobs.health[i] = 0;
+          }
+          else { broadcast(msg); }
+        }
+
+        broadcast("An asteroid collides with the earth, obliterating " + mobsKilled + " entities.");
+      };
+
+      var executeCommands = function () {
+        var commandLine = input.split(" ");
+
+        switch (commandLine[0]) {
+          case "/help":
+
+            helpMessages();
+            break;
+
+          case "/me":
+
+            showUsername(commandLine);
+            break;
+
+          case "/clear":
+
+            clearAllTheItems();
+            break;
+
+          case "/give":
+
+            giveTheItems(commandLine);
+            break;
+
+          case "/kill":
+
+            killCharacter();
+            break;
+
+          case "/killall":
+
+            killMobs();
+            break;
+
+          case "/time":
+
+            timeCaseInFunction(commandLine);
+            break;
+
+          default:
+            broadcast("Unknown command. Type /help for help.");
+        }
+      };
+
+
+
+
+      keyPressed = function () {
+        if (!chatOpened || keyCode === SHIFT) {
+          keys[keyCode] = true;
+        }
+        else {
+          switch (keyCode) {
+            case ENTER:
+
+              chatOpened = false;
+
+              if (input !== "") {
+                if (input.substr(0, 1) === "/") {
+                  executeCommands();
+                }
+                else {
+                  broadcast("<" + username + "> " + input);
+                }
+              }
+
+              input = "";
+
+              break;
+
+            case 32:
+
+              input += " ";
+
+              break;
+
+            case 48:
+
+              charInput(")", "0");
+
+              break;
+
+            case 49:
+
+              charInput("!", "1");
+
+              break;
+
+            case 50:
+
+              charInput("@", "2");
+
+              break;
+
+            case 51:
+
+              charInput("#", "3");
+
+              break;
+
+            case 52:
+
+              charInput("$", "4");
+
+              break;
+
+            case 53:
+
+              charInput("%", "5");
+
+              break;
+
+            case 54:
+
+              charInput("^", "6");
+
+              break;
+
+            case 55:
+
+              charInput("&", "7");
+
+              break;
+
+            case 56:
+
+              charInput("*", "8");
+
+              break;
+
+            case 57:
+
+              charInput("(", "9");
+
+              break;
+
+            case 65:
+
+              charInput("A", "a");
+
+              break;
+
+            case 66:
+
+              charInput("B", "b");
+
+              break;
+
+            case 67:
+
+              charInput("C", "c");
+
+              break;
+
+            case 68:
+
+              charInput("D", "d");
+
+              break;
+
+            case 69:
+
+              charInput("E", "e");
+
+              break;
+
+            case 70:
+
+              charInput("F", "f");
+
+              break;
+
+            case 71:
+
+              charInput("G", "g");
+
+              break;
+
+            case 72:
+
+              charInput("H", "h");
+
+              break;
+
+            case 73:
+
+              charInput("I", "i");
+
+              break;
+
+            case 74:
+
+              charInput("J", "j");
+
+              break;
+
+            case 75:
+
+              charInput("K", "k");
+
+              break;
+
+            case 76:
+
+              charInput("L", "l");
+
+              break;
+
+            case 77:
+
+              charInput("M", "m");
+
+              break;
+
+            case 78:
+
+              charInput("N", "n");
+
+              break;
+
+            case 79:
+
+              charInput("O", "o");
+
+              break;
+
+            case 80:
+
+              charInput("P", "p");
+
+              break;
+
+            case 81:
+
+              charInput("Q", "q");
+
+              break;
+
+            case 82:
+
+              charInput("R", "r");
+
+              break;
+
+            case 83:
+
+              charInput("S", "s");
+
+              break;
+
+            case 84:
+
+              charInput("T", "t");
+
+              break;
+
+            case 85:
+
+              charInput("U", "u");
+
+              break;
+
+            case 86:
+
+              charInput("V", "v");
+
+              break;
+
+            case 87:
+
+              charInput("W", "w");
+
+              break;
+
+            case 88:
+
+              charInput("X", "x");
+
+              break;
+
+            case 89:
+
+              charInput("Y", "y");
+
+              break;
+
+            case 90:
+
+              charInput("Z", "z");
+
+              break;
+
+            case 186:
+
+              charInput(":", ";");
+
+              break;
+
+            case 187:
+
+              charInput("+", "=");
+
+              break;
+
+            case 188:
+
+              charInput("<", ",");
+
+              break;
+
+            case 189:
+
+              charInput("_", "-");
+
+              break;
+
+            case 190:
+
+              charInput(">", ".");
+
+              break;
+
+            case 191:
+
+              charInput("?", "/");
+
+              break;
+
+            case 192:
+
+              charInput("~", "`");
+
+              break;
+
+            case 219:
+
+              charInput("{", "[");
+
+              break;
+
+            case 220:
+
+              charInput("|", "\\");
+
+              break;
+
+            case 221:
+
+              charInput("}", "]");
+
+              break;
+
+            case 222:
+
+              charInput('"', "'");
+
+              break;
+
+            case CONTROL:
+
+              input = input.substr(0, input.length - 1);
+
+              break;
+          }
+        }
+      };
+
+      keyReleased = function () {
+        keys[keyCode] = false;
+
+        if (keyCode === 68 || keyCode === 65) {
+          keyTimer = 5;
+          isSprinting = false;
+        }
+      };
+
+
 
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);

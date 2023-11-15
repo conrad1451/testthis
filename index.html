@@ -7339,6 +7339,582 @@
       };
 
 
+
+      var changeDurability = function (a, b) {
+        selDurability = blockDurability[world[a][b]];
+
+        for (var i = 307; i <= 311; i++) {
+          if (quickSelectBar[barSlot] === i) {
+            var itemID = quickSelectBar[barSlot];
+
+            var divideAmount = (itemID - 305 + blockDurability[world[a][b]] / 50);
+
+            selDurability = selDurability / divideAmount;
+          }
+        }
+
+        /*if(world[a][b] !== 0)
+        {
+        broadcast(selDurability);
+        }*/
+
+        blockTargeted = [a, b];
+
+        blockStrength = selDurability;
+      };
+
+
+      var chatTextInput = function (input, x, y, length, width) {
+        // conrad: text input field
+        fill(0, 0, 0, 60);
+        rect(x, y, length, width);
+
+        fill(255);
+
+        // conrad: controls animation of blinking character input in text field
+        if (inputTimer % 25 < 15) {
+          text(input + "_", 5, 395);
+        }
+        else {
+          text(input, 5, 395);
+        }
+
+        inputTimer++;
+      };
+
+      var displayChatHistory = function () {
+        // conrad: shows the last 20 chat messages by the character in the chat log
+        for (var i = messages.length - 20; i < messages.length; i++) {
+          if (messages[i] !== undefined) {
+            fill(0, 0, 0, 60);
+            rect(0, i * 15 - messages.length * 15 + 300, 300, 15);
+
+            fill(255);
+            text(messages[i], 5, i * 15 - messages.length * 15 + 313);
+
+            msgTimers[i]--;
+          }
+        }
+      };
+
+      var displaySentMessage = function (messages, msgTimers, i) {
+        // Conrad: fading message box
+        if (msgTimers[i] > 20) { fill(0, 0, 0, 60); }
+        else { fill(0, 0, 0, msgTimers[i] * 3); }
+
+        rect(0, i * 15 - messages.length * 15 + 300, 300, 15);
+
+        // Conrad: fading text of message
+        if (msgTimers[i] > 10) { fill(255); }
+        else { fill(255, 255, 255, msgTimers[i] * 25.5); }
+
+        text(messages[i], 5, i * 15 - messages.length * 15 + 313);
+      };
+
+      var drawChatArea = function (chatOpened, input) {
+        if (chatOpened) {
+          chatTextInput(input, 0, 385, 400, 15);
+          displayChatHistory();
+        }
+        else {
+          for (var i = messages.length - 10; i < messages.length; i++) {
+            if (messages[i] !== undefined && msgTimers[i] > 0) {
+              displaySentMessage(messages, msgTimers, i);
+
+              msgTimers[i]--;
+            }
+          }
+        }
+      };
+
+      var teleport = function () {
+        if (!nether) {
+          overWorld = world;
+          world = netherWorld;
+
+          nether = true;
+        }
+        else if (nether) {
+          netherWorld = world;
+          world = overWorld;
+
+          nether = false;
+        }
+      };
+
+      var shouldSprintLeft = function () {
+        var firstBlockIsAir = (world[posA][posB2] === 0);
+        var firstBlockIsDoor = (world[posA][posB2] === 28);
+        var firstBlockSpecIsZero = (specs[posA][posB2] === 0);
+        var firstBlockIsUpperDoor = (world[posA][posB2] === 29);
+        var firstBlockIsLadder = (world[posA][posB2] === 30);
+        var firstBlockIsStillWater = (world[posA][posB2] === 11);
+        var firstBlockIsFlowingWater = (world[posA][posB2] === 12);
+        var firstBlockIsStillLava = (world[posA][posB2] === 13);
+        var firstBlockIsFlowingLava = (world[posA][posB2] === 14);
+        var firstBlockIsSappling = (world[posA][posB2] === 16);
+        var firstBlockIsFire = (world[posA][posB2] === 17);
+
+        var firstIsDoorOrLadder = ((firstBlockIsDoor && firstBlockSpecIsZero) || (firstBlockIsUpperDoor && firstBlockSpecIsZero) || firstBlockIsLadder);
+
+        var firstBlockIsHazard = (firstBlockIsStillWater || firstBlockIsFlowingWater || firstBlockIsStillLava || firstBlockIsFlowingLava || firstBlockIsFire);
+
+        var secondBlockIsAir = (world[posA2][posB2] === 0);
+        var secondBlockIsDoor = (world[posA2][posB2] === 28);
+        var secondBlockSpecIsZero = (specs[posA2][posB2] === 0);
+        var secondBlockIsUpperDoor = (world[posA2][posB2] === 29);
+        var secondBlockIsLadder = (world[posA2][posB2] === 30);
+        var secondBlockIsStillWater = (world[posA2][posB2] === 11);
+        var secondBlockIsFlowingWater = (world[posA2][posB2] === 12);
+        var secondBlockIsStillLava = (world[posA2][posB2] === 13);
+        var secondBlockIsFlowingLava = (world[posA2][posB2] === 14);
+        var secondBlockIsSappling = (world[posA2][posB2] === 16);
+        var secondBlockIsFire = (world[posA2][posB2] === 17);
+
+        var secondIsDoorOrLadder = ((secondBlockIsDoor && secondBlockSpecIsZero) || (secondBlockIsUpperDoor && secondBlockSpecIsZero) || secondBlockIsLadder);
+
+        var secondBlockIsHazard = (secondBlockIsStillWater || secondBlockIsFlowingWater || secondBlockIsStillLava || secondBlockIsFlowingLava || secondBlockIsFire);
+
+
+        var firstBlockConditions = (firstBlockIsAir || firstIsDoorOrLadder || firstBlockIsHazard || firstBlockIsSappling);
+
+        var secondBlockConditions = (secondBlockIsAir || secondIsDoorOrLadder || secondBlockIsHazard || secondBlockIsSappling);
+
+
+        return firstBlockConditions && secondBlockConditions;
+      };
+
+      var sprintLeft = function () {
+        if (keyTimer > 0) {
+          isSprinting = true;
+
+          playerSpeed = playerSpeed * 1.3;
+        }
+
+        posX -= playerSpeed;
+
+        if (isSprinting) {
+          playerSpeed = playerSpeed / 1.3;
+        }
+      };
+
+
+      var shouldSprintRight = function () {
+        var firstBlockIsAir = (world[posA][posB - 1] === 0);
+        var firstBlockIsDoor = (world[posA][posB - 1] === 28);
+        var firstBlockSpecIsZero = (specs[posA][posB - 1] === 0);
+        var firstBlockIsUpperDoor = (world[posA][posB - 1] === 29);
+        var firstBlockIsLadder = (world[posA][posB - 1] === 30);
+        var firstBlockIsStillWater = (world[posA][posB - 1] === 11);
+        var firstBlockIsFlowingWater = (world[posA][posB - 1] === 12);
+        var firstBlockIsStillLava = (world[posA][posB - 1] === 13);
+        var firstBlockIsFlowingLava = (world[posA][posB - 1] === 14);
+        var firstBlockIsSappling = (world[posA][posB - 1] === 16);
+        var firstBlockIsFire = (world[posA][posB - 1] === 17);
+
+        var firstIsDoorOrLadder = ((firstBlockIsDoor && firstBlockSpecIsZero) || (firstBlockIsUpperDoor && firstBlockSpecIsZero) || firstBlockIsLadder);
+
+        var firstBlockIsHazard = (firstBlockIsStillWater || firstBlockIsFlowingWater || firstBlockIsStillLava || firstBlockIsFlowingLava || firstBlockIsFire);
+
+        var secondBlockIsAir = (world[posA2][posB - 1] === 0);
+        var secondBlockIsDoor = (world[posA2][posB - 1] === 28);
+        var secondBlockSpecIsZero = (specs[posA2][posB - 1] === 0);
+        var secondBlockIsUpperDoor = (world[posA2][posB - 1] === 29);
+        var secondBlockIsLadder = (world[posA2][posB - 1] === 30);
+        var secondBlockIsStillWater = (world[posA2][posB - 1] === 11);
+        var secondBlockIsFlowingWater = (world[posA2][posB - 1] === 12);
+        var secondBlockIsStillLava = (world[posA2][posB - 1] === 13);
+        var secondBlockIsFlowingLava = (world[posA2][posB - 1] === 14);
+        var secondBlockIsSappling = (world[posA2][posB - 1] === 16);
+        var secondBlockIsFire = (world[posA2][posB - 1] === 17);
+
+        var secondIsDoorOrLadder = ((secondBlockIsDoor && secondBlockSpecIsZero) || (secondBlockIsUpperDoor && secondBlockSpecIsZero) || secondBlockIsLadder);
+
+        var secondBlockIsHazard = (secondBlockIsStillWater || secondBlockIsFlowingWater || secondBlockIsStillLava || secondBlockIsFlowingLava || secondBlockIsFire);
+
+
+        var firstBlockConditions = (firstBlockIsAir || firstIsDoorOrLadder || firstBlockIsHazard || firstBlockIsSappling);
+
+        var secondBlockConditions = (secondBlockIsAir || secondIsDoorOrLadder || secondBlockIsHazard || secondBlockIsSappling);
+
+
+        return firstBlockConditions && secondBlockConditions || (firstBlockIsHazard || firstBlockIsSappling);
+      };
+
+      var sprintRight = function () {
+        if (keyTimer > 0) {
+          isSprinting = true;
+
+          playerSpeed = playerSpeed * 1.5;
+        }
+
+        posX += playerSpeed;
+
+        if (isSprinting) {
+          playerSpeed = playerSpeed / 1.3;
+        }
+      };
+
+
+
+      var createNewFurnace = function () {
+        var newFurnace = [0, 0, 0, 50, 0, 0, 0, 0, 0, 0, 0, 0];
+
+        specs[a][b] = newFurnace;
+      };
+      var createNewChest = function () {
+        var newChest = [
+
+          [[308, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0]],
+
+          [[0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0]],
+
+          [[0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0],
+
+          [0, 0, 0, 0]]];
+
+        specs[a][b] = newChest;
+      };
+
+      var normalMode = function () {
+        sunPos--;
+        time++;
+
+        var halfDayLength = 10000;
+
+        progressTime(halfDayLength);
+
+        strokeWeight(2);
+
+        if (!nether) {
+          if (night) {
+            drawNightSky(halfDayLength);
+          }
+          else {
+            drawDaySky(halfDayLength);
+          }
+        }
+        else {
+          // Conrad: Nether background color
+          background(173, 43, 0);
+        }
+
+      };
+
+      var specialMode = function () {
+        // Conrad: changes sky color for special mode
+        background(10, 0, 56);
+
+        if (!shieldsShowing) {
+          shieldsShowingCount = 1000;
+          shieldsShowing = true;
+        }
+        else {
+          shieldsShowingCount--;
+
+          if (shieldsShowingCount < 0) {
+            heartsShowing = false;
+            shieldsShowing = false;
+            onFire = true;
+          }
+          // Conrad: changes sun color for special mode
+          strokeWeight(5);
+          fill(255, 255, 255);
+          stroke(184, 184, 184);
+          rect(300, 400 - (shieldsShowingCount / 10) - 200, 50, 50);
+        }
+
+      };
+
+      var specialModeTimeAndFrameRate = function () {
+        frameRate(30);
+
+        filter(INVERT);
+
+        fill(0, 255, 255);
+        textSize(20);
+        text("Time left: " + shieldsShowingCount, 270, 350);
+        // textSize(12);
+      };
+
+
+
+      var openCloseDoor = function () {
+        if (specs[a][b] === 0) {
+          specs[a][b] = 1;
+          specs[a - 1][b] = 1;
+        }
+        else if (specs[a][b] === 1) {
+          specs[a][b] = 0;
+          specs[a - 1][b] = 0;
+        }
+
+        mouseButton = 2;
+      };
+
+      var openCloseUpperDoor = function () {
+        if (specs[a][b] === 0) {
+          specs[a][b] = 1;
+          specs[a - (-1)][b] = 1;
+        }
+        else if (specs[a][b] === 1) {
+          specs[a][b] = 0;
+          specs[a - (-1)][b] = 0;
+        }
+
+        mouseButton = 2;
+      };
+
+      // Conrad: Allows character to put on armor
+      var putOnArmorPiece = function (a, b) {
+        var oldBlock = holdingBlock;
+        var oldSpecs = holdingSpecs;
+
+        holdingBlock = armorSlots[a * 2 + b];
+        holdingSpecs = armorSpecs[a * 2 + b];
+
+        armorSlots[a * 2 + b] = oldBlock;
+        armorSpecs[a * 2 + b] = oldSpecs;
+
+        mouseIsPressed = false;
+      };
+
+
+      // Conrad: Allows character to take off armor
+      var takeOffArmor = function (a, b) {
+        holdingBlock = armorSlots[a * 2 + b];
+        holdingSpecs = armorSpecs[a * 2 + b];
+        holdingQty = 1;
+
+        armorSlots[a * 2 + b] = 0;
+        armorSpecs[a * 2 + b] = 0;
+
+        mouseIsPressed = false;
+      };
+
+
+      var wearingArmor = function (a, b) {
+        setTag(armorSlots[a * 2 + b]);
+
+        if (mouseIsPressed && a >= 0 && a <= 1 && b >= 0 && b <= 1) {
+          var blockIsArmor = (holdingBlock >= 320 && holdingBlock <= 335);
+
+          if (holdingBlock === 0) {
+            takeOffArmor(a, b);
+          }
+          else if (blockIsArmor) {
+            var data = holdingBlock % 4;
+
+            if (data === a * 2 + b) {
+              putOnArmorPiece(a, b);
+            }
+          }
+        }
+      };
+
+      // Conrad: automatically places the item that was just crafted into the first available open slot of the quickSelectBar or Inventory
+      var autoGrab = function () {
+        getItem(craftedItem, craftedStacks);
+
+        craftedItem = 0;
+
+        craftedStacks = 0;
+
+        craftingGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      };
+
+      var manualGrab = function (activeHack) {
+        holdingBlock = craftedItem;
+
+        holdingQty = craftedStacks;
+
+        holdingSpecs = itemDurabilities[craftedItem];
+
+        // conrad: if inventory hacks is set to true, crafting table will                    replenish itself with gold ingot
+        if (activeHack) {
+          craftingGrid = [303, 303, 303, 303, 303, 303, 303, 303, 303];
+        }
+        else {
+          craftingGrid = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+        }
+
+        mouseIsPressed = false;
+      };
+
+      var grabCraftedItemsLargePlatform = function () {
+        setTag(craftedItem);
+
+        if (mouseIsPressed) {
+          if (keys[SHIFT]) {
+            autoGrab();
+          }
+          else if (holdingBlock === 0) {
+            manualGrab(inventoryHacks);
+          }
+        }
+      };
+
+      var grabCraftedItemsSmallPlatform = function () {
+        setTag(craftedItem);
+
+        if (mouseIsPressed && craftedItem !== 0) {
+          if (keys[SHIFT]) {
+            autoGrab();
+          }
+          else if (holdingBlock === 0) {
+            manualGrab(false);
+          }
+        }
+      };
+
+      var handQuickSelectBarItemSwap = function (b) {
+        var oldBlock = holdingBlock;
+        var oldQty = holdingQty;
+        var oldSpec = holdingSpecs;
+
+        holdingBlock = quickSelectBar[b - 1];
+        holdingQty = quickSelectBarQty[b - 1];
+        holdingSpecs = quickSelectBarSpecs[b - 1];
+
+        quickSelectBar[b - 1] = oldBlock;
+        quickSelectBarQty[b - 1] = oldQty;
+        quickSelectBarSpecs[b - 1] = oldSpec;
+      };
+
+      var takeFromQuickSelectBar = function (b) {
+        if (quickSelectBar[b - 1] === holdingBlock) {
+          var amount = quickSelectBarQty[b - 1];
+          var spaceLeftInHand = maxStacks[holdingBlock] - holdingQty;
+          var changeAmount = minVal(amount, spaceLeftInHand);
+
+          holdingQty += changeAmount;
+          quickSelectBarQty[b - 1] -= changeAmount;
+        }
+
+        handQuickSelectBarItemSwap(b);
+
+        keyCode = 0;
+
+        mouseIsPressed = false;
+      };
+
+      var handInventoryItemSwap = function (a, b) {
+        var oldBlock = holdingBlock;
+        var oldQty = holdingQty;
+        var oldSpec = holdingSpecs;
+
+        holdingBlock = invContents[a - 1][b - 1];
+        holdingQty = invContentQty[a - 1][b - 1];
+        holdingSpecs = invSpecs[a - 1][b - 1];
+
+        invContents[a - 1][b - 1] = oldBlock;
+        invContentQty[a - 1][b - 1] = oldQty;
+        invSpecs[a - 1][b - 1] = oldSpec;
+      };
+
+      // Conrad: Allows users to take items from the inventory
+      var takeFromInventory = function (a, b) {
+        if (invContents[a - 1][b - 1] === holdingBlock) {
+          var amount = invContentQty[a - 1][b - 1];
+          var spaceLeftInHand = maxStacks[holdingBlock] - holdingQty;
+          var changeAmount = minVal(amount, spaceLeftInHand);
+
+          holdingQty += changeAmount;
+          invContentQty[a - 1][b - 1] -= changeAmount;
+        }
+
+        handInventoryItemSwap(a, b);
+      };
+
+
+      // Could call in two more places, one having the furnace
+      var interactWithInventoryItems = function (a, b, keyCodeTriggered) {
+        if (a < 7 && b < 5 && a > 0 && b > 0) {
+          setTag(invContents[a - 1][b - 1]);
+
+          if (mouseIsPressed) {
+            takeFromInventory(a, b);
+
+            if (keyCodeTriggered) {
+              keyCode = 0;
+            }
+
+            mouseIsPressed = false;
+          }
+        }
+      };
+
+
+      // Conrad: allows user to take items out of the chest
+      var takeFromChest = function (targetChest, a, b) {
+        if (targetChest[0][a][b] === holdingBlock) {
+          var amount = targetChest[1][a][b];
+          var spaceLeftInHand = maxStacks[holdingBlock] - holdingQty;
+          var changeAmount = minVal(amount, spaceLeftInHand);
+
+          holdingQty += changeAmount;
+          targetChest[1][a][b] -= changeAmount;
+        }
+
+        var oldBlock = holdingBlock;
+        var oldQty = holdingQty;
+        var oldSpec = holdingSpecs;
+
+        holdingBlock = targetChest[0][a][b];
+        holdingQty = targetChest[1][a][b];
+        holdingSpecs = targetChest[2][a][b];
+
+        targetChest[0][a][b] = oldBlock;
+        targetChest[1][a][b] = oldQty;
+        targetChest[2][a][b] = oldSpec;
+
+        mouseIsPressed = false;
+      };
+
+
+      // Conrad: allows interaction with quickSelectBar
+      var interactWithQuickSelectBar = function () {
+        b = (mouseX / 40).toFixed(0, 0);
+
+        if (b > 0 && b <= 9) {
+          setTag(quickSelectBar[b - 1]);
+
+          if (mouseIsPressed) {
+            takeFromQuickSelectBar(b);
+          }
+        }
+      };
+
+
+
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);
       // ellipse(200, 200, 200, 200);

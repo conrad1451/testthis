@@ -6820,6 +6820,525 @@
 
 
 
+
+
+      var updateHealthAnimation = function (health) {
+        for (var l = 0; l < health / 2; l++) {
+          if (health <= 4) {
+            if (health < 3) {
+              image(heart, l * 16 + 20, 317 + shake, 12, 20);
+            }
+            else {
+              if (!shaken) {
+                shaken = true;
+
+                image(heart, l * 16 + 25, 317 + shake, 12, 20);
+              }
+              else {
+                image(heart, l * 16 + 25, 317 - shake, 12, 20);
+
+                shaken = false;
+              }
+            }
+          }
+          else {
+            image(heart, l * 16 + 23, 317, 12, 20);
+          }
+        }
+
+        for (var l = 0; l < (health - 1) / 2; l++) {
+          if (health <= 4) {
+            if (health < 3) {
+              image(heart, l * 16 + 20, 312 + shake, 19, 28);
+            }
+            else {
+              if (!shaken) {
+                shaken = true;
+
+                image(heart, l * 16 + 20, 312 + shake, 19, 28);
+              }
+              else {
+                image(heart, l * 16 + 20, 312 - shake, 19, 28);
+
+                shaken = false;
+              }
+            }
+          }
+          else {
+            image(heart, l * 16 + 20, 312, 19, 28);
+          }
+        }
+      };
+
+      var armorStrength = function () {
+        var armorLevel = 0;
+
+        for (var i = 0; i < 4; i++) {
+          switch (armorSlots[i]) {
+            case 320:
+
+              armorLevel += 2;
+
+              break;
+
+            case 321:
+
+              armorLevel += 6;
+
+              break;
+
+            case 322:
+
+              armorLevel += 5;
+
+              break;
+
+            case 323:
+
+              armorLevel += 2;
+
+              break;
+
+            case 324:
+
+              armorLevel += 2;
+
+              break;
+
+            case 325:
+
+              armorLevel += 5;
+
+              break;
+
+            case 326:
+
+              armorLevel += 3;
+
+              break;
+
+            case 327:
+
+              armorLevel++;
+
+              break;
+
+            case 328:
+
+              armorLevel += 3;
+
+              break;
+
+            case 329:
+
+              armorLevel += 8;
+
+              break;
+
+            case 330:
+
+              armorLevel += 6;
+
+              break;
+
+            case 331:
+
+              armorLevel += 3;
+
+              break;
+
+            case 332:
+
+              armorLevel++;
+
+              break;
+
+            case 333:
+
+              armorLevel += 3;
+
+              break;
+
+            case 334:
+
+              armorLevel += 2;
+
+              break;
+
+            case 335:
+
+              armorLevel++;
+
+              break;
+          }
+        }
+
+        return armorLevel;
+      };
+
+
+      var progressTime = function (halfDayLength) {
+        // (time % 10000) > 1 --> night
+        // (time % 10000) > 2 --> back
+
+        // time = 0;
+
+        if (time > halfDayLength * 1) {
+          night = true;
+        }
+        else {
+          night = false;
+        }
+        if (time === halfDayLength * 2) {
+          time = 0;
+        }
+      };
+
+      var drawDaySky = function (halfDayLength) {
+        if (time > 0 && time < 250) {
+          background(255, 209, 94);
+
+        }
+        else {
+          background(189, 206, 255);
+        }
+
+        fill(253, 255, 191);
+        stroke(255, 255, 255);
+        strokeWeight(5);
+
+        if (time <= 5000) {
+          sunPos -= 0.5;
+
+          rect(300, sunPos / 70 + 100, 50, 50);
+        }
+        else if (time >= 5000) {
+          sunPos = 1000;
+
+          rect(300, (time + 3000) / 50 - 150, 50, 50);
+        }
+      };
+
+      var drawNightSky = function (halfDayLength) {
+        background(10, 0, 56);
+
+        fill(255, 255, 255);
+        stroke(209, 209, 209);
+        strokeWeight(5);
+
+        if (time <= 15000) {
+          sunPos -= 0.5;
+
+          rect(300, sunPos / 70 + 100, 50, 50);
+        }
+        else if (time >= 1.5 * halfDayLength) {
+          sunPos = 1000;
+
+          rect(300, (time - 10800) / 50 - 150, 50, 50);
+        }
+      };
+
+      var drawClouds = function (cloudX, time, isNight) {
+        if (cloudX > 400) {
+          cloudX = 0;
+        }
+
+        fill(255);
+
+        if (isNight) {
+          fill(38, 21, 84);
+        }
+        else if (time < 250) {
+          fill(250, 232, 205);
+        }
+
+        cloudX += 0.25;
+
+        rect(cloudX + 150, 15, 125, 15);
+        rect(cloudX - 250, 15, 125, 15);
+        rect(cloudX + 200, 35, 180, 30);
+        rect(cloudX - 200, 35, 180, 30);
+        rect(cloudX - 300, 30, 170, 20);
+        rect(cloudX + 100, 30, 170, 20);
+      };
+
+
+      // Conrad: function to eat porkchop and regain health
+      // param cooked determines whether porkchop is cooked or not
+      var eatPorkChop = function (cooked) {
+        var healthGain = 0;
+
+        if (cooked) {
+          healthGain = 8;
+        }
+        else {
+          healthGain = 3;
+        }
+
+        health += healthGain;
+
+        quickSelectBarQty[barSlot]--;
+
+        mouseIsPressed = false;
+        keys[SHIFT] = false;
+      };
+
+
+      // Conrad: controls amount that character falls in different circumstances
+      var fallAmount = function (inWater, inLava) {
+        var theFallAmount = 0;
+
+        if (inWater) {
+          theFallAmount = 3;
+        }
+        else if (inLava) {
+          theFallAmount = 1.5;
+        }
+        else if (world[posA][posB] === 0) {
+          theFallAmount = 20;
+        }
+
+        return theFallAmount;
+      };
+
+      var personBurning = function () {
+        fill(173, 49, 0);
+        triangle(180, 200, 195, 170, 210, 200);
+        triangle(200, 200, 215, 170, 230, 200);
+
+        fill(227, 170, 0);
+        triangle(185, 200, 195, 180, 205, 200);
+        triangle(205, 200, 215, 180, 225, 200);
+
+        c = random(0, 400);
+
+        if (c > 399.5) {
+          onFire = false;
+        }
+
+        if (fireTix < 10) {
+          fireTix++;
+        }
+        else {
+          health--;
+          fireTix = 0;
+        }
+      };
+
+      var drawBurningFire = function () {
+        fill(173, 49, 0);
+        triangle(180, 230, 195, 200, 210, 230);
+        triangle(200, 230, 215, 200, 230, 230);
+
+        fill(227, 170, 0);
+        triangle(185, 230, 195, 210, 205, 230);
+        triangle(205, 230, 215, 210, 225, 230);
+      };
+
+
+      var drawQuickSelectBar = function () {
+        fill(199);
+
+        stroke(0, 0, 0);
+
+        rect(10, 350, 380, 50);
+
+        fill(230, 230, 230);
+        rect(barSlot * 43 + 15, 361, 30, 30);
+
+        noStroke();
+
+        for (var i = 0; i < 9; i++) {
+          var j = i * 43 + 20;
+
+          noStroke();
+
+          drawBlocks(quickSelectBar[i], j, 366);
+
+          noStroke();
+
+          if (itemDurabilities[quickSelectBar[i]] !== null && quickSelectBarSpecs[i] !== itemDurabilities[quickSelectBar[i]]) {
+            var filler = 255 / itemDurabilities[quickSelectBar[i]];
+
+            fill(255 - quickSelectBarSpecs[i] * filler, quickSelectBarSpecs[i] * filler, 0);
+
+            rect(j, 388, quickSelectBarSpecs[i] / (itemDurabilities[quickSelectBar[i]] / 20), 3);
+
+            if (quickSelectBarSpecs[i] <= 0) {
+              quickSelectBarSpecs[i] = 0;
+              quickSelectBarQty[i] = 0;
+              quickSelectBar[i] = 0;
+            }
+          }
+
+          fill(0);
+
+          text(i + 1, j - 7, 363);
+
+          fill(255);
+
+          textSize(15);
+
+          if (quickSelectBarQty[i] !== 0 && quickSelectBarQty[i] !== 1) {
+            text(quickSelectBarQty[i], j + 20, 366 + 23);
+          }
+
+          if (quickSelectBarQty[i] === 0) {
+            quickSelectBar[i] = 0;
+          }
+
+          textSize(12);
+        }
+      };
+
+      var grabWaterOrLava = function () {
+        var mysterybarSlot = (quickSelectBar[barSlot] === 337);
+        var waterClicked = (world[a][b] === 11);
+        var lavaClicked = (world[a][b] === 13);
+        // Conrad: make the contents of if statement into a 
+        //          function called 'grabWaterOrLava'
+        if ((waterClicked || lavaClicked) && mysterybarSlot) {
+          if (quickSelectBarQty[barSlot] === 1) {
+            quickSelectBar[barSlot] = world[a][b];
+          }
+          else {
+            quickSelectBarQty[barSlot]--;
+
+            getItem(world[a][b], 1);
+          }
+
+          world[a][b] = 0;
+
+          mouseIsPressed = false;
+        }
+      };
+
+
+
+
+      var drawDebugMenu = function () {
+        if (nether || night) {
+          fill(255, 255, 255);
+        }
+        else {
+          fill(0, 0, 0);
+        }
+
+        text("Minecraft Khan Academy edition " + version, 10, 20);
+        text("Bennimus Studios", 10, 30);
+
+        text("Key Code: " + keyCode, 10, 50);
+        text("Mouse Button: " + mouseButton, 10, 60);
+
+        text("Inventory: " + inventory, 10, 70);
+        text("Current block: " + world[a][b], 10, 80);
+        text("Time: " + time, 120, 50);
+
+        text("Sun Pos: " + sunPos.toFixed(0, 0), 120, 60);
+        text("Crouching: " + isSitting, 120, 70);
+
+        text("Blocks generated: " + world[0].length, 120, 80);
+        text("Asteroids spawned: " + mobs.length, 120, 90);
+        text("Position: " + place, 240, 50);
+
+        text("Jump: " + jump, 240, 60);
+        text("Inside block: " + world[posA][posB], 240, 70);
+        text("Blocks fallen: " + blocksFallen, 240, 80);
+
+        text("x: " + posB + " (cursor " + b + ")", 10, 100);
+        text("y: " + posA + " (cursor " + a + ")", 10, 110);
+        text("x2: " + posB2, 10, 120);
+        text("y2: " + posA2, 10, 130);
+
+        text("Key ticks: " + keyTimer, 240, 90);
+        text("Sprinting: " + isSprinting, 240, 100);
+      };
+
+
+      var printWorld = function (selectedWorld) {
+        for (var m = 0; m < selectedWorld.length; m++) {
+          if (m === selectedWorld.length - 1) {
+            println("[" + selectedWorld[m] + "]];");
+          }
+          else {
+            println("[" + selectedWorld[m] + "],");
+          }
+        }
+      };
+
+
+      var saveWorld = function () {
+        broadcast("World saved and printed.");
+        broadcast("Copy the code over var world.");
+        println("var world = [");
+
+        if (!nether) {
+          printWorld(world);
+        }
+        else {
+          printWorld(overWorld);
+        }
+
+        println("var netherWorld = [");
+
+        if (!nether) {
+          printWorld(netherWorld);
+        }
+        else {
+          printWorld(world);
+        }
+
+        keyCode = 0;
+      };
+
+
+
+      var degradeByAmount = function (selectedItem) {
+        var degradeAmount = 0;
+
+        if (selectedItem >= 307 && selectedItem <= 311) {
+          degradeAmount = 1;
+        }
+        else if (selectedItem >= 312 && selectedItem <= 316) {
+          degradeAmount = 2;
+        }
+
+        return degradeAmount;
+      };
+
+      var furnaceInteraction = function (a, b) {
+        spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 33);
+
+        for (var i = 0; i < specs[a][b][1]; i++) {
+          spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, specs[a][b][0]);
+        }
+
+        for (var i = 0; i < specs[a][b][5]; i++) {
+          spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, specs[a][b][4]);
+        }
+
+        for (var i = 0; i < specs[a][b][8]; i++) {
+          spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, specs[a][b][7]);
+        }
+      };
+
+
+
+      var chestInteraction = function (a, b) {
+        spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, 34);
+
+        if (specs[a][b] !== null || specs[a][b] !== 0) {
+          for (var i = 0; i < 6; i++) {
+            for (var j = 0; j < 4; j++) {
+              for (var k = 0; k < specs[a][b][1][i][j]; k++) {
+                spawnEntity(b * 40 + random(0, 20), a * 40 + 10, 0, specs[a][b][0][i][j]);
+              }
+            }
+          }
+        }
+      };
+
+
       drawCookedPorkChopIcon(200, 200);
       // fill(255, 255, 0);
       // ellipse(200, 200, 200, 200);
